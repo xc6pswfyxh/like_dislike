@@ -35,4 +35,5 @@ title_page.pdf
 *.quarto_ipynb
 
 # Quarto website output
-_site/
+_site/*.RDataTmp
+*.RData
