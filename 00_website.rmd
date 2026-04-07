@@ -1,0 +1,12 @@
+---
+title: "Screenshots Website"
+output: "html"
+---
+
+# Main page
+
+![](figures/website/website_translated.png)
+
+# Example comments
+
+![](figures/website/comments_translated.png)

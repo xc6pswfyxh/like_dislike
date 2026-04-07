@@ -21,3 +21,18 @@ data/workspace_full.RData
 title_page.rmd
 title_page.tex
 title_page.pdf
+
+# Python env
+.venv/
+
+# Quarto / knitr
+*_files/
+*_cache/
+.quarto/
+**/*.quarto_ipynb
+
+# Quarto notebook artifacts
+*.quarto_ipynb
+
+# Quarto website output
+_site/

@@ -1,0 +1,41 @@
+project:
+  type: website
+
+name: "like_dislike"
+
+website:
+  title: "Privacy Calculus Experiment"
+  navbar:
+    pinned: true
+    background: primary
+    left:
+      - text: "Home"
+        href: index.html
+      - text: "Manuscript"
+        href: 04_manuscript.html
+      - text: "Analyses"
+        href: 02_analyses.html
+      - text: "Items"
+        href: 01_items.html
+      - text: "Website"
+        href: 00_website.html
+      - text: "Preregistration"
+        href: 03_preregistration_changes.html
+      - text: "Additional Analyses"
+        href: 05_analyses_additional.html
+      #- text: "Revision Analyses"
+      #  href: 06_analyses_revision.html
+      #- text: "Comment Classification"
+      #  href: 07_comment_classification.html
+      #- text: "Revised Manuscript"
+      #  href: 08_manuscript_revised.html
+    right:
+      - text: "PDF"
+        href: manuscript.pdf
+      - text: "Source Code"
+        href: https://github.com/XMtRa/like_dislike
+
+format:
+  html:
+    theme: cosmo
+    page-layout: full

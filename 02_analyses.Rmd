@@ -1,0 +1,2360 @@
+---
+title: "Analyses"
+bibliography: 
+  - bibliography/references.bib
+
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-fold: true
+    code-summary: "Show code"
+---
+
+```{r setup, include=F}
+knitr::opts_chunk$set(
+  cache = TRUE, 
+  warning = FALSE, 
+  echo = TRUE, 
+  error = FALSE, 
+  message = FALSE, 
+  prompt = FALSE, 
+  tidy = FALSE, 
+  fig.height = 6, 
+  fig.width = 8
+  )
+
+options(
+  digits = 3, 
+  width = 120
+  )
+```
+
+In what follows, you can find the analyses for the results reported in the paper. To see the underlying code, click on the button "code".
+
+# Setup
+## Packages
+
+Let's first load the packages we require for our analyses. Note that some need to be installed manually from github.
+
+```{r results='hide', cache=F}
+# install github packages
+# devtools::install_github("tdienlin/td@v0.0.2.6")  # uncomment to install
+# devtools::install_github("yrosseel/lavaan") 
+# remotes::install_github("stan-dev/cmdstanr")
+
+# define packages
+packages <- 
+  c(
+    "brms", 
+    "cowplot", 
+    "devtools", 
+    "english", 
+    "faoutlier", 
+    "GGally",
+    "kableExtra", 
+    "knitr", 
+    "lavaan", 
+    "magrittr",
+    "marginaleffects",
+    "MVN",
+    "pwr", 
+    "quanteda", 
+    "semTools", 
+    "tidyverse",
+    "cmdstanr",
+    "td"
+    )
+
+# load packages
+lapply(
+  packages
+  # , install.packages
+  , library
+  , character.only = TRUE
+  , quietly = TRUE
+  )
+
+# If not wanting to compute all transformations etc., simply load workspace
+# load("data/workspace.RData")
+```
+
+## Custom Functions
+
+We now build some custom functions required for the analyses. Note that here you can find the syntax for the main analyses wrapped in helper functions, which we will then call below.
+
+```{r}
+# define function to silence result output
+# needed for brms
+hush <- 
+  function(
+    code
+    ){
+    sink("/dev/null") # use /dev/null in UNIX
+    tmp = code
+    sink()
+    return(tmp)
+    }
+
+# plot distributions of items
+plot_dist <-
+  function(
+    item,
+    n_rows = 1
+    ) {
+    ggplot(
+      gather(
+        select(
+          d, 
+          starts_with(
+            item
+            )
+          )
+        ), 
+      mapping = aes(
+        x = value
+        )
+      ) +
+      geom_bar() +
+      facet_wrap(
+        ~key, 
+        nrow = n_rows
+        ) + 
+      theme_bw()
+  }
+
+get_desc <- 
+  function(
+    item,
+    name
+  ) {
+    desc <- 
+      select(
+        d, 
+        starts_with(
+          item
+          )
+        ) %>% 
+      apply(
+        1, 
+        mean, 
+        na.rm = TRUE
+        ) %>% 
+      as.data.frame() %>% 
+      summarise(
+        m = mean(., na.rm = TRUE), 
+        sd = sd(., na.rm = TRUE)
+        )
+    assign(
+      paste0(
+        "des_",
+        name
+      ),
+      desc,
+      envir = .GlobalEnv
+    )
+  }
+
+# Function to display diagnostics of fitted hurdle models
+model_diagnostics <- 
+  function(
+    model
+  ){
+  plot_grid(
+    pp_check(
+      model,
+      type = "dens_overlay",
+      nsamples = 100
+    ),
+    pp_check(
+      model,
+      type = "loo_pit_qq",
+      nsamples = 100
+    ),
+    pp_check(
+      model,
+      type = "stat",
+      stat = "median",
+      nsamples = 100
+    ),
+    pp_check(
+      model,
+      type = "stat",
+      stat = "mean",
+      nsamples = 100
+    ),
+    labels = c("Density overlay", "LOO-PIT QQ", "Predicted medians", "Predicted means"),
+    ncol = 2,
+    label_size = 8,
+    hjust = 0,
+    vjust = 0,
+    label_x = 0,
+    label_y = 0.93
+    )
+  }
+
+# wrapper function that runs relevant analyses for hurdle models
+run_hurdles <- 
+  function(
+    object,
+    name,
+    outcome,
+    predictor,
+    x_lab,
+    y_lab,
+    plot = FALSE,
+    ...
+    ){
+    
+    # define define general model
+    formula_mdl <- 
+      formula(
+        paste0(
+          outcome,
+          " ~ 1 + age + male + edu +",
+          predictor
+        )
+    )
+    
+    # define hurdle model
+    formula_hrdl <- 
+      formula(
+        paste0(
+          "hu ~ 1 + age + male + edu +",
+          predictor
+        )
+    )
+   
+    # fit model
+    fit <- 
+      hush(
+        brms::brm(
+          bf(
+            formula_mdl, 
+            formula_hrdl
+            ), 
+          data = object, 
+          family = hurdle_gamma(),
+          silent = TRUE,
+          refresh = 0,
+          iter = 1000,
+          backend = "rstan"
+          )
+      )
+    
+    # export fit
+    assign(
+      paste0(
+        "fit_",
+        name),
+      fit,
+      envir = .GlobalEnv
+    )
+    
+    # plot model
+    if(
+      isTRUE(plot
+             )) {
+      plot(fit, ask = FALSE)
+  }
+    
+    # run diagnostics
+    fit_diagnostics <- 
+      model_diagnostics(fit)
+    plot(fit_diagnostics)
+    
+    # print summary
+    fit_summary <- 
+      summary(fit)
+    print(fit_summary)
+
+    # calculate slopes
+    slopes <-
+      cbind(
+        Outcome = outcome,
+        avg_slopes(fit)
+      )
+    
+    # print slopes
+    cat("\nResults of marginal effects:\n")
+    print(slopes)
+    
+    # export as object to environment
+    assign(
+      paste0(
+        "slopes_",
+        name
+        ),
+      slopes,
+      envir = .GlobalEnv
+    )
+    
+    # make figure
+    fig_res <- 
+      conditional_effects(
+        fit
+        , ask = FALSE
+      )
+    
+    # make figure
+    fig <- 
+      plot(
+        fig_res,
+        plot = FALSE
+      )[[predictor]] +
+      labs(
+        x = x_lab,
+        y = y_lab
+        )
+    
+    # plot figure
+    print(fig)
+    
+    # export as object to environment
+    assign(
+      paste0(
+        "fig_",
+        name
+      ),
+      fig,
+      envir = .GlobalEnv
+    )
+}
+```
+
+## Data-Wrangling
+
+Let's next tidy up and prepare the data, so we can analyze them.
+
+```{r results='hide', cache=F}
+# load data
+# please note that in a prior step several different data sets were merged using information such as case_taken or IP-addresses. To guarantee the privacy of the participants, these data were deleted after merging.
+d_raw <- read_csv("data/data_raw.csv")
+
+# recode variables
+d <- 
+  d_raw %>% 
+  dplyr::rename(
+    "male" = "SD01", 
+    "age" = "SD02_01", 
+    "state" = "SD03", 
+    "edu_fac" = "SD04",
+    "TR02_01" = "TR01_01",
+    "TR02_02" = "TR01_05",
+    "TR02_03" = "TR01_09",
+    "TR01_01" = "TR01_02",
+    "TR01_02" = "TR01_03",
+    "TR01_03" = "TR01_04",
+    "TR01_04" = "TR01_06",
+    "TR01_05" = "TR01_07",
+    "TR01_06" = "TR01_08",
+    "TR01_07" = "TR01_10",
+    "TR01_08" = "TR01_11",
+    "TR01_09" = "TR01_12"
+    ) %>% 
+  mutate(
+    
+    #general
+    version = factor(
+      VE01_01, 
+      labels = c(
+        "Control", 
+        "Like", 
+        "Like & dislike"
+        )
+      ),
+    version_lkdslk = factor(
+      version, 
+      levels = c(
+        "Like & dislike", 
+        "Like", 
+        "Control"
+        )
+      ),
+    version_no = recode(
+      version, 
+      "Control" = 1, 
+      "Like" = 2, 
+      "Like & dislike" = 3
+      ),
+    male = replace_na(
+      male, 
+      "[3]") %>% 
+      dplyr::recode(
+        "männlich [1]" = 1, 
+        "weiblich [2]" = 0
+        ),
+    age_grp = cut(
+      age, 
+      breaks = c(0, 29, 39, 49, 59, 100), 
+      labels = c("<30", "30-39", "40-49", "50-59", ">59")
+      ),
+    
+    # contrasts
+    like = recode(
+      version, 
+      "Control" = 0, 
+      "Like" = 1, 
+      "Like & dislike" = 0
+      ),
+    likedislike = recode(
+      version, 
+      "Control" = 0, 
+      "Like" = 0, 
+      "Like & dislike" = 1
+      ),
+    control = recode(
+      version, 
+      "Control" = 1, 
+      "Like" = 0, 
+      "Like & dislike" = 0
+      ),
+    
+    # recode
+    edu = recode(
+      edu_fac, 
+      "Hauptschulabschluss/Volksschulabschluss" = 1, 
+      "Noch Schüler" = 1,
+      "Realschulabschluss (Mittlere Reife)" = 1,
+      "Abschluss Polytechnische Oberschule 10. Klasse (vor 1965: 8. Klasse)" = 1,
+      "Anderer Schulabschluss:" = 1,
+      "Fachhochschulreife (Abschluss einer Fachoberschule)" = 2,
+      "Abitur, allgemeine oder fachgebundene Hochschulreife (Gymnasium bzw. EOS)" = 2,
+                 "Hochschulabschluss" = 3),
+    PC01_03 = 8 - PC01_03, 
+    SE01_05 = 8 - SE01_05, 
+    SE01_06 = 8 - SE01_06,
+    
+    # behavioral data
+    words = replace_na(
+      words, 
+      0
+      ),
+    self_dis = words + (reactions * 2),
+    time_read_MIN = time_read / 60,
+    time_sum_min_t2 = TIME_SUM_t2 / 60,
+    
+    # take logarithm
+    words_log = log1p(words),
+    self_dis_log = log1p(self_dis)
+  )
+
+# variable labels
+var_names <- c(
+  "Privacy concerns", 
+  "Gratifications general", 
+  "Gratifications specific",
+  "Privacy deliberation", 
+  "Self-efficacy", 
+  "Trust general", 
+  "Trust specific",
+  "Words log"
+  )
+
+var_names_breaks <- c(
+  "Privacy\nconcerns", 
+  "Gratifications\ngeneral", 
+  "Gratifications\nspecific",
+  "Privacy\ndeliberation", 
+  "Self-\nefficacy", 
+  "Trust\ngeneral", 
+  "Trust\nspecific",
+  "Words (log)"
+  )
+
+# Extract sample characteristics and descriptives.
+# sample descriptives t1
+n_t1 <- nrow(d)
+age_t1_m <- mean(d$age, na.rm = TRUE)
+male_t1_m <- mean(d$male, na.rm = TRUE)
+college_t1_m <- table(d$edu)[3] / n_t1
+
+# sample descriptives t2
+# participants
+n_t2 <- 
+  filter(
+    d, 
+    !is.na(
+      id_survey_t2
+      )
+    ) %>% 
+  nrow()
+
+# age
+age_t2_m <- 
+  filter(
+    d, 
+    !is.na(
+      id_survey_t2
+      )
+    ) %>% 
+  select(
+    age
+    ) %>% 
+  mean()
+
+# gender
+male_t2_m <- 
+  filter(
+    d, 
+    !is.na(
+      id_survey_t2
+      )
+    ) %>% 
+  select(
+    male
+    ) %>% 
+  mean(
+    na.rm = TRUE
+    )
+
+# education
+college_t2_m <- 
+  filter(
+    d, 
+    !is.na(
+      id_survey_t2
+      )
+    ) %>% 
+  select(
+    edu
+    ) %>% 
+  table() %>% 
+  .[3] / n_t2
+
+# descriptives users
+n_users <- 
+  filter(
+    d, 
+    !is.na(
+      post_count
+      )
+    ) %>% 
+  nrow()
+
+# characteristics of posts
+n_comments <- 
+  sum(
+    d$post_count, 
+    na.rm = TRUE
+    )
+
+n_words <- 
+  sum(
+    d$words, 
+    na.rm = TRUE
+    )
+
+n_time <- 
+  sum(
+    d$time_read_MIN, 
+    na.rm = TRUE
+    )
+
+n_posts <- 
+  sum(
+    d$post_count, 
+    na.rm = TRUE
+    )
+
+# filter unmatched cases, use only completes
+d <- 
+  filter(
+    d, 
+    !is.na(
+      post_count
+      ) & !is.na(
+        id_survey_t2
+        )
+    ) 
+
+n_matched <- nrow(d)
+
+# save data file with all participants to compare results
+d_all <- d
+```
+
+# Filter Participants
+
+I filtered participants who answered the questionnaire in less than three minutes, which I considered to be unreasonably fast.
+
+```{r cache=F}
+# filter speeders
+time_crit <- 3 # minimum time on survey
+
+# count number of speeders
+n_speeding <- 
+  nrow(
+    filter(
+      d, 
+      time_sum_min_t2 < time_crit
+      )
+    )
+
+# Deletion of fast respondents
+d <- 
+  filter(
+    d, 
+    time_sum_min_t2 >= time_crit
+    )
+```
+
+I inspected the data manually for cases with obvious response patterns. The following cases show extreme response patterns (alongside fast response times), and were hence removed.
+
+```{r cache=F}
+# identify response patterns
+resp_pattern <- c(
+  "ANIEVLK9F2SW", 
+  "BN4MAOWZO7W2"  # clear response pattern
+  )
+
+n_resp_pattern <- 
+  length(
+    resp_pattern
+    )
+
+d %>% 
+  filter(
+    case_token %in% resp_pattern
+    ) %>% 
+  select(
+    case_token, 
+    GR01_01:SE01_06, 
+    topics_entered:reactions, 
+    -SO01_01, 
+    TIME_SUM_t1, 
+    TIME_SUM_t2
+    ) %>% 
+  kable() %>% 
+  kable_styling("striped") %>% 
+  scroll_box(width = "100%")
+
+d %<>% 
+  filter(
+    !case_token %in% resp_pattern
+    )
+
+# sample descriptives final data set
+n_final <- nrow(d)
+age_final_m <- mean(d$age)
+male_final_m <- mean(d$male, na.rm = TRUE)
+college_final_m <- table(d$edu)[[3]] / n_final
+```
+
+# Measures
+
+Let's next inspect all measures. I list all items, their distributions and CFAs.
+
+## Privacy concerns
+### Items
+
+Using the participation platform I had ...
+
+ 1. ... concerns about what happens to my data.
+ 2. ... concerns about disclosing information about myself.
+ 3. ... no concerns. (reversed)
+ 4. ... concerns that others could discover my real identity (i.e. my last and first name).
+ 5. ... concerns that information about myself could fall into wrong hands.
+ 6. ... concerns that others could discover what my political views are.
+ 7. ... concerns about my privacy.
+
+### Distributions
+
+```{r fig.height = 3}
+# plot distribution
+plot_dist(
+  item = "PC01"
+)
+
+# extract results
+get_desc(
+  item = "PC01",
+  name = "pricon"
+)
+```
+
+### CFA
+
+```{r}
+name <- "pricon"
+model <- "
+pri_con =~ PC01_01 + PC01_02 + PC01_03 + PC01_04 + PC01_05 + PC01_06 + PC01_07
+"
+fit <- 
+  lavaan::sem(
+    model = model, 
+    data = d, 
+    estimator = "MLR", 
+    missing = "ML"
+    )
+```
+
+Model fit:
+
+```{r}
+facval <- 
+  fit_tab(
+    fit, 
+    # reliability = TRUE, 
+    # scaled = TRUE
+    ) %T>%
+  print()
+```
+
+Factor loadings:
+
+```{r}
+inspect(
+  fit,
+  what = "std") %$% 
+    lambda
+```
+
+Shows that PC01_03 doesn't load well. As it's an inverted item that's not surprising. Also from a theoretic perspective it's suboptimal, because it doesn't explicitly focus on privacy, but just concerns in general. Will be deleted.
+
+### CFA 2
+
+```{r}
+model <- "
+pri_con =~ PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07
+"
+fit <-
+  lavaan::sem(
+    model = model,
+    data = d,
+    estimator = "MLR",
+    missing = "ML"
+    )
+```
+
+Model fit:
+
+```{r}
+facval <- 
+  fit_tab(
+    fit, 
+    # reliability = TRUE, 
+    # scaled = TRUE
+    ) %T>% 
+  print()
+
+assign(
+  paste0(
+    name, 
+    "_facval"
+    ), 
+  facval
+  )
+```
+
+Factor loadings:
+
+```{r}
+inspect(
+  fit,
+  what = "std"
+  ) %$% 
+  lambda
+```
+
+Updated version shows good fit.
+
+## Gratifications general
+### Items
+
+Using the participation platform ...
+ 
+ 1.	... had many benefits for me.
+ 2.	... has paid off for me.
+ 3.	... was worthwhile.
+ 4.	... was fun.
+ 5.	... has brought me further regarding content.
+
+### Distributions
+
+```{r fig.height = 3}
+plot_dist(
+  item = "GR02"
+)
+
+get_desc(
+  item = "GR02",
+  name = "gratsgen"
+)
+```
+
+### CFA
+
+```{r}
+name <- "gratsgen"
+model <- "
+  grats_gen =~ GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05
+"
+fit <- 
+  lavaan::sem(
+    model = model, 
+    data = d, 
+    estimator = "MLR", 
+    missing = "ML"
+    )
+```
+
+Model fit:
+
+```{r}
+facval <- 
+  fit_tab(
+    fit, 
+    # reliability = TRUE, 
+    # scaled = TRUE
+    ) %T>%
+  print()
+
+assign(
+  paste0(
+    name, 
+    "_facval"
+    ), 
+  facval
+  )
+```
+
+Factor loadings:
+
+```{r}
+inspect(
+  fit,
+  what = "std"
+  ) %$% 
+  lambda
+```
+
+Model fit was good.
+
+## Gratifications specific
+### Items
+
+Using the participation platform it has been possible for me ...
+
+_Information_
+
+ 1.	... to learn things I would not otherwise have noticed.
+ 2.	... to hear the opinion of others.
+ 3.	... to learn how other people tick.
+
+_Relevance_
+
+ 4.	... to react to a subject that is very dear to me.
+ 5.	... to react to a subject that is important to me.
+ 6.	... to react to a subject that I am affected by.
+
+_Political participation_
+
+ 7.	... to engage politically.
+ 8.	... to discuss political issues.
+ 9.	... to pursue my political interest.
+
+_Idealism_
+
+ 10. ... to try to improve society.
+ 11. ... to advocate to something meaningful.
+ 12. ... to serve a good purpose.
+
+_Extrinsic benefits_
+
+ 13. ... to do the responsible persons a favor.
+ 14. ... to soothe my guilty consciences.
+ 15. ... to fulfil my civic duty.
+
+### Distributions
+
+```{r}
+plot_dist(
+  item = "GR01",
+  n_rows = 2
+)
+
+get_desc(
+  item = "GR01",
+  name = "gratsspec"
+)
+```
+
+### CFA
+
+```{r}
+name <- "gratsspec"
+model <- "
+  grats_inf =~ GR01_01 + GR01_02 + GR01_03 
+  grats_rel =~ GR01_04 + GR01_05 + GR01_06 
+  grats_par =~ GR01_07 + GR01_08 + GR01_09
+  grats_ide =~ GR01_10 + GR01_11 + GR01_12 
+  grats_ext =~ GR01_13 + GR01_14 + GR01_15
+  grats_spec =~ grats_inf + grats_rel + grats_par + grats_ide + grats_ext
+"
+fit <- lavaan::sem(
+  model = model, 
+  data = d, 
+  estimator = "MLR", 
+  missing = "ML"
+  )
+```
+
+Model fit:
+
+```{r}
+facval <- 
+  fit_tab(
+    fit, 
+    # reliability = TRUE, 
+    # scaled = TRUE
+    ) %T>%
+  print()
+
+assign(
+  paste0(
+    name, 
+    "_facval"
+    ), 
+  facval
+  )
+```
+
+Factor loadings:
+
+```{r}
+inspect(
+  fit,
+  what = "std"
+  ) %$% 
+  lambda
+```
+
+Model fit was okay.
+
+## Privacy deliberation
+### Items
+
+Using the participation platform ...
+
+ 1. ... I have considered whether I could be disadvantaged by writing a comment.
+ 2. ... I have considered whether I could be advantaged by writing a comment.
+ 3. ... I have weighed up the advantages and disadvantages of writing a comment.
+ 4. ... I have thought about consequences of a possible comment.
+ 5. ... I have considered whether I should write a comment or not.
+
+### Distributions
+
+```{r fig.height = 3}
+plot_dist(
+  item = "PD01"
+)
+
+get_desc(
+  item = "PD01",
+  name = "pridel"
+)
+```
+
+### CFA
+
+```{r}
+name <- "pridel"
+model <- "
+  pri_delib =~ PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05
+"
+fit <- lavaan::sem(
+  model = model, 
+  data = d, 
+  estimator = "MLR", 
+  missing = "ML"
+  )
+```
+
+Model fit:
+
+```{r}
+facval <- 
+  fit_tab(
+    fit, 
+    # reliability = TRUE, 
+    # scaled = TRUE
+    ) %T>%
+  print()
+
+assign(
+  paste0(
+    name, 
+    "_facval"), 
+  facval
+  )
+```
+
+Factor loadings:
+
+```{r}
+inspect(
+  fit,
+  what = "std"
+  ) %$%
+  lambda
+```
+
+Model fit was very good (which is nice, given it's a newly designed scale).
+
+## Trust general
+### Items
+
+ 1. The other users seemed trustworthy.  
+ 2. The operators of the participation platform seemed trustworthy.  
+ 3. The website seemed trustworthy.  
+
+### Distributions
+
+```{r fig.height = 3}
+plot_dist(
+  item = "TR02"
+)
+get_desc(
+  item = "TR02",
+  name = "trustgen"
+)
+```
+
+### CFA
+
+Note that I constrained two loadings to be able to report model fit. I used operators and website, as these are theoretically closer.
+
+```{r}
+name <- "trustgen"
+model <- "
+trust =~ TR02_01 + a*TR02_02 + a*TR02_03
+"
+fit <- 
+  lavaan::sem(
+    model = model, 
+    data = d, 
+    estimator = "MLR", 
+    missing = "ML"
+    )
+```
+
+Model fit:
+
+```{r}
+facval <- 
+  fit_tab(
+    fit, 
+    # reliability = TRUE, 
+    # scaled = TRUE
+    ) %T>%
+  print()
+
+assign(
+  paste0(
+    name, 
+    "_facval"
+    ), 
+  facval
+  )
+```
+
+Factor loadings:
+
+```{r}
+inspect(
+  fit,
+  what = "std"
+  ) %$%
+  lambda
+```
+
+Note that I constrained Items 5 and Item 9 to be equal. Explanation: First, they are theoretically related. Second, not constraining would yield to just-identified model, for which model fit cannot be interpreted meaningfully.
+
+## Trust specific
+### Items
+
+_Community_
+
+ 1.	The comments of other users were useful.
+ 2.	The other users had good intentions.
+ 3.	I could rely on the statements of other users.
+
+_Provider_
+
+ 4.	The operators of the participation platform have done a good job.
+ 5.	It was important to the operators that the users are satisfied with the participation platform.
+ 6.	I could rely on the statements of the operators of the participation platform.
+
+_Information System_
+
+ 7.	The website worked well.
+ 8.	I had the impression that my data was necessary for the use of the website.
+ 9.	I found the website useful.
+
+### Distributions
+
+```{r}
+plot_dist(
+  item = "TR01",
+  n_rows = 2
+)
+get_desc(
+  item = "TR01",
+  name = "trustspec"
+)
+```
+
+### CFA
+
+```{r}
+name <- "trustspec"
+model <- "
+  trust_community =~ TR01_01 + TR01_02 + TR01_03
+  trust_provider =~ TR01_04 + TR01_05 + TR01_06
+  trust_system =~ TR01_07 + TR01_08 + TR01_09
+  
+  trust_spec =~ trust_community + trust_provider + trust_system
+"
+fit <- lavaan::sem(
+  model = model, 
+  data = d, 
+  estimator = "MLR", 
+  missing = "ML"
+  )
+```
+
+Model fit:
+
+```{r warning=T}
+facval <- 
+  fit_tab(
+    fit, 
+    # reliability = TRUE, 
+    # scaled = TRUE
+    ) %T>% 
+  print()
+
+assign(
+  paste0(
+    name, 
+    "_facval"
+    ), 
+  facval
+  )
+```
+
+Factor loadings:
+
+```{r}
+inspect(
+  fit,
+  what = "std") %$%
+  lambda
+```
+
+Model fit was good (there's a Highwood case on level 1, which is not too problematic in this case.)
+
+## Self-efficacy
+### Items
+
+ 1. In principle, I felt able to write a comment.
+ 2. I felt technically competent enough to write a comment.
+ 3. In terms of the topic, I felt competent enough to express my opinion.
+ 4. I found it easy to express my opinion regarding the topic.
+ 5. I found it complicated to write a comment. (reversed)
+ 6. I was overburdened to write a comment. (reversed)
+
+### Distributions
+
+```{r fig.height = 3}
+plot_dist(
+  item = "SE01"
+)
+get_desc(
+  item = "SE01",
+  name = "selfeff"
+)
+```
+
+### CFA
+
+```{r}
+name <- "self-eff"
+model <- "
+  self_eff =~ SE01_01 + SE01_02 + SE01_03 + SE01_04 + SE01_05 + SE01_06
+"
+fit <- 
+  lavaan::sem(
+    model = model, 
+    data = d, 
+    estimator = "MLR", 
+    missing = "ML"
+    )
+```
+
+Model fit:
+
+```{r}
+facval <- 
+  fit_tab(
+    fit, 
+    # reliability = TRUE, 
+    # scaled = TRUE
+    ) %T>%
+  print()
+
+assign(
+  paste0(
+    name, 
+    "_facval"
+    ), 
+  facval
+  )
+```
+
+Factor loadings:
+
+```{r}
+inspect(
+  fit,
+  what = "std") %$%
+  lambda
+```
+
+Shows significant misfit. I will delete inverted items, while allowing covariations between Items 1 and 2 (tech-oriented) and Items 3 and 4 (topic-oriented). 
+
+### CFA 2
+
+```{r}
+name <- "selfeff"
+model <- "
+  self_eff_pos =~ SE01_01 + SE01_02 + SE01_03 + SE01_04
+  SE01_01 ~~ x*SE01_02
+  SE01_03 ~~ x*SE01_04
+"
+fit <- 
+  lavaan::sem(
+    model = model, 
+    data = d, 
+    estimator = "MLR", 
+    missing = "ML"
+    )
+```
+
+Model fit:
+
+```{r}
+facval <- 
+  fit_tab(
+    fit, 
+    # reliability = TRUE, 
+    # scaled = TRUE
+    ) %T>% 
+  print()
+
+assign(
+  paste0(
+    name, 
+    "_facval"
+    ), 
+  facval
+  )
+```
+
+Factor loadings:
+
+```{r}
+inspect(
+  fit, 
+  what = "std") %$%
+  lambda
+```
+
+Adapted version shows better and adequate fit.
+
+## Communication
+### Density plot
+
+```{r fig.height = 3}
+ggplot(
+  gather(
+    select(
+      d, 
+      words
+      )
+    ), 
+  mapping = aes(
+    x = value
+    )
+  ) +
+  geom_density() +
+  facet_wrap(
+    ~key, 
+    nrow = 1
+    ) + 
+  theme_bw()
+```
+
+We can see that Communication is severely skewed. Let's calculate how many participants actually commented.
+
+```{r}
+no_words_perc <- 
+  d %>% 
+  select(words) %>% 
+  table() %>% 
+  prop.table() %>% 
+  .[1] %>% 
+  unlist()
+
+words_m <- 
+  mean(
+    d$words, 
+    na.rm = TRUE
+    )
+```
+
+`r no_words_perc` percent wrote a comment. The average number of communicated words was `r words_m`.
+
+Will hence be log-scaled for SEMs.
+
+## Communication Logged
+
+```{r}
+ggplot(
+  gather(
+    select(
+      d, 
+      words_log
+      )
+    ), 
+  mapping = aes(
+    x = value
+    )
+  ) +
+  geom_density() +
+  facet_wrap(
+    ~key, 
+    nrow = 1
+    ) + 
+  theme_bw()
+```
+
+## Baseline model
+
+In what follows, please find the results of all variables combined in one model. This model will be used to extract factor scores.
+
+```{r cache=F}
+model_baseline <- "
+  pri_con =~ PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07
+  grats_gen =~ GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05
+  grats_inf =~ GR01_01 + GR01_02 + GR01_03 
+  grats_rel =~ GR01_04 + GR01_05 + GR01_06 
+  grats_par =~ GR01_07 + GR01_08 + GR01_09
+  grats_ide =~ GR01_10 + GR01_11 + GR01_12 
+  grats_ext =~ GR01_13 + GR01_14 + GR01_15
+  grats_spec =~ grats_inf + grats_rel + grats_par + grats_ide + grats_ext
+  pri_delib =~ PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05
+  trust_gen =~ TR02_01 + TR02_02 + TR02_03
+  trust_community =~ TR01_01 + TR01_02 + TR01_03
+  trust_provider =~ TR01_04 + TR01_05 + TR01_06
+  trust_system =~ TR01_07 + TR01_08 + TR01_09
+  trust_spec =~ trust_community + trust_provider + trust_system
+  self_eff =~ SE01_01 + SE01_02 + SE01_03 + SE01_04
+    SE01_01 ~~ x*SE01_02
+    SE01_03 ~~ x*SE01_04
+  Words_log =~ words_log
+  
+  Words_log ~~ a1*pri_con + b1*grats_gen + c1*pri_delib + d1*self_eff + e1*trust_spec + f1*trust_gen + g1*grats_spec
+"
+
+fit_baseline <- 
+  lavaan::sem(
+    model_baseline, 
+    data = d, 
+    missing = "ML"
+    )
+
+summary(
+  fit_baseline, 
+  standardized = TRUE, 
+  fit.measures = TRUE
+  )
+```
+
+# Descriptive analyses
+
+I first report the factor validity of all variables combined.
+
+```{r cache=F}
+# extract model factor scores / predicted values for items & calc means
+d_fs <- 
+  lavPredict(
+    fit_baseline, 
+    type = "ov"
+    ) %>% 
+  as.data.frame() %>% 
+  mutate(
+    version = d$version, 
+    grats_gen_fs = rowMeans(select(., starts_with("GR02"))),
+    grats_spec_fs = rowMeans(select(., starts_with("GR01"))), 
+    pri_con_fs = rowMeans(select(., starts_with("PC01"))),
+    trust_gen_fs = rowMeans(select(., starts_with("TR02"))),
+    trust_spec_fs = rowMeans(select(., starts_with("TR01"))),
+    pri_del_fs = rowMeans(select(., starts_with("PD01"))),
+    self_eff_fs = rowMeans(select(., starts_with("SE01")))) %>%
+  select(
+    version, 
+    pri_con_fs, 
+    grats_gen_fs, 
+    grats_spec_fs, 
+    pri_del_fs, 
+    self_eff_fs, 
+    trust_gen_fs, 
+    trust_spec_fs, 
+    words_log
+    )
+
+# combine d with d factor scores
+d %<>% 
+  cbind(
+    select(
+      d_fs, 
+      -version, 
+      -words_log
+      )
+    )
+
+# rename for plotting
+d_fs %<>% 
+  set_names(
+    c(
+      "version", 
+      var_names_breaks
+      )
+    )
+
+# means of model predicted values
+des <- 
+  rbind(
+    des_pricon,
+    des_gratsgen,
+    des_gratsspec,
+    des_pridel,
+    des_trustgen,
+    des_trustspec,
+    des_selfeff
+    )
+
+facval_tab <- 
+  rbind(
+    pricon_facval,
+    gratsgen_facval,
+    gratsspec_facval,
+    pridel_facval,
+    selfeff_facval,
+    trustgen_facval,
+    trustspec_facval
+    ) %$%
+  cbind(
+    des[-c(8), ],
+    .
+    ) %>%
+  set_rownames(
+    var_names[-c(7)]
+    )
+
+facval_tab %>% 
+  kable() %>% 
+  kableExtra::kable_styling("striped") %>% 
+  kableExtra::scroll_box(width = "100%")
+```
+
+In what follows, I report zero-order correlations, distributions, and scatterplots of the variables' factor scores.
+
+```{r fig.height=9, fig.width=9}
+corr_plot <- 
+  ggpairs(
+    select(d_fs, -version),
+    upper = list(
+      continuous = cor_plot
+    ),
+    lower = list(
+      continuous = wrap(
+        td::scat_plot, 
+        coords = c(1, 7, 0, 7)
+      )
+    )
+  ) + 
+  theme_bw()
+
+print(corr_plot)
+
+ggsave(
+  "figures/results/cor_plot.png",
+  plot = corr_plot,
+  bg = "white",
+  width = 8,
+  height = 8
+)
+```
+
+# Power analyses
+
+In what follows, I report power analyses for our study. Please note that I conduct a rudimentary power-analysis, assuming bivariate correlations. (At the time I was not yet aware of the existence of power analyses for multivariate structural equation models.)
+
+```{r include=F}
+# define pwr-criteria
+z_crit <- 1.96
+alpha <- .05
+power_desired <- .95
+r_sesoi <- .10
+```
+
+I first estimate the sample size necessary to find small effects in 95% of all cases.
+
+```{r}
+# estimate pwr-samplesize
+pwr.r.test(
+  r = r_sesoi, 
+  sig.level = alpha, 
+  power = power_desired, 
+  alternative = "greater"
+  ) %T>%
+  print %$% 
+  n %>% 
+  round(0) ->
+  n_desired
+```
+
+I then compute the power we have achieved with our final sample size to detect small effects.
+
+```{r}
+# compute pwr-achieved
+pwr.r.test(
+  n = n_final, 
+  r = r_sesoi, 
+  sig.level = alpha, 
+  alternative = "greater"
+  ) %T>%
+  print %$% 
+  power %>% 
+  round(2) ->
+  power_achieved
+```
+
+I finally compute what effect size we are likely to find in 95% of all cases given our final sample size.
+
+```{r}
+# estimate pwr-sensitivity
+pwr.r.test(
+  n = n_final, 
+  power = power_desired, 
+  sig.level = alpha, 
+  alternative = "greater"
+  ) %T>%
+  print %$% 
+  r %>% 
+  round(2) ->
+  r_sensitive
+```
+
+# Assumptions
+## Multivariate normal distribution
+
+```{r}
+# create subset of data with all items that were used
+items_used <- 
+  c(
+    "words", 
+    "GR02_01", "GR02_02", "GR02_03", "GR02_04", "GR02_05", 
+    "PC01_01", "PC01_02", "PC01_04", "PC01_05", "PC01_06", "PC01_07", 
+    "TR01_01", "TR01_02", "TR01_03", "TR01_04", "TR01_05", "TR01_06", "TR01_07", "TR01_08", "TR01_09",
+    "TR02_01", "TR02_02", "TR02_03", 
+    "PD01_01", "PD01_02", "PD01_03", "PD01_04", "PD01_05", 
+    "SE01_01", "SE01_02", "SE01_03", "SE01_04", 
+    "male", "age", "edu"
+    )
+d_sub <- d[, items_used]
+
+# test multivariate normal distribution
+mvn_result <- mvn(d_sub, mvn_test = "mardia")
+mvn_result$multivariateNormality
+```
+
+Shows that multivariate normal distribution is violated. I hence use maximum likelihood estimation with robust standard errors and a Satorra-Bentler scaled test statistic.
+
+## Influential cases
+
+In what follows I test for influential cases in the baseline model, to detect potentially corrupt data (e.g., people who provided response patterns). Specifically, I compute Cook's distance.
+
+[Note: The following lines stopped working after some time, potentially due to changes in package. I can hence not recreate them here, but refer to results obtained before.]
+
+```{r eval=F}
+cooks_dis <- 
+  gCD(
+    d, 
+    model_baseline
+    ) %T>% 
+  plot()
+```
+
+The following ten cases have a particularly strong influence on the baseline model.
+
+```{r eval=F}
+infl_cases <- 
+  invisible(
+    rownames(
+      print(
+        cooks_dis
+        )
+      )
+    )
+```
+
+Let's inspect these cases.
+
+```{r eval=F}
+infl_cases_tokens <- 
+  d[infl_cases, "case_token"] %>% 
+  as_vector()
+
+d %>% 
+  filter(
+    case_token %in% infl_cases_tokens
+    ) %>% 
+  select(
+    case_token, 
+    GR01_01:SE01_06, 
+    topics_entered:reactions, 
+    -SO01_01, 
+    TIME_SUM_t1, 
+    TIME_SUM_t2
+    ) %>% 
+  kable() %>% 
+  kable_styling("striped") %>% 
+  scroll_box(width = "100%")
+```
+
+These data do not reveal potential cases of response patterns. Indeed, answer times suggest that respondents were diligent.
+
+# Results
+## Preregistered
+### Privacy calculus
+
+```{r}
+model <- "
+  pri_con =~ PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 
+  grats_gen =~ GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05
+  pri_delib =~ PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05
+  self_eff =~ SE01_01 + SE01_02 + SE01_03 + SE01_04
+  SE01_01 ~~ x*SE01_02
+  SE01_03 ~~ x*SE01_04
+  trust_community =~ TR01_01 + TR01_02 + TR01_03
+  trust_provider =~ TR01_04 + TR01_05 + TR01_06
+  trust_system =~ TR01_07 + TR01_08 + TR01_09
+  
+  trust_spec =~ trust_community + trust_provider + trust_system
+
+words_log ~ a1*pri_con + b1*grats_gen + c1*pri_delib + d1*self_eff + e1*trust_spec
+
+# Covariates
+words_log + GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05 + PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 + TR01_01 + TR01_02 + TR01_03 + TR01_04 + TR01_05 + TR01_06 + TR01_07 + TR01_08 + TR01_09 + PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05 + SE01_01 + SE01_02 + SE01_03 + SE01_04 ~ male + age + edu
+
+# Covariances
+male ~~ age + edu
+age ~~ edu
+"
+
+fit_prereg <- 
+  lavaan::sem(
+    model, 
+    data = d, 
+    estimator = "MLR", 
+    missing = "ML"
+    )
+
+summary(
+  fit_prereg, 
+  fit = TRUE, 
+  std = TRUE
+  )
+
+rsquare_fit_prereg <- 
+  inspect(
+    fit_prereg, 
+    what = "rsquare"
+    )["words"]
+```
+
+Results show that there's only one significant predictor of Communication, being self-efficacy. The other predictors are in the direction as planned, albeit not significant. Trust, however, shows the inverse relation as effect, that is, more trust, less communication.
+
+### Effects of popularity cues
+#### Confidence intervals
+
+The easiest way to assess the effect of the experimental manipulation on the variables is by visualizing their means. If 83% confidence intervals don't overlap, the variables differ significantly across the conditions. One can quickly see that there aren't any major effects.
+
+```{r}
+# violin plot
+fig_fs_m <- 
+  ggplot(
+    gather(
+      d_fs, 
+      variable, 
+      value, 
+      -version) %>% 
+      mutate(
+        variable = factor(
+          variable, 
+          levels = var_names_breaks
+          )
+        ),
+    aes(
+      x = version, 
+      y = value, 
+      fill = version
+      )
+    ) +
+  geom_violin(
+    trim = TRUE
+    ) +
+  stat_summary(
+    fun.y = mean, 
+    geom = "point"
+    ) +
+  stat_summary(
+    fun.data = mean_se, 
+    fun.args = list(mult = 1.39), 
+    geom = "errorbar", 
+    width = .5
+    ) + 
+  facet_wrap(
+    ~ variable, 
+    nrow = 2
+    ) + 
+  theme_bw() +
+  theme(
+    axis.title.y = element_blank(),
+    axis.title.x = element_blank(),
+    plot.title = element_text(hjust = .5),
+    panel.spacing = unit(.9, "lines"),
+    text = element_text(size = 12),
+    legend.position="none",
+    legend.title = element_blank()) +
+  coord_cartesian(
+    ylim = c(0, 7)
+    ) +
+  scale_fill_brewer(
+    palette = "Greys"
+    )
+ggsave(
+  "figures/results/violin_plot.png", 
+  width = 8, 
+  height = 6
+  )
+fig_fs_m
+```
+
+#### SEM
+
+In what follows, I also report explicit statistical tests of the differences between the conditions using contrasts. 
+
+**Like & Like-Dislike vs. Control**
+
+```{r}
+model <- "
+  pri_con =~ PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07
+  grats_gen =~ GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05
+  pri_delib =~ PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05
+  self_eff =~ SE01_01 + SE01_02 + SE01_03 + SE01_04
+  SE01_01 ~~ x*SE01_02
+  SE01_03 ~~ x*SE01_04
+  trust_community =~ TR01_01 + TR01_02 + TR01_03
+  trust_provider =~ TR01_04 + TR01_05 + TR01_06
+  trust_system =~ TR01_07 + TR01_08 + TR01_09
+  trust_spec =~ trust_community + trust_provider + trust_system
+
+  pri_con + grats_gen + pri_delib + self_eff + trust_spec ~ like + likedislike
+  words ~ a*pri_con + b*grats_gen + c*pri_delib + d*self_eff + e*trust_spec + f*like + g*likedislike
+
+# Covariates
+words + GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05 + PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 + TR01_01 + TR01_02 + TR01_03 + TR01_04 + TR01_05 + TR01_06 + TR01_07 + TR01_08 + TR01_09 + PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05 + SE01_01 + SE01_02 + SE01_03 + SE01_04 ~ male + age + edu
+"
+
+fit_lik_ctrl <- 
+  lavaan::sem(
+    model = model, 
+    data = d, 
+    estimator = "MLR", 
+    missing = "ML", 
+    fixed.x = FALSE
+    )
+
+summary(
+  fit_lik_ctrl, 
+  fit = TRUE, 
+  std = TRUE
+  )
+```
+
+No significant effects of popularity cues on privacy calculus.
+
+**Like-Dislike & Control vs. Like**
+
+```{r}
+model <- "
+  pri_con =~ PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07
+  grats_gen =~ GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05
+  pri_delib =~ PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05
+  self_eff =~ SE01_01 + SE01_02 + SE01_03 + SE01_04
+  SE01_01 ~~ x*SE01_02
+  SE01_03 ~~ x*SE01_04
+  trust_community =~ TR01_01 + TR01_02 + TR01_03
+  trust_provider =~ TR01_04 + TR01_05 + TR01_06
+  trust_system =~ TR01_07 + TR01_08 + TR01_09
+  trust_spec =~ trust_community + trust_provider + trust_system
+
+  pri_con + grats_gen + pri_delib + self_eff + trust_spec + words ~ likedislike + control
+
+# Covariates
+words + GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05 + PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 + TR01_01 + TR01_02 + TR01_03 + TR01_04 + TR01_05 + TR01_06 + TR01_07 + TR01_08 + TR01_09 + PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05 + SE01_01 + SE01_02 + SE01_03 + SE01_04 ~ male + age + edu
+"
+fit_lik_ctrl <- 
+  lavaan::sem(
+    model = model, 
+    data = d, 
+    estimator = "MLR", 
+    missing = "ML")
+
+summary(
+  fit_lik_ctrl, 
+  fit = TRUE, 
+  std = TRUE
+  )
+```
+
+No significant effects of popularity cues on privacy calculus.
+
+## Exploratory analyses
+
+The bivariate relations showed several strong correlations. 
+People who trusted the providers more also experienced more gratifications (_r_ = .79).
+In multiple regression, we analze the potential effect of one variable on the outcome while holding all others constant. 
+In this case, I tested whether trust increases communication while holding constant gratifications, privacy concerns, privacy deliberations, and self-efficacy. 
+Given the close theoretical and empirical interrelations between the predictors, this creates an unlikely and artifical scenario. 
+If people say loose trust in a provider, they will likely experience more concerns and less benefits. 
+But it is not even necessary to control for these mediating factors. 
+When trying to analyze the causal effect, it is necessary to control for counfounding variables, but importantly not for mediators [@rohrerThinkingClearlyCorrelations2018].
+Confunding variables impact both the independent variable and the outcome. 
+Sociodemographic variables are often ideal candidates for confounders.
+For example, men are generally less concerned about their privacy and post more online.
+Hence, controlling for gender hence helps isolate the actual causal effect. 
+As a result, I reran the analyses controlling for confounding variables that are not mediators.
+
+### Experimental Factors
+#### Words
+
+I first compare likes and likes plus dislikes to the control condition.
+
+```{r words}
+run_hurdles(
+  object = d,
+  name = "wrds_ctrl",
+  outcome = "words", 
+  predictor = "version",
+  y_lab = "Words",
+  x_lab = "Experimental conditions"
+  )
+```
+
+Let's find out by how much people in like and like plus dislike condition wrote fewer words.
+
+```{r}
+words_m_ctrl <- 
+  fig_wrds_ctrl$data %>% 
+  filter(effect1__ == "Control") %>% 
+  select(estimate__)
+
+words_m_lk <- 
+  fig_wrds_ctrl$data %>% 
+  filter(effect1__ == "Like") %>% 
+  select(estimate__)
+
+words_m_lkdslk <- 
+  fig_wrds_ctrl$data %>% 
+  filter(effect1__ == "Like & dislike") %>% 
+  select(estimate__)
+
+effect_lk_wrds <- words_m_ctrl - words_m_lk
+effect_lkdslk_wrds <- words_m_ctrl - words_m_lkdslk
+
+effect_lk_prcnt <- 
+  (effect_lk_wrds / words_m_ctrl) * 100 %>% 
+  round()
+effect_lkdlk_prcnt <- 
+  (effect_lkdslk_wrds / words_m_ctrl) * 100 %>% 
+  round()
+```
+
+Compared to the control condition, participants wrote `r effect_lkdlk_prcnt` percent fewer words on the platform with likes and dislikes.
+
+I then compare likes and likes plus dislikes to the control condition.
+
+```{r words-lkdslk}
+run_hurdles(
+  object = d, 
+  name = "wrds_lkdslk",
+  outcome = "words", 
+  predictor = "version_lkdslk",
+  y_lab = "Words",
+  x_lab = "Experimental conditions"
+  )
+```
+
+#### Privacy Concerns
+
+I first compare likes and likes plus dislikes to the control condition.
+
+```{r pricon-ctrl}
+run_hurdles(
+  object = d,
+  name = "pricon_ctrl",
+  outcome = "pri_con_fs", 
+  predictor = "version",
+  y_lab = "Privacy concerns",
+  x_lab = "Experimental conditions"
+  )
+```
+
+I then compare the likes and control conditions to the likes plus dislikes condition.
+
+```{r}
+run_hurdles(
+  object = d, 
+  name = "pricon_lkdslk",
+  outcome = "pri_con_fs", 
+  predictor = "version_lkdslk",
+  y_lab = "Privacy concerns",
+  x_lab = "Experimental conditions"
+  )
+```
+
+#### Gratifications General
+
+I first compare likes and likes plus dislikes to the control condition.
+
+```{r}
+run_hurdles(
+  object = d,
+  name = "grats_ctrl",
+  outcome = "grats_gen_fs", 
+  predictor = "version",
+  y_lab = "Gratifications general",
+  x_lab = "Experimental conditions"
+  )
+```
+
+I then compare the likes and control conditions to the likes plus dislikes condition.
+
+```{r}
+run_hurdles(
+  object = d, 
+  name = "grats_lkdslk",
+  outcome = "grats_gen_fs", 
+  predictor = "version_lkdslk",
+  y_lab = "Gratifications",
+  x_lab = "Experimental conditions"
+  )
+```
+
+#### Privacy Deliberation
+
+I first compare likes and likes plus dislikes to the control condition.
+
+```{r}
+run_hurdles(
+  object = d,
+  name = "pridel_ctrl",
+  outcome = "pri_del_fs", 
+  predictor = "version",
+  y_lab = "Privacy deliberation",
+  x_lab = "Experimental conditions"
+  )
+```
+
+I then compare the likes and control conditions to the likes plus dislikes condition.
+
+```{r}
+run_hurdles(
+  object = d, 
+  name = "pridel_lkdslk",
+  outcome = "pri_del_fs", 
+  predictor = "version_lkdslk",
+  y_lab = "Privacy deliberation",
+  x_lab = "Experimental conditions"
+  )
+```
+
+#### Trust general
+
+I first compare likes and likes plus dislikes to the control condition.
+
+```{r}
+run_hurdles(
+  object = d,
+  name = "trust_ctrl",
+  outcome = "trust_gen_fs", 
+  predictor = "version",
+  y_lab = "Trust general",
+  x_lab = "Experimental conditions"
+  )
+```
+
+I then compare the likes and control conditions to the likes plus dislikes condition.
+
+```{r}
+run_hurdles(
+  object = d, 
+  name = "trust_lkdslk",
+  outcome = "trust_gen_fs", 
+  predictor = "version_lkdslk",
+  y_lab = "Trust general",
+  x_lab = "Experimental conditions"
+  )
+```
+
+#### Self-Efficacy
+
+I first compare likes and likes plus dislikes to the control condition.
+
+```{r}
+run_hurdles(
+  object = d,
+  name = "selfeff_ctrl",
+  outcome = "self_eff_fs", 
+  predictor = "version",
+  y_lab = "Self-efficacy",
+  x_lab = "Experimental conditions"
+  )
+```
+
+I then compare the likes and control conditions to the likes plus dislikes condition.
+
+```{r}
+run_hurdles(
+  object = d, 
+  name = "selfeff_lkdslk",
+  outcome = "self_eff_fs", 
+  predictor = "version_lkdslk",
+  y_lab = "Self-efficacy",
+  x_lab = "Experimental conditions"
+  )
+```
+
+### Words
+#### Privacy Concerns
+
+```{r}
+run_hurdles(
+  object = d, 
+  name = "wrds_pricon",
+  outcome = "words", 
+  predictor = "pri_con_fs",
+  y_lab = "Words",
+  x_lab = "Privacy concerns"
+  )
+```
+
+Let's explore how number of communicated words differ for people very much concerned versus not concerned at all.
+
+```{r}
+# let's extract effects for 1
+wrds_pricon_1 <- 
+  fig_wrds_pricon$data %>% 
+  filter(pri_con_fs == min(pri_con_fs)) %>% 
+  pull(estimate__) %>% 
+  round(0)
+
+# let's extract effects for 7
+wrds_pricon_7 <- 
+  fig_wrds_pricon$data %>% 
+  filter(pri_con_fs == max(pri_con_fs)) %>% 
+  pull(estimate__) %>% 
+  round(0)
+```
+
+People who were not concerned at all communicated on average `r wrds_pricon_1 %>% round(0) %>% abs()` words, whereas people strongly concerned communicated on average `r wrds_pricon_7 %>% round(0)` words.
+
+#### Gratifications General
+
+```{r}
+run_hurdles(
+  object = d, 
+  name = "wrds_grats",
+  outcome = "words", 
+  predictor = "grats_gen_fs",
+  y_lab = "Words",
+  x_lab = "Gratifications general"
+  )
+```
+
+#### Privacy Deliberation
+
+```{r}
+run_hurdles(
+  object = d, 
+  name = "wrds_pridel",
+  outcome = "words", 
+  predictor = "pri_del_fs",
+  y_lab = "Words",
+  x_lab = "Privacy deliberation"
+  )
+```
+
+#### Trust General
+
+```{r}
+run_hurdles(
+  object = d, 
+  name = "wrds_trust",
+  outcome = "words", 
+  predictor = "trust_gen_fs",
+  y_lab = "Words",
+  x_lab = "Trust general"
+  )
+```
+
+#### Self-Efficacy
+
+```{r}
+run_hurdles(
+  object = d, 
+  name = "wrds_selfeff",
+  outcome = "words", 
+  predictor = "self_eff_fs",
+  y_lab = "Words",
+  x_lab = "Self-efficacy"
+  )
+```
+
+The effects is markedly exponential. Let's inspect the changes across values in self-efficacy.
+
+```{r}
+effects_wrds_selfeff <- 
+  slopes(
+    fit_wrds_selfeff, 
+    newdata = datagrid(
+      self_eff_fs = c(1, 6, 7)
+      ), 
+   grid_type = "counterfactual"
+    ) %>%
+  filter(
+    term == "self_eff_fs"
+    ) %T>%
+  print()
+
+# let's extract effects for 1
+effects_wrds_selfeff_12 <- 
+  effects_wrds_selfeff %>% 
+  filter(
+    self_eff_fs == 1 &
+      term == "self_eff_fs") %>% 
+  select(estimate)
+
+# let's extract effects for 7
+effects_wrds_selfeff_67 <- 
+  effects_wrds_selfeff %>% 
+  filter(
+    self_eff_fs == 6 &
+      term == "self_eff_fs") %>% 
+  select(estimate)
+
+```
+
+Whereas a change in self-efficacy from 1 to 2 led to an increase of `r effects_wrds_selfeff_12 %>% round(0)` words, a change from 6 to 7 led to an increase of `r effects_wrds_selfeff_67 %>% round(0)` words.
+
+Let's explore  how number of communicated words differ for people very much self-efficacious versus not self-efficacious at all.
+
+```{r}
+# let's extract effects for 1
+wrds_selfeff_1 <- 
+  fig_wrds_selfeff$data %>% 
+  filter(self_eff_fs == min(self_eff_fs)) %>% 
+  pull(estimate__) %>% 
+  round(0)
+
+# let's extract effects for 7
+wrds_selfeff_7 <- 
+  fig_wrds_selfeff$data %>% 
+  filter(self_eff_fs == max(self_eff_fs)) %>% 
+  pull(estimate__) %>% 
+  round(0)
+```
+
+People who reported no self-efficacy at all communicated on average `r wrds_selfeff_1 %>% round(0) %>% abs()` words, whereas people with very high self-efficacy communicated on average `r wrds_selfeff_7 %>% round(0)` words.
+
+## Visualization
+
+```{r}
+fig_results <- 
+  plot_grid(
+    fig_wrds_pricon, 
+    fig_wrds_grats, 
+    fig_wrds_pridel, 
+    fig_wrds_trust, 
+    fig_wrds_selfeff,
+    fig_wrds_ctrl
+    ) %T>% 
+  print()
+
+# Save visualizations
+ggsave("figures/results/effects.pdf")
+ggsave("figures/results/effects.png")
+```
+
+## Table
+
+Make table of slopes
+
+```{r}
+tab_slopes <- 
+  rbind(
+    slopes_wrds_pricon,
+    slopes_wrds_grats,
+    slopes_wrds_pridel,
+    slopes_wrds_trust,
+    slopes_wrds_selfeff,
+    slopes_wrds_ctrl,
+    slopes_wrds_lkdslk,
+    slopes_pricon_ctrl,
+    slopes_pricon_lkdslk,
+    slopes_grats_ctrl,
+    slopes_grats_lkdslk,
+    slopes_pridel_ctrl,
+    slopes_pridel_lkdslk,
+    slopes_trust_ctrl,
+    slopes_trust_lkdslk,
+    slopes_selfeff_ctrl,
+    slopes_selfeff_lkdslk
+    ) %>% 
+  as.data.frame() %>% 
+  mutate(
+    term = ifelse(
+      .$contrast == "Like - Control", 
+      "Like - Control",
+      ifelse(
+        .$contrast == "Like & dislike - Control", 
+        "Like & dislike - Control",
+        ifelse(
+          .$contrast == "Like - Like & dislike", 
+          "Like - Like & dislike", 
+          .$term
+          )
+        )
+      ),
+    Predictor = recode(
+      term, 
+      "Like - Control" = "Like vs. control",
+      "Like & dislike - Control" = "Like & dislike vs. control",
+      "Like - Like & dislike" = "Like vs. like & dislike",
+      "pri_con_fs" = "Privacy concerns",
+      "pri_del_fs" = "Privacy deliberation",
+      "grats_gen_fs" = "Expected gratifications",
+      "trust_gen_fs" = "Trust",
+      "self_eff_fs" = "Self-efficacy"
+    ),
+    Outcome = recode(
+      Outcome,
+      "pri_con_fs" = "Privacy concerns",
+      "pri_del_fs" = "Privacy deliberation",
+      "grats_gen_fs" = "Expected gratifications",
+      "trust_gen_fs" = "Trust",
+      "self_eff_fs" = "Self-efficacy"
+    )
+  ) %>% 
+  filter(
+    Predictor %in% c(
+      "Like vs. control",
+      "Like & dislike vs. control",
+      "Like vs. like & dislike",
+      "Privacy concerns",
+      "Privacy deliberation",
+      "Expected gratifications",
+      "Trust",
+      "Self-efficacy")
+  ) %>% 
+  mutate(
+    Predictor = factor(Predictor, levels = c(
+      "Self-efficacy",
+      "Trust",
+      "Privacy deliberation",
+      "Expected gratifications",
+      "Privacy concerns",
+      "Like vs. like & dislike",
+      "Like & dislike vs. control",
+      "Like vs. control"
+      )
+    ),
+    Estimate = 
+      ifelse(
+        Outcome == "words",
+        round(estimate),
+        estimate
+      ),
+    LL = 
+      ifelse(
+        Outcome == "words",
+        round(conf.low),
+        conf.low
+      ),
+    UL = 
+      ifelse(
+        Outcome == "words",
+        round(conf.high),
+        conf.high
+      ),
+  ) %>% 
+  select(
+    Outcome,
+    Predictor, 
+    Estimate,
+    LL, 
+    UL
+    ) 
+
+tab_slopes %>% 
+  kable() %>% 
+  kable_styling("striped") %>% 
+  scroll_box(width = "100%")
+```
+
+```{r SaveData, include=F, cache=F}
+write.csv(
+  d, 
+  file = "data/data.csv", 
+  row.names = FALSE
+  )
+
+save.image(
+  file = "data/workspace_full.RData"
+)
+
+save(
+  d_raw, d_all, d_fs, d
+  , fit_baseline, fit_prereg
+  , des_pridel
+  , facval_tab
+  , n_comments, n_desired, n_posts, n_speeding, n_time, n_words
+  , n_users, n_final
+  , resp_pattern, n_resp_pattern
+  , n_t1, age_t1_m, male_t1_m, college_t1_m
+  , n_t2, age_t2_m, male_t2_m, college_t2_m
+  , n_matched, n_final, age_final_m, male_final_m, college_final_m, words_m
+  , r_sesoi, r_sensitive, power_achieved
+  , no_words_perc
+  , effects_wrds_selfeff_12, effects_wrds_selfeff_67, effect_lkdlk_prcnt
+  , wrds_pricon_7, wrds_pricon_1, wrds_selfeff_1, wrds_selfeff_7
+  , tab_slopes
+  , file = "data/workspace.RData"
+)
+```

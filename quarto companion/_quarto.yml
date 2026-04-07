@@ -1,0 +1,30 @@
+project:
+  type: book  
+  output-dir: public
+ 
+
+book:
+  title: "Companion"
+  chapters:
+    - index.rmd
+    - 04_manuscript.rmd
+    - 02_analyses.rmd
+    - 01_items.rmd
+    - 00_website.rmd
+    - 03_preregistration_changes.rmd
+    - 05_analyses_additional.rmd
+
+format:
+  html:
+    toc: true
+    number-sections: true
+    title-block-banner: true
+    title-block-style: manuscript
+    title-block-banner-color: white
+    grid:
+      margin-width: 300px
+      body-width: 800px
+      gutter-width: 100px
+
+lang: de-CH
+author: "Media Psych & Methods"

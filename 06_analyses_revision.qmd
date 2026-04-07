@@ -1,0 +1,1586 @@
+---
+title: | 
+  New Models
+author: 
+  name: 
+
+lang: en
+date: today
+date-format: "D MMMM YYYY"
+editor: source
+execute:
+  echo: false
+  warning: false
+  message: false
+  include: false
+
+toc: true
+toc-depth: 3
+number-sections: false
+format:
+  pdf:
+    documentclass: article
+    latex-engine: xelatex
+    colorlinks: false
+    mainfont: "CMU Serif"
+    fontsize: 11pt
+    papersize: a4
+    geometry: 
+      - top=3cm
+      - bottom=3cm
+      - left=2.5cm
+      - right=2.5cm
+
+header-includes:
+    - \usepackage{pdflscape}
+    - \newcommand{\blandscape}{\begin{landscape}}
+    - \newcommand{\elandscape}{\end{landscape}}
+
+---
+```{r}
+#| label: load and install pkgs
+packages <- c("tidyverse", "texreg", "marginaleffects", "ggpubr", "MASS", "DescTools", "conflicted")
+
+load_p <- function(){
+  for (p in packages) {
+    if (!requireNamespace(p, quietly = TRUE)) {
+      install.packages(p)
+    }
+    library(p, character.only = TRUE)
+  }
+}
+
+load_p()
+
+## conflicts
+conflict_scout()
+conflicts_prefer(dplyr::select)
+conflicts_prefer(dplyr::filter)
+```
+
+```{r}
+#| label: reading data
+data <- readr::read_csv("data/data.csv")
+```
+
+```{r}
+#| label: self-eff index
+data <- data |> 
+    rowwise() |> 
+    mutate(
+      self_eff = mean(c_across(SE01_01:SE01_04), na.rm = TRUE),
+      pri_con = mean(c_across(c(PC01_01, PC01_02, PC01_04:PC01_07)), na.rm = TRUE),
+      grats_gen = mean(c_across(GR02_01:GR02_05), na.rm = TRUE),
+      pri_delib = mean(c_across(PD01_01:PD01_05), na.rm = TRUE),
+      trust_community = mean(c_across(TR01_01:TR01_03), na.rm = TRUE),
+      trust_provider = mean(c_across(TR01_04:TR01_06), na.rm = TRUE),
+      trust_system = mean(c_across(TR01_07:TR01_09), na.rm = TRUE),
+      trust_spec = mean(c_across(trust_community:trust_system), na.rm = TRUE)
+      ) |> 
+    ungroup()
+
+
+data <- data |> 
+  mutate(communicated = if_else(words > 0, 1, 0))
+```
+
+\clearpage
+# Engagement in Communication (Logistic Regression Models)
+
+```{r}
+#| label: lr models communicated
+
+commented_lr_1 <- glm(communicated ~ 
+    self_eff + version,
+    data = data,
+    family = binomial(link = "logit")
+    )
+
+commented_lr_2 <- glm(communicated ~ 
+    pri_con + version,
+    data = data,
+    family = binomial(link = "logit")
+    )
+
+commented_lr_3 <- glm(communicated ~ 
+    grats_gen + version,
+    data = data,
+    family = binomial(link = "logit")
+    )
+
+commented_lr_4 <- glm(communicated ~ 
+    pri_delib + version,
+    data = data,
+    family = binomial(link = "logit")
+    )
+
+commented_lr_5 <- glm(communicated ~ 
+    trust_spec + version,
+    data = data,
+    family = binomial(link = "logit")
+    )
+```
+
+
+\blandscape
+```{r}
+#| label: tbl-comm-lr
+#| tbl-cap: "Effect of Privacy Calculus Variables on Decision to Communicate"
+#| tbl-cap-location: bottom
+#| results: asis
+#| output: true
+#| include: true
+
+texreg(
+  list(commented_lr_1,
+       commented_lr_2,
+       commented_lr_3,
+       commented_lr_4,
+       commented_lr_5
+       ),
+  custom.model.names = c(
+    "LR Model 1",
+    "LR Model 2",
+    "LR Model 3",
+    "LR Model 4",
+    "LR Model 5"
+    ),
+  custom.header = list(
+  "DV: Communicated" = 1:5
+  ),
+  custom.coef.map = list(
+    "self_eff" = "Self-Efficacy",
+    "pri_con" = "Privacy Concerns",
+    "grats_gen" = "Gratifications",
+    "pri_delib" = "Privacy Deliberations",
+    "trust_spec" = "Trust",
+    "versionLike" = "Like Button",
+    "versionLike & dislike" = "Like Dislike Buttons",
+    #"male" = "Male",
+    # "age" = "Age",
+    # "edu_facHochschulabschluss" = "Hochschule",
+    # "edu_facAbschluss Polytechnische Oberschule 10. Klasse (vor 1965: 8. Klasse)" = "PolyOberschule",
+    # "edu_facFachhochschulreife (Abschluss einer Fachoberschule)" = "Fachoberschule",
+    # "edu_facHauptschulabschluss/Volksschulabschluss" = "Hauptschule",
+    # "edu_facRealschulabschluss (Mittlere Reife)" = "Realschule",
+    # "edu_facNoch Schüler" = "Schüler",
+    # "edu_facAnderer Schulabschluss:" = "Schule andere",
+    "(Intercept)" = "Constant"
+  ),
+  custom.gof.rows = list(
+    "Estimator" = c("Logit", "Logit", "Logit", "Logit", "Logit")
+    #"Education Controls" = c("No", "No", "No", "No", "No")
+    ),
+  digits = 2,
+  single.row = FALSE,
+  caption.above = TRUE,
+  table = FALSE
+)
+```
+\elandscape
+
+# Amount of Communication (OLS/NegBin Regression Models)
+
+\clearpage
+## Self-Efficacy
+
+```{r}
+#| label: self-eff models (dv words)
+
+words_log_ols1_se <- glm(words_log ~ 
+    self_eff + version,
+    data = data,
+    family = "gaussian"
+    )
+
+words_log_ols2_se <- glm(words_log ~ 
+    self_eff * version,
+    data = data,
+    family = "gaussian"
+    )
+
+words_log_ols3_se <- glm(words_log ~ 
+    self_eff * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data,
+    family = "gaussian"
+    )
+
+words_nb1_se <- glm.nb(words ~ 
+    self_eff + version,
+    data = data
+    )
+
+words_nb2_se <- glm.nb(words ~ 
+    self_eff * version,
+    data = data
+    )
+
+words_nb3_se <- glm.nb(words ~ 
+    self_eff * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data
+    )
+```
+
+
+\blandscape
+```{r}
+#| label: tbl-selfeffmodels
+#| tbl-cap: "Effect of Self-Efficacy on Communication Conditional on Affordandces"
+#| tbl-cap-location: bottom
+#| results: asis
+#| output: true
+#| include: true
+
+texreg(
+  list(words_log_ols1_se,
+       words_log_ols2_se,
+       words_log_ols3_se,
+       words_nb1_se,
+       words_nb2_se,
+       words_nb3_se
+       ),
+  custom.model.names = c(
+    "Model 1",
+    "Model 2",
+    "Model 3",
+    "Model 4",
+    "Model 5",
+    "Model 6"
+    ),
+  custom.header = list(
+  "DV: Words Log" = 1:3, "DV: Words" = 4:6
+  ),
+  custom.coef.map = list(
+    "self_eff" = "Self-Efficacy",
+    "versionLike" = "Like Button",
+    "versionLike & dislike" = "Like Dislike Buttons",
+    "male" = "Male",
+    "age" = "Age",
+    # "edu_facHochschulabschluss" = "Hochschule",
+    # "edu_facAbschluss Polytechnische Oberschule 10. Klasse (vor 1965: 8. Klasse)" = "PolyOberschule",
+    # "edu_facFachhochschulreife (Abschluss einer Fachoberschule)" = "Fachoberschule",
+    # "edu_facHauptschulabschluss/Volksschulabschluss" = "Hauptschule",
+    # "edu_facRealschulabschluss (Mittlere Reife)" = "Realschule",
+    # "edu_facNoch Schüler" = "Schüler",
+    # "edu_facAnderer Schulabschluss:" = "Schule andere",
+    "self_eff:versionLike" = "Self-Efficacy x Like",
+    "self_eff:versionLike & dislike" = "Self-Efficacy x Like Dislike",
+    "(Intercept)" = "Constant"
+  ),
+  custom.gof.rows = list(
+    "Estimator" = c("OLS", "OLS", "OLS", "NegBin", "NegBin", "NegBin"),
+    "Education Controls" = c("No", "No", "Yes", "No", "No", "Yes")
+    ),
+  digits = 2,
+  single.row = FALSE,
+  caption.above = TRUE,
+  table = FALSE
+)
+```
+\elandscape
+
+```{r}
+#| label: models self-disclosure self_eff
+
+sd_log_ols1_se <- glm(self_dis_log ~ 
+    self_eff + version,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_log_ols2_se <- glm(self_dis_log ~ 
+    self_eff * version,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_log_ols3_se <- glm(self_dis_log ~ 
+    self_eff * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_nb1_se <- glm.nb(self_dis ~ 
+    self_eff + version,
+    data = data
+    )
+
+sd_nb2_se <- glm.nb(self_dis ~ 
+    self_eff * version,
+    data = data
+    )
+
+sd_nb3_se <- glm.nb(self_dis ~ 
+    self_eff * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data
+    )
+
+```
+
+\blandscape
+```{r}
+#| label: tbl-selfdisc-models-se
+#| tbl-cap: "Effect of Self-Efficacy on Communication (incl. Reactions) Conditional on Affordandces"
+#| tbl-cap-location: bottom
+#| results: asis
+#| output: true
+#| include: true
+
+texreg(
+  list(sd_log_ols1_se,
+       sd_log_ols2_se,
+       sd_log_ols3_se,
+       sd_nb1_se,
+       sd_nb2_se,
+       sd_nb3_se
+       ),
+  custom.model.names = c(
+    "Model 7",
+    "Model 8",
+    "Model 9",
+    "Model 10",
+    "Model 11",
+    "Model 12"
+    ),
+  custom.header = list(
+  "DV: Self-Disclosure Log" = 1:3, "DV: Self-Disclosure" = 4:6
+  ),
+  custom.coef.map = list(
+    "self_eff" = "Self-Efficacy",
+    "versionLike" = "Like Button",
+    "versionLike & dislike" = "Like Dislike Buttons",
+    "male" = "Male",
+    "age" = "Age",
+    # "edu_facHochschulabschluss" = "Hochschule",
+    # "edu_facAbschluss Polytechnische Oberschule 10. Klasse (vor 1965: 8. Klasse)" = "PolyOberschule",
+    # "edu_facFachhochschulreife (Abschluss einer Fachoberschule)" = "Fachoberschule",
+    # "edu_facHauptschulabschluss/Volksschulabschluss" = "Hauptschule",
+    # "edu_facRealschulabschluss (Mittlere Reife)" = "Realschule",
+    # "edu_facNoch Schüler" = "Schüler",
+    # "edu_facAnderer Schulabschluss:" = "Schule andere",
+    "self_eff:versionLike" = "Self-Efficacy x Like",
+    "self_eff:versionLike & dislike" = "Self-Efficacy x Like Dislike",
+    "(Intercept)" = "Constant"
+  ),
+  custom.gof.rows = list(
+    "Estimator" = c("OLS", "OLS", "OLS", "NegBin", "NegBin", "NegBin"),
+    "Education Controls" = c("No", "No", "Yes", "No", "No", "Yes")
+    ),
+  digits = 2,
+  single.row = FALSE,
+  caption.above = TRUE,
+  table = FALSE
+)
+```
+\elandscape
+
+```{r}
+#| label: fig-meplot
+#| include: true
+#| fig-cap: "Marginal Effects of Self-Efficacy on Communication"
+#| fig-cap-location: bottom
+
+me_theme <- theme_bw(base_size = 14) +
+  theme(
+    panel.grid.major = element_line(
+      linetype = "dashed",
+      color = "gray80",
+      linewidth = .2
+    ),
+    panel.grid.minor = element_blank(),
+    axis.text.x  = element_text(size = 8),
+    axis.text.y  = element_text(size = 8),
+    axis.title.x = element_text(size = 10, margin = margin(t = 15)),
+    axis.title.y = element_text(size = 10, margin = margin(r = 15)),
+    legend.title = element_text(size = 10),
+    legend.position = "bottom"
+  )
+
+# Model A: marginal effect of self-eff conditional on affordance, dv words log
+marg_A <- plot_slopes(
+  words_log_ols3_se,
+  variables = "self_eff",
+  condition = "version",
+  conf_level = 0.95,
+) +
+  geom_rug(
+    data = data,
+    mapping = aes(x = version),
+    sides = "b",
+    inherit.aes = FALSE,
+    colour = "black",
+    alpha = 0.6,
+    size = 0.3,
+    length = grid::unit(0.03, "npc")
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  me_theme +
+  labs(
+    x = "Affordance",
+    y = "Marginal Effect of Self-Efficacy",
+    caption = "Model 3"
+  )
+
+# Model B: marginal effect of self-eff conditional on affordance, dv self-disclosure log
+marg_B <- plot_slopes(
+  sd_log_ols3_se,
+  variables = "self_eff",
+  condition = "version",
+  conf_level = 0.95
+) +
+  geom_rug(
+    data = data,
+    mapping = aes(x = version),
+    sides = "b",
+    inherit.aes = FALSE,
+    colour = "black",
+    alpha = 0.6,
+    size = 0.3,
+    length = grid::unit(0.03, "npc")
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  me_theme +
+  labs(
+    x = "Affordance",
+    y = "Marginal Effect of Self-Efficacy",
+    caption = "Model 9"
+  )
+
+
+marg_all <- ggarrange(
+  marg_A, marg_B,
+  ncol = 2, nrow = 1,
+  common.legend = TRUE,
+  legend = "bottom"
+)
+
+marg_all
+```
+
+```{r}
+#| label: fig-predplot
+#| include: true
+#| fig-cap: "Predicted Probabilities for Words Log (Model 3)"
+#| fig-cap-location: bottom
+
+data_pred <- model.frame(words_log_ols3_se)
+
+new_vals <- expand.grid(
+  self_eff = seq(1, 7, by = 0.25),
+  version = c("Control", "Like", "Like & dislike"),
+  male = Mode(data$male, na.rm = T),
+  age = mean(data$age, na.rm = T),
+  edu_fac = Mode(data$edu_fac, na.rm = T)
+)
+
+pred <- new_vals |> 
+  mutate(yhat = predict(words_log_ols3_se, new_vals))
+
+pred |> 
+  filter(version != "Like & dislike") |> 
+  ggplot(aes(x = self_eff, y = yhat, color = version)) +
+  geom_line() +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+  ) +
+  labs(x = "Self-Efficacy", y = "Predicted Words Log",
+    color = "Affordance")
+```
+
+\clearpage
+## Privacy Concerns
+
+```{r}
+#| label: pri-con models (dv words)
+
+words_log_ols1_pc <- glm(words_log ~ 
+    pri_con + version,
+    data = data,
+    family = "gaussian"
+    )
+
+words_log_ols2_pc <- glm(words_log ~ 
+    pri_con * version,
+    data = data,
+    family = "gaussian"
+    )
+
+words_log_ols3_pc <- glm(words_log ~ 
+    pri_con * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data,
+    family = "gaussian"
+    )
+
+words_nb1_pc <- glm.nb(words ~ 
+    pri_con + version,
+    data = data
+    )
+
+words_nb2_pc <- glm.nb(words ~ 
+    pri_con * version,
+    data = data
+    )
+
+words_nb3_pc <- glm.nb(words ~ 
+    pri_con * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data
+    )
+```
+
+\blandscape
+```{r}
+#| label: tbl-privconmodels
+#| tbl-cap: "Effect of Privacy Concerns on Communication Conditional on Affordandces"
+#| tbl-cap-location: bottom
+#| results: asis
+#| output: true
+#| include: true
+
+texreg(
+  list(words_log_ols1_pc,
+       words_log_ols2_pc,
+       words_log_ols3_pc,
+       words_nb1_pc,
+       words_nb2_pc,
+       words_nb3_pc
+       ),
+  custom.model.names = c(
+    "Model 13",
+    "Model 14",
+    "Model 15",
+    "Model 16",
+    "Model 17",
+    "Model 18"
+    ),
+  custom.header = list(
+  "DV: Words Log" = 1:3, "DV: Words" = 4:6
+  ),
+  custom.coef.map = list(
+    "pri_con" = "Privacy Concerns",
+    "versionLike" = "Like Button",
+    "versionLike & dislike" = "Like Dislike Buttons",
+    "male" = "Male",
+    "age" = "Age",
+    # "edu_facHochschulabschluss" = "Hochschule",
+    # "edu_facAbschluss Polytechnische Oberschule 10. Klasse (vor 1965: 8. Klasse)" = "PolyOberschule",
+    # "edu_facFachhochschulreife (Abschluss einer Fachoberschule)" = "Fachoberschule",
+    # "edu_facHauptschulabschluss/Volksschulabschluss" = "Hauptschule",
+    # "edu_facRealschulabschluss (Mittlere Reife)" = "Realschule",
+    # "edu_facNoch Schüler" = "Schüler",
+    # "edu_facAnderer Schulabschluss:" = "Schule andere",
+    "pri_con:versionLike" = "Privacy Concerns x Like",
+    "pri_con:versionLike & dislike" = "Privacy Concerns x Like Dislike",
+    "(Intercept)" = "Constant"
+  ),
+  custom.gof.rows = list(
+    "Estimator" = c("OLS", "OLS", "OLS", "NegBin", "NegBin", "NegBin"),
+    "Education Controls" = c("No", "No", "Yes", "No", "No", "Yes")
+    ),
+  digits = 2,
+  single.row = FALSE,
+  caption.above = TRUE,
+  table = FALSE
+)
+```
+\elandscape
+
+```{r}
+#| label: models self-disclosure pri_con
+
+sd_log_ols1_pc <- glm(self_dis_log ~ 
+    pri_con + version,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_log_ols2_pc <- glm(self_dis_log ~ 
+    pri_con * version,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_log_ols3_pc <- glm(self_dis_log ~ 
+    pri_con * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_nb1_pc <- glm.nb(self_dis ~ 
+    pri_con + version,
+    data = data
+    )
+
+sd_nb2_pc <- glm.nb(self_dis ~ 
+    pri_con * version,
+    data = data
+    )
+
+sd_nb3_pc <- glm.nb(self_dis ~ 
+    pri_con * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data
+    )
+
+```
+
+\blandscape
+```{r}
+#| label: tbl-selfdisc-models-pc
+#| tbl-cap: "Effect of Privacy Concerns on Communication (incl. Reactions) Conditional on Affordandces"
+#| tbl-cap-location: bottom
+#| results: asis
+#| output: true
+#| include: true
+
+texreg(
+  list(sd_log_ols1_pc,
+       sd_log_ols2_pc,
+       sd_log_ols3_pc,
+       sd_nb1_pc,
+       sd_nb2_pc,
+       sd_nb3_pc
+       ),
+  custom.model.names = c(
+    "Model 19",
+    "Model 20",
+    "Model 21",
+    "Model 22",
+    "Model 23",
+    "Model 24"
+    ),
+  custom.header = list(
+  "DV: Self-Disclosure Log" = 1:3, "DV: Self-Disclosure" = 4:6
+  ),
+  custom.coef.map = list(
+    "pri_con" = "Privacy Concerns",
+    "versionLike" = "Like Button",
+    "versionLike & dislike" = "Like Dislike Buttons",
+    "male" = "Male",
+    "age" = "Age",
+    # "edu_facHochschulabschluss" = "Hochschule",
+    # "edu_facAbschluss Polytechnische Oberschule 10. Klasse (vor 1965: 8. Klasse)" = "PolyOberschule",
+    # "edu_facFachhochschulreife (Abschluss einer Fachoberschule)" = "Fachoberschule",
+    # "edu_facHauptschulabschluss/Volksschulabschluss" = "Hauptschule",
+    # "edu_facRealschulabschluss (Mittlere Reife)" = "Realschule",
+    # "edu_facNoch Schüler" = "Schüler",
+    # "edu_facAnderer Schulabschluss:" = "Schule andere",
+    "pri_con:versionLike" = "Privacy Concerns x Like",
+    "pri_con:versionLike & dislike" = "Privacy Concerns x Like Dislike",
+    "(Intercept)" = "Constant"
+  ),
+  custom.gof.rows = list(
+    "Estimator" = c("OLS", "OLS", "OLS", "NegBin", "NegBin", "NegBin"),
+    "Education Controls" = c("No", "No", "Yes", "No", "No", "Yes")
+    ),
+  digits = 2,
+  single.row = FALSE,
+  caption.above = TRUE,
+  table = FALSE
+)
+```
+\elandscape
+
+\clearpage
+## Gratifications
+
+```{r}
+#| label: grats-gen models (dv words)
+
+words_log_ols1_gg <- glm(words_log ~ 
+    grats_gen + version,
+    data = data,
+    family = "gaussian"
+    )
+
+words_log_ols2_gg <- glm(words_log ~ 
+    grats_gen * version,
+    data = data,
+    family = "gaussian"
+    )
+
+words_log_ols3_gg <- glm(words_log ~ 
+    grats_gen * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data,
+    family = "gaussian"
+    )
+
+words_nb1_gg <- glm.nb(words ~ 
+    grats_gen + version,
+    data = data
+    )
+
+words_nb2_gg <- glm.nb(words ~ 
+    grats_gen * version,
+    data = data
+    )
+
+words_nb3_gg <- glm.nb(words ~ 
+    grats_gen * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data
+    )
+```
+
+\blandscape
+```{r}
+#| label: tbl-gratsgenmodels
+#| tbl-cap: "Effect of Gratifications on Communication Conditional on Affordandces"
+#| tbl-cap-location: bottom
+#| results: asis
+#| output: true
+#| include: true
+
+texreg(
+  list(words_log_ols1_gg,
+       words_log_ols2_gg,
+       words_log_ols3_gg,
+       words_nb1_gg,
+       words_nb2_gg,
+       words_nb3_gg
+       ),
+  custom.model.names = c(
+    "Model 25",
+    "Model 26",
+    "Model 27",
+    "Model 28",
+    "Model 29",
+    "Model 30"
+    ),
+  custom.header = list(
+  "DV: Words Log" = 1:3, "DV: Words" = 4:6
+  ),
+  custom.coef.map = list(
+    "grats_gen" = "Gratifications",
+    "versionLike" = "Like Button",
+    "versionLike & dislike" = "Like Dislike Buttons",
+    "male" = "Male",
+    "age" = "Age",
+    # "edu_facHochschulabschluss" = "Hochschule",
+    # "edu_facAbschluss Polytechnische Oberschule 10. Klasse (vor 1965: 8. Klasse)" = "PolyOberschule",
+    # "edu_facFachhochschulreife (Abschluss einer Fachoberschule)" = "Fachoberschule",
+    # "edu_facHauptschulabschluss/Volksschulabschluss" = "Hauptschule",
+    # "edu_facRealschulabschluss (Mittlere Reife)" = "Realschule",
+    # "edu_facNoch Schüler" = "Schüler",
+    # "edu_facAnderer Schulabschluss:" = "Schule andere",
+    "grats_gen:versionLike" = "Gratifications x Like",
+    "grats_gen:versionLike & dislike" = "Gratifications x Like Dislike",
+    "(Intercept)" = "Constant"
+  ),
+  custom.gof.rows = list(
+    "Estimator" = c("OLS", "OLS", "OLS", "NegBin", "NegBin", "NegBin"),
+    "Education Controls" = c("No", "No", "Yes", "No", "No", "Yes")
+    ),
+  digits = 2,
+  single.row = FALSE,
+  caption.above = TRUE,
+  table = FALSE
+)
+```
+\elandscape
+
+```{r}
+#| label: models self-disclosure grats_gen
+
+sd_log_ols1_gg <- glm(self_dis_log ~ 
+    grats_gen + version,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_log_ols2_gg <- glm(self_dis_log ~ 
+    grats_gen * version,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_log_ols3_gg <- glm(self_dis_log ~ 
+    grats_gen * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_nb1_gg <- glm.nb(self_dis ~ 
+    grats_gen + version,
+    data = data
+    )
+
+sd_nb2_gg <- glm.nb(self_dis ~ 
+    grats_gen * version,
+    data = data
+    )
+
+sd_nb3_gg <- glm.nb(self_dis ~ 
+    grats_gen * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data
+    )
+
+```
+
+\blandscape
+```{r}
+#| label: tbl-selfdisc-models-gg
+#| tbl-cap: "Effect of Gratifications on Communication (incl. Reactions) Conditional on Affordandces"
+#| tbl-cap-location: bottom
+#| results: asis
+#| output: true
+#| include: true
+
+texreg(
+  list(sd_log_ols1_gg,
+       sd_log_ols2_gg,
+       sd_log_ols3_gg,
+       sd_nb1_gg,
+       sd_nb2_gg,
+       sd_nb3_gg
+       ),
+  custom.model.names = c(
+    "Model 31",
+    "Model 32",
+    "Model 33",
+    "Model 34",
+    "Model 35",
+    "Model 36"
+    ),
+  custom.header = list(
+  "DV: Self-Disclosure Log" = 1:3, "DV: Self-Disclosure" = 4:6
+  ),
+  custom.coef.map = list(
+    "grats_gen" = "Gratifications",
+    "versionLike" = "Like Button",
+    "versionLike & dislike" = "Like Dislike Buttons",
+    "male" = "Male",
+    "age" = "Age",
+    # "edu_facHochschulabschluss" = "Hochschule",
+    # "edu_facAbschluss Polytechnische Oberschule 10. Klasse (vor 1965: 8. Klasse)" = "PolyOberschule",
+    # "edu_facFachhochschulreife (Abschluss einer Fachoberschule)" = "Fachoberschule",
+    # "edu_facHauptschulabschluss/Volksschulabschluss" = "Hauptschule",
+    # "edu_facRealschulabschluss (Mittlere Reife)" = "Realschule",
+    # "edu_facNoch Schüler" = "Schüler",
+    # "edu_facAnderer Schulabschluss:" = "Schule andere",
+    "grats_gen:versionLike" = "Gratifications x Like",
+    "grats_gen:versionLike & dislike" = "Gratifications x Like Dislike",
+    "(Intercept)" = "Constant"
+  ),
+  custom.gof.rows = list(
+    "Estimator" = c("OLS", "OLS", "OLS", "NegBin", "NegBin", "NegBin"),
+    "Education Controls" = c("No", "No", "Yes", "No", "No", "Yes")
+    ),
+  digits = 2,
+  single.row = FALSE,
+  caption.above = TRUE,
+  table = FALSE
+)
+```
+\elandscape
+
+\clearpage
+## Privacy Deliberations
+
+```{r}
+#| label: pri_delib models (dv words)
+
+words_log_ols1_pd <- glm(words_log ~ 
+    pri_delib + version,
+    data = data,
+    family = "gaussian"
+    )
+
+words_log_ols2_pd <- glm(words_log ~ 
+    pri_delib * version,
+    data = data,
+    family = "gaussian"
+    )
+
+words_log_ols3_pd <- glm(words_log ~ 
+    pri_delib * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data,
+    family = "gaussian"
+    )
+
+words_nb1_pd <- glm.nb(words ~ 
+    pri_delib + version,
+    data = data
+    )
+
+words_nb2_pd <- glm.nb(words ~ 
+    pri_delib * version,
+    data = data
+    )
+
+words_nb3_pd <- glm.nb(words ~ 
+    pri_delib * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data
+    )
+```
+
+\blandscape
+```{r}
+#| label: tbl-privdelibmodels
+#| tbl-cap: "Effect of Privacy Deliberations on Communication Conditional on Affordandces"
+#| tbl-cap-location: bottom
+#| results: asis
+#| output: true
+#| include: true
+
+texreg(
+  list(words_log_ols1_pd,
+       words_log_ols2_pd,
+       words_log_ols3_pd,
+       words_nb1_pd,
+       words_nb2_pd,
+       words_nb3_pd
+       ),
+  custom.model.names = c(
+    "Model 37",
+    "Model 38",
+    "Model 39",
+    "Model 40",
+    "Model 41",
+    "Model 42"
+    ),
+  custom.header = list(
+  "DV: Words Log" = 1:3, "DV: Words" = 4:6
+  ),
+  custom.coef.map = list(
+    "pri_delib" = "Privacy Deliberations",
+    "versionLike" = "Like Button",
+    "versionLike & dislike" = "Like Dislike Buttons",
+    "male" = "Male",
+    "age" = "Age",
+    # "edu_facHochschulabschluss" = "Hochschule",
+    # "edu_facAbschluss Polytechnische Oberschule 10. Klasse (vor 1965: 8. Klasse)" = "PolyOberschule",
+    # "edu_facFachhochschulreife (Abschluss einer Fachoberschule)" = "Fachoberschule",
+    # "edu_facHauptschulabschluss/Volksschulabschluss" = "Hauptschule",
+    # "edu_facRealschulabschluss (Mittlere Reife)" = "Realschule",
+    # "edu_facNoch Schüler" = "Schüler",
+    # "edu_facAnderer Schulabschluss:" = "Schule andere",
+    "pri_delib:versionLike" = "Privacy Deliberations x Like",
+    "pri_delib:versionLike & dislike" = "Privacy Deliberations x Like Dislike",
+    "(Intercept)" = "Constant"
+  ),
+  custom.gof.rows = list(
+    "Estimator" = c("OLS", "OLS", "OLS", "NegBin", "NegBin", "NegBin"),
+    "Education Controls" = c("No", "No", "Yes", "No", "No", "Yes")
+    ),
+  digits = 2,
+  single.row = FALSE,
+  caption.above = TRUE,
+  table = FALSE
+)
+```
+\elandscape
+
+```{r}
+#| label: models self-disclosure pri_delib
+
+sd_log_ols1_pd <- glm(self_dis_log ~ 
+    pri_delib + version,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_log_ols2_pd <- glm(self_dis_log ~ 
+    pri_delib * version,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_log_ols3_pd <- glm(self_dis_log ~ 
+    pri_delib * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_nb1_pd <- glm.nb(self_dis ~ 
+    pri_delib + version,
+    data = data
+    )
+
+sd_nb2_pd <- glm.nb(self_dis ~ 
+    pri_delib * version,
+    data = data
+    )
+
+sd_nb3_pd <- glm.nb(self_dis ~ 
+    pri_delib * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data
+    )
+
+```
+
+\blandscape
+```{r}
+#| label: tbl-selfdisc-models-pd
+#| tbl-cap: "Effect of Privacy Deliberations on Communication (incl. Reactions) Conditional on Affordandces"
+#| tbl-cap-location: bottom
+#| results: asis
+#| output: true
+#| include: true
+
+texreg(
+  list(sd_log_ols1_pd,
+       sd_log_ols2_pd,
+       sd_log_ols3_pd,
+       sd_nb1_pd,
+       sd_nb2_pd,
+       sd_nb3_pd
+       ),
+  custom.model.names = c(
+    "Model 43",
+    "Model 44",
+    "Model 45",
+    "Model 46",
+    "Model 47",
+    "Model 48"
+    ),
+  custom.header = list(
+  "DV: Self-Disclosure Log" = 1:3, "DV: Self-Disclosure" = 4:6
+  ),
+  custom.coef.map = list(
+    "pri_delib" = "Privacy Deliberations",
+    "versionLike" = "Like Button",
+    "versionLike & dislike" = "Like Dislike Buttons",
+    "male" = "Male",
+    "age" = "Age",
+    # "edu_facHochschulabschluss" = "Hochschule",
+    # "edu_facAbschluss Polytechnische Oberschule 10. Klasse (vor 1965: 8. Klasse)" = "PolyOberschule",
+    # "edu_facFachhochschulreife (Abschluss einer Fachoberschule)" = "Fachoberschule",
+    # "edu_facHauptschulabschluss/Volksschulabschluss" = "Hauptschule",
+    # "edu_facRealschulabschluss (Mittlere Reife)" = "Realschule",
+    # "edu_facNoch Schüler" = "Schüler",
+    # "edu_facAnderer Schulabschluss:" = "Schule andere",
+    "pri_delib:versionLike" = "Privacy Deliberations x Like",
+    "pri_delib:versionLike & dislike" = "Privacy Deliberations x Like Dislike",
+    "(Intercept)" = "Constant"
+  ),
+  custom.gof.rows = list(
+    "Estimator" = c("OLS", "OLS", "OLS", "NegBin", "NegBin", "NegBin"),
+    "Education Controls" = c("No", "No", "Yes", "No", "No", "Yes")
+    ),
+  digits = 2,
+  single.row = FALSE,
+  caption.above = TRUE,
+  table = FALSE
+)
+```
+\elandscape
+
+
+\clearpage
+## Trust
+
+```{r}
+#| label: trust_spec models (dv words)
+
+words_log_ols1_ts <- glm(words_log ~ 
+    trust_spec + version,
+    data = data,
+    family = "gaussian"
+    )
+
+words_log_ols2_ts <- glm(words_log ~ 
+    trust_spec * version,
+    data = data,
+    family = "gaussian"
+    )
+
+words_log_ols3_ts <- glm(words_log ~ 
+    trust_spec * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data,
+    family = "gaussian"
+    )
+
+words_nb1_ts <- glm.nb(words ~ 
+    trust_spec + version,
+    data = data
+    )
+
+words_nb2_ts <- glm.nb(words ~ 
+    trust_spec * version,
+    data = data
+    )
+
+words_nb3_ts <- glm.nb(words ~ 
+    trust_spec * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data
+    )
+```
+
+\blandscape
+```{r}
+#| label: tbl-trustspecbmodels
+#| tbl-cap: "Effect of Trust on Communication Conditional on Affordandces"
+#| tbl-cap-location: bottom
+#| results: asis
+#| output: true
+#| include: true
+
+texreg(
+  list(words_log_ols1_ts,
+       words_log_ols2_ts,
+       words_log_ols3_ts,
+       words_nb1_ts,
+       words_nb2_ts,
+       words_nb3_ts
+       ),
+  custom.model.names = c(
+    "Model 49",
+    "Model 50",
+    "Model 51",
+    "Model 52",
+    "Model 53",
+    "Model 54"
+    ),
+  custom.header = list(
+  "DV: Words Log" = 1:3, "DV: Words" = 4:6
+  ),
+  custom.coef.map = list(
+    "trust_spec" = "Trust",
+    "versionLike" = "Like Button",
+    "versionLike & dislike" = "Like Dislike Buttons",
+    "male" = "Male",
+    "age" = "Age",
+    # "edu_facHochschulabschluss" = "Hochschule",
+    # "edu_facAbschluss Polytechnische Oberschule 10. Klasse (vor 1965: 8. Klasse)" = "PolyOberschule",
+    # "edu_facFachhochschulreife (Abschluss einer Fachoberschule)" = "Fachoberschule",
+    # "edu_facHauptschulabschluss/Volksschulabschluss" = "Hauptschule",
+    # "edu_facRealschulabschluss (Mittlere Reife)" = "Realschule",
+    # "edu_facNoch Schüler" = "Schüler",
+    # "edu_facAnderer Schulabschluss:" = "Schule andere",
+    "trust_spec:versionLike" = "Trust x Like",
+    "trust_spec:versionLike & dislike" = "Trust x Like Dislike",
+    "(Intercept)" = "Constant"
+  ),
+  custom.gof.rows = list(
+    "Estimator" = c("OLS", "OLS", "OLS", "NegBin", "NegBin", "NegBin"),
+    "Education Controls" = c("No", "No", "Yes", "No", "No", "Yes")
+    ),
+  digits = 2,
+  single.row = FALSE,
+  caption.above = TRUE,
+  table = FALSE
+)
+```
+\elandscape
+
+```{r}
+#| label: models self-disclosure trust_spec
+
+sd_log_ols1_ts <- glm(self_dis_log ~ 
+    trust_spec + version,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_log_ols2_ts <- glm(self_dis_log ~ 
+    trust_spec * version,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_log_ols3_ts <- glm(self_dis_log ~ 
+    trust_spec * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_nb1_ts <- glm.nb(self_dis ~ 
+    trust_spec + version,
+    data = data
+    )
+
+sd_nb2_ts <- glm.nb(self_dis ~ 
+    trust_spec * version,
+    data = data
+    )
+
+sd_nb3_ts <- glm.nb(self_dis ~ 
+    trust_spec * version + 
+    male + 
+    age + 
+    edu_fac,
+    data = data
+    )
+
+```
+
+\blandscape
+```{r}
+#| label: tbl-selfdisc-models-ts
+#| tbl-cap: "Effect of Trust on Communication (incl. Reactions) Conditional on Affordandces"
+#| tbl-cap-location: bottom
+#| results: asis
+#| output: true
+#| include: true
+
+texreg(
+  list(sd_log_ols1_ts,
+       sd_log_ols2_ts,
+       sd_log_ols3_ts,
+       sd_nb1_ts,
+       sd_nb2_ts,
+       sd_nb3_ts
+       ),
+  custom.model.names = c(
+    "Model 55",
+    "Model 56",
+    "Model 57",
+    "Model 58",
+    "Model 59",
+    "Model 60"
+    ),
+  custom.header = list(
+  "DV: Self-Disclosure Log" = 1:3, "DV: Self-Disclosure" = 4:6
+  ),
+  custom.coef.map = list(
+    "trust_spec" = "Trust",
+    "versionLike" = "Like Button",
+    "versionLike & dislike" = "Like Dislike Buttons",
+    "male" = "Male",
+    "age" = "Age",
+    # "edu_facHochschulabschluss" = "Hochschule",
+    # "edu_facAbschluss Polytechnische Oberschule 10. Klasse (vor 1965: 8. Klasse)" = "PolyOberschule",
+    # "edu_facFachhochschulreife (Abschluss einer Fachoberschule)" = "Fachoberschule",
+    # "edu_facHauptschulabschluss/Volksschulabschluss" = "Hauptschule",
+    # "edu_facRealschulabschluss (Mittlere Reife)" = "Realschule",
+    # "edu_facNoch Schüler" = "Schüler",
+    # "edu_facAnderer Schulabschluss:" = "Schule andere",
+    "trust_spec:versionLike" = "Trust x Like",
+    "trust_spec:versionLike & dislike" = "Trust x Like Dislike",
+    "(Intercept)" = "Constant"
+  ),
+  custom.gof.rows = list(
+    "Estimator" = c("OLS", "OLS", "OLS", "NegBin", "NegBin", "NegBin"),
+    "Education Controls" = c("No", "No", "Yes", "No", "No", "Yes")
+    ),
+  digits = 2,
+  single.row = FALSE,
+  caption.above = TRUE,
+  table = FALSE
+)
+```
+\elandscape
+
+\clearpage
+## Full Specifications
+
+```{r}
+#| label: models all constructs dv words
+
+words_log_ols1_comp <- glm(words_log ~ 
+    self_eff + 
+    version +
+    pri_con + 
+    grats_gen + 
+    pri_delib +
+    trust_spec,
+    data = data,
+    family = "gaussian"
+    )
+
+words_log_ols2_comp <- glm(words_log ~ 
+    self_eff * version + 
+    pri_con + 
+    grats_gen + 
+    pri_delib +
+    trust_spec,
+    data = data,
+    family = "gaussian"
+    )
+
+words_log_ols3_comp <- glm(words_log ~ 
+    self_eff * version + 
+    pri_con + 
+    grats_gen + 
+    pri_delib +
+    trust_spec +
+    male + 
+    age + 
+    edu_fac,
+    data = data,
+    family = "gaussian"
+    )
+
+words_nb1_comp <- glm.nb(words ~ 
+    self_eff + 
+    version +
+    pri_con + 
+    grats_gen + 
+    pri_delib +
+    trust_spec,
+    data = data
+    )
+
+words_nb2_comp <- glm.nb(words ~ 
+    self_eff * version + 
+    pri_con + 
+    grats_gen + 
+    pri_delib +
+    trust_spec,
+    data = data
+    )
+
+words_nb3_comp <- glm.nb(words ~ 
+    self_eff * version + 
+    pri_con + 
+    grats_gen + 
+    pri_delib +
+    trust_spec +
+    male + 
+    age + 
+    edu_fac,
+    data = data
+    )
+```
+
+
+\blandscape
+```{r}
+#| label: tbl-words-models-complete
+#| tbl-cap: "Effect of Privacy Calculus on Communication Conditional on Affordandces"
+#| tbl-cap-location: bottom
+#| results: asis
+#| output: true
+#| include: true
+
+texreg(
+  list(words_log_ols1_comp,
+       words_log_ols2_comp,
+       words_log_ols3_comp,
+       words_nb1_comp,
+       words_nb2_comp,
+       words_nb3_comp
+       ),
+  custom.model.names = c(
+    "Model 61",
+    "Model 62",
+    "Model 63",
+    "Model 64",
+    "Model 65",
+    "Model 66"
+    ),
+  custom.header = list(
+  "DV: Words Log" = 1:3, "DV: Words" = 4:6
+  ),
+  custom.coef.map = list(
+    "versionLike" = "Like Button",
+    "versionLike & dislike" = "Like Dislike Buttons",
+    self_eff = "Self-Efficacy",
+    pri_con =  "Privacy Concerns",
+    grats_gen = "Gratifications",
+    pri_delib = "Privacy Deliberations",
+    "trust_spec" = "Trust",
+    "male" = "Male",
+    "age" = "Age",
+    # "edu_facHochschulabschluss" = "Hochschule",
+    # "edu_facAbschluss Polytechnische Oberschule 10. Klasse (vor 1965: 8. Klasse)" = "PolyOberschule",
+    # "edu_facFachhochschulreife (Abschluss einer Fachoberschule)" = "Fachoberschule",
+    # "edu_facHauptschulabschluss/Volksschulabschluss" = "Hauptschule",
+    # "edu_facRealschulabschluss (Mittlere Reife)" = "Realschule",
+    # "edu_facNoch Schüler" = "Schüler",
+    # "edu_facAnderer Schulabschluss:" = "Schule andere",
+    "self_eff:versionLike" = "Self-Efficacy x Like",
+    "self_eff:versionLike & dislike" = "Self-Efficacy x Like Dislike",
+    "(Intercept)" = "Constant"
+  ),
+  custom.gof.rows = list(
+    "Estimator" = c("OLS", "OLS", "OLS", "NegBin", "NegBin", "NegBin"),
+    "Education Controls" = c("No", "No", "Yes", "No", "No", "Yes")
+    ),
+  digits = 2,
+  single.row = FALSE,
+  caption.above = TRUE,
+  table = FALSE
+)
+```
+\elandscape
+
+
+```{r}
+#| label: models all constructs dv self-disclosure
+
+sd_log_ols1_comp <- glm(self_dis_log ~ 
+    self_eff + 
+    version +
+    pri_con + 
+    grats_gen + 
+    pri_delib +
+    trust_spec,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_log_ols2_comp <- glm(self_dis_log ~ 
+    self_eff * version + 
+    pri_con + 
+    grats_gen + 
+    pri_delib +
+    trust_spec,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_log_ols3_comp <- glm(self_dis_log ~ 
+    self_eff * version + 
+    pri_con + 
+    grats_gen + 
+    pri_delib +
+    trust_spec +
+    male + 
+    age + 
+    edu_fac,
+    data = data,
+    family = "gaussian"
+    )
+
+sd_nb1_comp <- glm.nb(self_dis ~ 
+    self_eff + 
+    version +
+    pri_con + 
+    grats_gen + 
+    pri_delib +
+    trust_spec,
+    data = data
+    )
+
+sd_nb2_comp <- glm.nb(self_dis ~ 
+    self_eff * version + 
+    pri_con + 
+    grats_gen + 
+    pri_delib +
+    trust_spec,
+    data = data
+    )
+
+sd_nb3_comp <- glm.nb(self_dis ~ 
+    self_eff * version + 
+    pri_con + 
+    grats_gen + 
+    pri_delib +
+    trust_spec +
+    male + 
+    age + 
+    edu_fac,
+    data = data
+    )
+```
+
+
+\blandscape
+```{r}
+#| label: tbl-selfdisc-models-complete
+#| tbl-cap: "Effect of Privacy Calculus on Communication (incl. Reactions) Conditional on Affordandces"
+#| tbl-cap-location: bottom
+#| results: asis
+#| output: true
+#| include: true
+
+texreg(
+  list(sd_log_ols1_comp,
+       sd_log_ols2_comp,
+       sd_log_ols3_comp,
+       sd_nb1_comp,
+       sd_nb2_comp,
+       sd_nb3_comp
+       ),
+  custom.model.names = c(
+    "Model 67",
+    "Model 68",
+    "Model 69",
+    "Model 70",
+    "Model 71",
+    "Model 72"
+    ),
+  custom.header = list(
+  "DV: Self-Disclosure Log" = 1:3, "DV: Self-Disclosure" = 4:6
+  ),
+  custom.coef.map = list(
+    "versionLike" = "Like Button",
+    "versionLike & dislike" = "Like Dislike Buttons",
+    self_eff = "Self-Efficacy",
+    pri_con =  "Privacy Concerns",
+    grats_gen = "Gratifications",
+    pri_delib = "Privacy Deliberations",
+    "trust_spec" = "Trust",
+    "male" = "Male",
+    "age" = "Age",
+    # "edu_facHochschulabschluss" = "Hochschule",
+    # "edu_facAbschluss Polytechnische Oberschule 10. Klasse (vor 1965: 8. Klasse)" = "PolyOberschule",
+    # "edu_facFachhochschulreife (Abschluss einer Fachoberschule)" = "Fachoberschule",
+    # "edu_facHauptschulabschluss/Volksschulabschluss" = "Hauptschule",
+    # "edu_facRealschulabschluss (Mittlere Reife)" = "Realschule",
+    # "edu_facNoch Schüler" = "Schüler",
+    # "edu_facAnderer Schulabschluss:" = "Schule andere",
+    "self_eff:versionLike" = "Self-Efficacy x Like",
+    "self_eff:versionLike & dislike" = "Self-Efficacy x Like Dislike",
+    "(Intercept)" = "Constant"
+  ),
+  custom.gof.rows = list(
+    "Estimator" = c("OLS", "OLS", "OLS", "NegBin", "NegBin", "NegBin"),
+    "Education Controls" = c("No", "No", "Yes", "No", "No", "Yes")
+    ),
+  digits = 2,
+  single.row = FALSE,
+  caption.above = TRUE,
+  table = FALSE
+)
+```
+\elandscape
+
+# Quality of Self-Disclosure (Multinomial Logistic Regression (MNL) Models)

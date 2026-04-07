@@ -1,0 +1,6 @@
+pandas 
+transformers 
+torch 
+tqdm
+notebook 
+ipykernel
