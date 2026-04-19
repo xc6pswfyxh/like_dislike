@@ -14,8 +14,8 @@ format:
     title-block-style: manuscript
     title-block-banner-color: black
 
-  apaquarto-pdf:
-    documentmode: man
+  # apaquarto-pdf:
+  #   documentmode: man
 
 date: last-modified
 worcount: "8,204"

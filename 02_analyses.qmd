@@ -3,6 +3,8 @@ title: "Analyses"
 bibliography: 
   - bibliography/references.bib
 
+freeze: auto
+
 format:
   html:
     toc: true
