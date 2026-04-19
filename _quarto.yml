@@ -30,7 +30,7 @@ website:
 
     tools:
       - icon: bluesky
-        href: https://bsky.app/profile/tobiasdienlin.com
+        href: https://bsky.app/ # profile/tobiasdienlin.com
       - icon: github
         menu:
           - text: Source Code
