@@ -1,47 +1,65 @@
 ---
-title: "Likes or Dislikes, Gratifications or Concerns? A One-Week Field Experiment Analyzing the Effects of Popularity Cues on the Privacy Calculus in Online Communication"
+title: |
+ Likes or Dislikes, Gratifications or Concerns? 
+
 shorttitle: "Popularity cues & privacy calculus"
 
-abstract: "The privacy calculus model states that people weigh risks and benefits before communicating online. This paper analyzes three questions: How robust is the privacy calculus, can it be replicated with actual behavior in realistic online settings? Do we need to extend the model by integrating more socio-psychological measures such as trust, self-efficacy, and privacy deliberation? How strongly is the privacy calculus affected by affordances such as like and dislike buttons? In a preregistered one-week field experiment (N = 590), participants discussed a current political topic on an online website, which included either (a) like buttons, (b) both like and dislike buttons, or (c) no buttons. The privacy calculus model was confirmed: Benefits and concerns affected communication. Deliberating about privacy by comparing benefits and risks decreased communication, whereas experiencing self-efficacy and trust increased communication. Although like and dislike buttons did not affect concerns, experiences, trust, efficacy, and deliberation, they had a strong effect on behavior: They reduced communication by 45 percent."
+subtitle: | 
+ A One-Week Field Experiment Analyzing the Effects of Popularity Cues on 
+ the Privacy Calculus in Online Communication
 
-keywords: [privacy calculus, communication, popularity cues, field experiment, preregistration]
+format:
+  html:
+    title-block-banner: true
+    title-block-style: manuscript
+    title-block-banner-color: black
+
+  apaquarto-pdf:
+    documentmode: man
+
+date: last-modified
+worcount: "8,204"
 
 author:
-  - name: anon
+  - name: Anon
+    orcid: 0000-0000-0000-0000
+    corresponding: true
+    email: example@uzh.ch
     affiliations:
-      - anon
+      - "University"
+
+keywords:
+  - privacy calculus
+  - communication
+  - popularity cues
+  - field experiment
+  - preregistration
+
+
+abstract: |
+ The privacy calculus model states that people weigh risks and benefits before communicating online. This paper analyzes three  questions: How robust is the privacy calculus, can it be replicated with actual behavior in realistic online settings? Do we   need to extend the model by integrating more socio-psychological measures such as trust, self-efficacy, and privacy
+ deliberation? How strongly is the privacy calculus affected by affordances such as like and dislike buttons? In a
+ preregistered one-week field experiment (N = 590), participants discussed a current political topic on an online website,
+ which included either (a) like buttons, (b) both like and dislike buttons, or (c) no buttons. The privacy calculus model was
+ confirmed: Benefits and concerns affected communication. Deliberating about privacy by comparing benefits and risks decreased
+ communication, whereas experiencing self-efficacy and trust increased communication. Although like and dislike buttons did not
+ affect concerns, experiences, trust, efficacy, and deliberation, they had a strong effect on behavior: They reduced
+ communication by 45 percent.
+
+plain-language-summary: |
+  Earthquake data for the island of La Palma from the September 2021 eruption is found ...
+
+  key-points:
+  - A web scraping script was developed to pull data from the Instituto Geogràphico Nacional into a machine-readable form for analysis
+  - Earthquake events on La Palma are consistent with the presence of both mantle and crustal reservoirs.
+
+
+
+
 
 bibliography:
   - bibliography/r-references.bib
   - bibliography/references.bib
-
-floatsintext: true
-figurelist: false
-tablelist: false
-footnotelist: false
-linenumbers: false
-mask: true
-worcount: "8,204"
-draft: false
-
-format:
-  apaquarto-pdf:
-    documentmode: man
-
-header-includes:
-  - |
-    \usepackage{endnotes}
-    \setlength{\parskip}{0em}
-    \raggedbottom
-    \usepackage{threeparttable}
-    \hypersetup{hidelinks}
-
-# output:
-#   html_document:
-#     toc: TRUE
-#     toc_float:
-#       collapsed: FALSE
-#       toc_depth: 2
 ---
 
 

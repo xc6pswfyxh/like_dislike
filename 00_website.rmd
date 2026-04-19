@@ -1,6 +1,5 @@
 ---
-title: "Screenshots Website"
-output: "html"
+title: "Example Interface"
 ---
 
 # Main page
@@ -9,4 +8,4 @@ output: "html"
 
 # Example comments
 
-![](figures/website/comments_translated.png)
+![](figures/website/comments_translated.png)   

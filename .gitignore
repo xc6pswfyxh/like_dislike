@@ -39,3 +39,4 @@ _site/*.RDataTmp
 *.RData
 *.RDataTmp
 *.RData
+/.quarto/

@@ -1,0 +1,25 @@
+.navbar-brand {
+  font-family: "CMU serif", serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.navbar-brand {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.navbar-brand {
+  color: #000000;
+}
+
+/* Navbar links */
+.navbar-nav .nav-link {
+  font-size: 0.7rem;   /* adjust */
+}
+
+/* Navbar title */
+.navbar-brand {
+  font-size: 1.2rem;   /* smaller than before */
+}

@@ -36,7 +36,7 @@ In the preregistration, I stated that I would measure expected benefits using 5 
 
 Originally, I operationalized trust for three entities (i.e., provider, website, and other users) using four subdimensions (i.e., general trust, ability, benevolence, and integrity). Only later did I realize that the literature differentiates between general and specific trust beliefs, which I could conceptualize with the items I measured. As a result, in the paper I now differentiate both dimensions.
 
-# Results
+# Results      
 
 - Given that I found not apparent effects of the three websites on the privacy calculus, I did not test for indirect effects as proposed in the preregistration. 
 - I additionally also controlled for education (I forgot to explicitly mention this control variable in the preregistration; results do not differ, but I think it should be included, which is why I did).

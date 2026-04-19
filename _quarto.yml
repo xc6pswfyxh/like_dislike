@@ -1,41 +1,88 @@
 project:
   type: website
+  output-dir: _site
 
-name: "like_dislike"
+lang: en
 
 website:
-  title: "Privacy Calculus Experiment"
+  title: "Like Dislike"
+  bread-crumbs: false
+  repo-url: https://github.com/XMtRa/like_dislike
+  repo-actions: [edit, source, issue]
+  #page-navigation: true
+  #back-to-top-navigation: true
+  page-footer: 
+    center: "© 2026, The Authors" 
+    right: "<img src='images/logo_uzh.png' height='30px'>"
+    left: "<img src='images/logo_dept.png' height='50px'>"
+
   navbar:
-    pinned: true
-    background: primary
+    collapse: true
     left:
-      - text: "Home"
-        href: index.html
-      - text: "Manuscript"
-        href: 04_manuscript.html
-      - text: "Analyses"
-        href: 02_analyses.html
-      - text: "Items"
-        href: 01_items.html
-      - text: "Website"
-        href: 00_website.html
-      - text: "Preregistration"
-        href: 03_preregistration_changes.html
-      - text: "Additional Analyses"
-        href: 05_analyses_additional.html
-      #- text: "Revision Analyses"
-      #  href: 06_analyses_revision.html
-      #- text: "Comment Classification"
-      #  href: 07_comment_classification.html
-      #- text: "Revised Manuscript"
-      #  href: 08_manuscript_revised.html
-    right:
-      - text: "PDF"
-        href: manuscript.pdf
-      - text: "Source Code"
-        href: https://github.com/XMtRa/like_dislike
+      - href: index.qmd
+        text: "Home"
+      - href: 01_manuscript_rev.qmd
+        text: "Manuscript Revised"
+      - href: 07_manuscript.rmd
+        text: "First Submission"
+      - href: 08_preregistration_changes.rmd
+        text: "Preregistration"
+
+    tools:
+      - icon: bluesky
+        href: https://bsky.app/profile/tobiasdienlin.com
+      - icon: github
+        menu:
+          - text: Source Code
+            href: https://github.com/XMtRa/like_dislike
+
+  sidebar:
+    - title: "Home"
+      style: "floating"
+      search: true
+      
+      contents:
+        - section: "Overview"
+          contents:
+            - index.qmd
+        - section: "Website"
+          contents:
+            - 00_website.rmd
+        - text: "---"
+
+    - title: "Manuscript Revised"
+      style: "floating"
+      search: true
+      contents:
+        - section: "Main Text"
+          contents:
+            - 01_manuscript_rev.qmd
+        - text: "---"
+        - section: "Appendix"
+          contents:
+            - 02_analyses.qmd
+            - 03_items.rmd
+            - 04_comment_classification.qmd
+            - 05_analyses_additional.qmd
+            #- 06_analyses_revision.qmd
+
 
 format:
   html:
-    theme: cosmo
-    page-layout: full
+    embed-resources: true
+    theme:
+      light: cosmo
+      dark: cyborg
+    css: styles.css
+    toc: true
+    toggle: true
+
+    grid:
+      margin-width: 300px
+      body-width: 800px
+      gutter-width: 100px
+      
+knitr:
+  opts_chunk:
+    fig.path: "assets/figures/"
+    cache.path: "assets/cache/"
