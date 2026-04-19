@@ -1,20 +1,8 @@
 ---
 title: "Comment Classification"
-author: 
-  name: 
 
-lang: en
-date: today
-date-format: "D MMMM YYYY"
-editor: source
-
-#engine: knitr
 execute:
   enabled: false
-
-toc: true    
-toc-depth: 3
-format: html
 ---
 
 # Introduction

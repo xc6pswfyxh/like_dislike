@@ -1,7 +1,13 @@
 ---
-title             : "Likes or Dislikes, Gratifications or Concerns? A One-Week Field Experiment Analyzing the Effects of Popularity Cues on the Privacy Calculus in Online Communication"
+title: |
+ Likes or Dislikes, Gratifications or Concerns? 
 
-shorttitle        : "Popularity cues & privacy calculus"
+shorttitle: "Popularity cues & privacy calculus"
+
+subtitle: | 
+ A One-Week Field Experiment Analyzing the Effects of Popularity Cues on 
+ the Privacy Calculus in Online Communication
+
 
 abstract          : "The privacy calculus model states that people weigh risks and benefits before communicating online. This paper analyzes three questions: How robust is the privacy calculus, can it be replicated with actual behavior in realistic online settings? Do we need to extend the model by integrating more socio-psychological measures such as trust, self-efficacy, and privacy deliberation? How strongly is the privacy calculus affected by affordances such as like and dislike buttons? In a preregistered one-week field experiment (N = 590), participants discussed a current political topic on an online website, which included either (a) like buttons, (b) both like and dislike buttons, or (c) no buttons. The privacy calculus model was confirmed: Benefits and concerns affected communication. Deliberating about privacy by comparing benefits and risks decreased communication, whereas experiencing self-efficacy and trust increased communication. Although like and dislike buttons did not affect concerns, experiences, trust, efficacy, and deliberation, they had a strong effect on behavior: They reduced communication by 45 percent."
 

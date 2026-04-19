@@ -7,10 +7,10 @@ lang: en
 website:
   title: "Like Dislike"
   bread-crumbs: false
-  repo-url: https://github.com/XMtRa/like_dislike
+  repo-url: https://github.com/xc6pswfyxh/like_dislike
   repo-actions: [edit, source, issue]
-  #page-navigation: true
-  #back-to-top-navigation: true
+  page-navigation: true
+  back-to-top-navigation: true
   page-footer: 
     center: "© 2026, The Authors" 
     right: "<img src='images/logo_uzh.png' height='30px'>"
@@ -30,17 +30,16 @@ website:
 
     tools:
       - icon: bluesky
-        href: https://bsky.app/ # profile/tobiasdienlin.com
+        href: https://bsky.app/
       - icon: github
         menu:
           - text: Source Code
-            href: https://github.com/XMtRa/like_dislike
+            href: https://github.com/xc6pswfyxh/like_dislike
 
   sidebar:
     - title: "Home"
       style: "floating"
       search: true
-      
       contents:
         - section: "Overview"
           contents:
@@ -58,13 +57,36 @@ website:
           contents:
             - 01_manuscript_rev.qmd
         - text: "---"
-        - section: "Appendix"
+        - section: "Supplementary Material"
           contents:
             - 02_analyses.qmd
             - 03_items.rmd
             - 04_comment_classification.qmd
             - 05_analyses_additional.qmd
             #- 06_analyses_revision.qmd
+
+    - title: "First Submission"
+      style: "floating"
+      search: true
+      contents:
+        - section: "Main Text"
+          contents:
+            - 07_manuscript.rmd
+        - text: "---"
+        - section: "Supplementary Material"
+          contents:
+            - 02_analyses.qmd
+            - 03_items.rmd
+            - 05_analyses_additional.qmd
+
+    - title: "Preregistration"
+      style: "floating"
+      search: true
+      contents:
+        - section: "Changes from Preregistration"
+          contents:
+            - 08_preregistration_changes.rmd
+        - text: "---"
 
 
 format:
