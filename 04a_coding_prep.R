@@ -10,7 +10,7 @@ library(tidyverse)
 comments <- read_csv("data/comments/blahblahblah.csv")
 
   
-## ead comments data for classification
+## read comments data for classification
 
 
 
