@@ -1,45 +1,33 @@
 #### MANUAL CODING
-## 1. LABELS
-
-
-####----
 
 library(tidyverse)
 
-
-comments <- read_csv("data/comments/blahblahblah.csv")
-
-  
-## read comments data for classification
-
-
-## hoi
-
-##----
+comments <- readxl::read_xlsx("data/comments/data_posts_VM1.xlsx")
 
 set.seed(666)
 
-sample_labels <- comments |> # draw a sample of 200 obs for manual labelling from full dataset
+comments <- comments |>
   mutate(
+    coder = NA,
     depth = NA, 
     feeling = NA,
     breadth = NA,
     pol_op = NA,
     valence = NA,
-    contr = NA) 
+    contr = NA) |> 
+  relocate(c(depth:contr), .after = raw) |> 
+  relocate(coder, .before = post_number)
 
-sample_labels_reli <- sample_labels |> 
-  sample_n(n = 200) |> # both code 200 obs, then we calculate reliability
-  mutate(coder = NA) |> 
-  relocate(coder, .before = post_id) # post_id ändern so dass coder in erster spalte
+comments_reli <- comments |> 
+  slice_sample(n = 100) # both code 100 obs, then we calculate reliability
 
-writexl::write_xlsx(sample_labels, "data/sample_labels.xlsx") # write excel for full labelling
-writexl::write_xlsx(sample_labels_reli, "data/sample_labels_reli.xlsx") # write excel for icr test
 
+writexl::write_xlsx(comments, "data/comments.xlsx")
+writexl::write_xlsx(comments_reli, "data/comments_reli.xlsx") # write excel for icr test
 
 ## 2. ICR
-labels_j <- readxl::read_excel("data/sample_labels_relij_coded.xlsx")
-labels_l <- readxl::read_excel("data/sample_labels_reliy_coded.xlsx")
+labels_j <- readxl::read_excel("data/comments_relij_coded.xlsx")
+labels_l <- readxl::read_excel("data/comments_reliy_coded.xlsx")
 
 labels_jl <- labels_j |> 
   rbind(labels_l)
