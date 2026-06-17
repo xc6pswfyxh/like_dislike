@@ -2,10 +2,78 @@
 
 library(tidyverse)
 
-comments <- readxl::read_xlsx("data/comments/data_posts_VM1.xlsx")
+## def reply chain function
+get_reply_chain <- function(df, topic_name, post_num) {
+  chain <- c()
+  current <- post_num
+  visited <- c()
+  
+  while (!is.na(current) && !current %in% visited) {
+    visited <- c(visited, current)
+    row <- df |> filter(topic == topic_name, post_number == current)
+    if (nrow(row) == 0) break
+    chain <- c(chain, row$raw[1])
+    current <- row$reply_to_post_number[1]
+  }
+  
+  paste(rev(chain), collapse = " >>> ")
+}
 
-set.seed(666)
 
+## data pp
+comments1 <- read_csv("data/comments/data_posts_VM1.csv") |> 
+  filter(!str_detect(topic, 
+    regex("netiquette | studie", ignore_case = TRUE)))
+
+comments1 <- comments1 |>
+  rowwise() |>
+  mutate(reply_chain = if_else(
+    !is.na(reply_to_post_number),
+    get_reply_chain(comments1, topic, reply_to_post_number),
+    NA_character_
+  )) |>
+  ungroup() |> 
+  filter(created_at > as.Date("2017-08-01")) 
+
+
+comments2 <- read_csv("data/comments/data_posts_VM2.csv") |> 
+  mutate(created_at = as_datetime(created_at)) |> 
+  filter(!str_detect(topic, 
+    regex("netiquette | studie", ignore_case = TRUE)))
+
+comments2 <- comments2 |>
+  rowwise() |>
+  mutate(reply_chain = if_else(
+    !is.na(reply_to_post_number),
+    get_reply_chain(comments2, topic, reply_to_post_number),
+    NA_character_
+  )) |>
+  ungroup() |> 
+  filter(created_at > as.Date("2017-08-01")) 
+
+
+comments3 <- read_csv("data/comments/data_posts_VM3.csv") |> 
+  mutate(created_at = as_datetime(created_at)) |> 
+  filter(!str_detect(topic, 
+    regex("netiquette | studie", ignore_case = TRUE)))
+
+comments3 <- comments3 |>
+  rowwise() |>
+  mutate(reply_chain = if_else(
+    !is.na(reply_to_post_number),
+    get_reply_chain(comments3, topic, reply_to_post_number),
+    NA_character_
+  )) |>
+  ungroup() |> 
+  filter(created_at > as.Date("2017-08-01")) 
+
+
+## joining all comments
+comments <- comments1 |> mutate(vm = "vm1") |> 
+  bind_rows(comments2 |> mutate(vm = "vm2")) |>
+  bind_rows(comments3 |> mutate(vm = "vm3"))
+
+## prepare coding file 
 comments <- comments |>
   mutate(
     coder = NA,
@@ -18,12 +86,23 @@ comments <- comments |>
   relocate(c(pers_exp:contr), .after = raw) |> 
   relocate(coder, .before = post_number)
 
+
+# weighted sample
+set.seed(666)
 comments_reli <- comments |> 
-  slice_sample(n = 100) # both code 100 obs, then we calculate reliability
+  group_by(vm) |> 
+  slice_sample(n = 50) |> # 50 per group (vm)
+  ungroup() |> 
+  select(-c(vm))
 
 
-writexl::write_xlsx(comments, "data/comments.xlsx")
-writexl::write_xlsx(comments_reli, "data/comments_reli.xlsx") # write excel for icr test
+write_csv(comments, "data/comments/comments.csv", na = "")
+write_csv(comments_reli, "data/comments/comments_reli.csv", na = "") # write csv for icr test
+
+
+
+#####-----
+
 
 ## 2. ICR
 labels_j <- readxl::read_excel("data/comments_relij_coded.xlsx")
