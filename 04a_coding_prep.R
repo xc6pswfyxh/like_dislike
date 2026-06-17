@@ -9,13 +9,13 @@ set.seed(666)
 comments <- comments |>
   mutate(
     coder = NA,
-    depth = NA, 
-    feeling = NA,
+    pers_exp = NA, 
+    emot_exp = NA,
+    pol_opin = NA,
     breadth = NA,
-    pol_op = NA,
     valence = NA,
     contr = NA) |> 
-  relocate(c(depth:contr), .after = raw) |> 
+  relocate(c(pers_exp:contr), .after = raw) |> 
   relocate(coder, .before = post_number)
 
 comments_reli <- comments |> 
