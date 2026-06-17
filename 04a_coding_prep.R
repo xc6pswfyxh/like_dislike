@@ -100,21 +100,24 @@ write_csv(comments, "data/comments/comments.csv", na = "")
 write_csv(comments_reli, "data/comments/comments_reli.csv", na = "") # write csv for icr test
 
 
-
-#####-----
+####-------------------------------------------------------------------------------------------------
 
 
 ## 2. ICR
-labels_j <- readxl::read_excel("data/comments_relij_coded.xlsx")
-labels_l <- readxl::read_excel("data/comments_reliy_coded.xlsx")
+coding_j <- readxl::read_excel("data/comments/comments_relij_coded.xlsx")
+coding_y <- readxl::read_excel("data/comments/comments_reliy_coded.xlsx")
 
-labels_jl <- labels_j |> 
-  rbind(labels_l)
+coding_j <- coding_j |> head(5)
+coding_y <- coding_y |> head(5)
 
-icr <- labels_jl |> 
-  tidycomm::test_icr(unit_var = post_id, 
+
+coding_comb <- coding_j |> 
+  rbind(coding_y)
+
+icr <- coding_comb |> 
+  tidycomm::test_icr(unit_var = post_number, 
                      coder_var = coder, 
-                     labels, 
+                     c(pers_exp:contr), 
                      kripp_alpha = TRUE,
                      cohens_kappa = TRUE,
                      lotus = TRUE, 
@@ -124,7 +127,8 @@ icr <- labels_jl |>
 icr
 writexl::write_xlsx(icr, "data/icr.xlsx") # write excel for icr table
 
-rm(list = setdiff(ls(), c("bluesky_pp"))) # clean env
+
+####-------------------------------------------------------------------------------------------------
 
 
 ## 2. FINAL LABELS
