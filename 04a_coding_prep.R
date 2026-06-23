@@ -93,7 +93,9 @@ comments_reli <- comments |>
   group_by(vm) |> 
   slice_sample(n = 50) |> # 50 per group (vm)
   ungroup() |> 
-  select(-c(vm))
+  select(-c(vm)) |> 
+  mutate(unique_id = row_number()) |> 
+  relocate(unique_id, .after = coder)
 
 
 write_csv(comments, "data/comments/comments.csv", na = "")
@@ -107,15 +109,15 @@ write_csv(comments_reli, "data/comments/comments_reli.csv", na = "") # write csv
 coding_j <- readxl::read_excel("data/comments/comments_relij_coded.xlsx")
 coding_y <- readxl::read_excel("data/comments/comments_reliy_coded.xlsx")
 
-# coding_j <- coding_j |> head(20)
-# coding_y <- coding_y |> head(20)
+coding_j <- coding_j |> head(50)
+coding_y <- coding_y |> head(50)
 
 
 coding_comb <- coding_j |> 
   rbind(coding_y)
 
 icr <- coding_comb |> 
-  tidycomm::test_icr(unit_var = post_number, 
+  tidycomm::test_icr(unit_var = unique_id, 
                      coder_var = coder, 
                      c(pers_exp:contr), 
                      kripp_alpha = TRUE,
@@ -125,7 +127,7 @@ icr <- coding_comb |>
                      na.omit = TRUE)
 
 icr
-writexl::write_xlsx(icr, "data/icr2.xlsx") # write excel for icr table
+writexl::write_xlsx(icr, "data/icr3.xlsx") # write excel for icr table
 
 
 ####-------------------------------------------------------------------------------------------------
