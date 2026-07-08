@@ -1,4 +1,7 @@
+ollama
+openpyxl
 pandas 
+scikit-learn
 transformers 
 torch 
 tqdm

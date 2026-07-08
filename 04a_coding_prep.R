@@ -109,8 +109,8 @@ write_csv(comments_reli, "data/comments/comments_reli.csv", na = "") # write csv
 coding_j <- readxl::read_excel("data/comments/comments_relij_coded.xlsx")
 coding_y <- readxl::read_excel("data/comments/comments_reliy_coded.xlsx")
 
-coding_j <- coding_j |> head(50)
-coding_y <- coding_y |> head(50)
+# coding_j <- coding_j |> head(50)
+# coding_y <- coding_y |> head(50)
 
 
 coding_comb <- coding_j |> 
