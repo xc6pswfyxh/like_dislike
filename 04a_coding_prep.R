@@ -132,17 +132,16 @@ icr
 writexl::write_xlsx(icr, "data/comments/icr4.xlsx") # write excel for icr table
 
 
-# check disagreements in final coding (150 obs.)
 coding_j_red <- coding_j |> 
-  select(2, 7:12) |> 
-  rename_with(~ paste0(.x, "_j"), .cols = -unique_id)
+  select(2, raw, 7:12) |> 
+  rename_with(~ paste0(.x, "_j"), .cols = -c(unique_id, raw))
 
 coding_y_red <- coding_y |> 
-  select(2, 7:12) |> 
-  rename_with(~ paste0(.x, "_y"), .cols = -unique_id)
+  select(2, raw,7:12) |> 
+  rename_with(~ paste0(.x, "_y"), .cols = -c(unique_id, raw))
 
 disagreement <- coding_j_red |> 
-  left_join(coding_y_red, by = c("unique_id")) |> 
+  left_join(coding_y_red, by = c("unique_id", "raw")) |> 
   filter(
     pers_exp_j != pers_exp_y |
     emot_exp_j != emot_exp_y |
