@@ -109,7 +109,9 @@ write_csv(comments_reli, "data/comments/comments_reli.csv", na = "") # write csv
 coding_j <- readxl::read_excel("data/comments/comments_relij_coded.xlsx")
 coding_y <- readxl::read_excel("data/comments/comments_reliy_coded.xlsx")
 
-# coding_j <- coding_j |> head(150)
+
+# set to 5, 20, 50, or 150 for icr tests
+# coding_j <- coding_j |> head(150) 
 # coding_y <- coding_y |> head(150)
 
 
@@ -127,39 +129,66 @@ icr <- coding_comb |>
                      na.omit = TRUE)
 
 icr
-writexl::write_xlsx(icr, "data/icr4.xlsx") # write excel for icr table
+writexl::write_xlsx(icr, "data/comments/icr4.xlsx") # write excel for icr table
+
+
+# check disagreements in final coding (150 obs.)
+coding_j_red <- coding_j |> 
+  select(2, 7:12) |> 
+  rename_with(~ paste0(.x, "_j"), .cols = -unique_id)
+
+coding_y_red <- coding_y |> 
+  select(2, 7:12) |> 
+  rename_with(~ paste0(.x, "_y"), .cols = -unique_id)
+
+disagreement <- coding_j_red |> 
+  left_join(coding_y_red, by = c("unique_id")) |> 
+  filter(
+    pers_exp_j != pers_exp_y |
+    emot_exp_j != emot_exp_y |
+    pol_opin_j != pol_opin_y |
+    breadth_j != breadth_y |
+    valence_j != valence_y |
+    contr_j != contr_y 
+  
+  )
+
+
+writexl::write_xlsx(disagreement, "data/comments/icr4_disagreement.xlsx")
+rm(list = ls())
 
 
 ####-------------------------------------------------------------------------------------------------
 
+## 2. FINAL CODING
+comments_eval <- readxl::read_excel("data/comments/comments_manual_coding.xlsx")
 
-## 2. FINAL LABELS
-bluesky_samplelabelled <- readxl::read_excel("data/sample_labels_coded.xlsx")
-labelled_observations <- bluesky_samplelabelled
+# remove NAs
+comments_eval <- comments_eval |> 
+  mutate(across(pers_exp:contr, ~if_else(is.na(.x), 0, .x)))
 
-bluesky_samplelabelled |> # check if everything is coded
-  count(labels)
+# check if everything is coded
+vars <- c("pers_exp", "emot_exp", "pol_opin", "breadth", "valence", "contr")
 
-training_data <- bluesky_samplelabelled |> 
-  filter(!is.na(labels)) # remove NAs
+for (v in vars) {
+  cat("---", v, "---\n")
+  print(table(comments_eval[[v]], useNA = "ifany"))
+}
 
-training_data |> 
-  count(labels)
-
-writexl::write_xlsx(training_data, "data/training_data.xlsx") # use this to train classifier
-rm(list = setdiff(ls(), c("bluesky_pp", "labelled_observations"))) # clean env
+writexl::write_xlsx(comments_eval, "data/comments/comments_eval.xlsx") # use this for classifier performance eval
+rm(list = setdiff(ls(), c("comments_eval"))) # clean env
 
 
 ## 3. JOIN MANUALLY LABELLED DATA WITH REST OF DATASET
 
-bluesky_pp <- bluesky_pp |> 
-  left_join(labelled_observations |>  
-              select(post_id, labels),
-    by = "post_id"
-  ) |> 
-  relocate(labels, .after = "text")
+# bluesky_pp <- bluesky_pp |> 
+#   left_join(labelled_observations |>  
+#               select(post_id, labels),
+#     by = "post_id"
+#   ) |> 
+#   relocate(labels, .after = "text")
 
-write.csv(bluesky_pp, "data/bluesky_pp.csv", row.names = FALSE)
+# write.csv(bluesky_pp, "data/bluesky_pp.csv", row.names = FALSE)
 
 
 ## END
