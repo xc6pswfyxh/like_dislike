@@ -109,8 +109,8 @@ write_csv(comments_reli, "data/comments/comments_reli.csv", na = "") # write csv
 coding_j <- readxl::read_excel("data/comments/comments_relij_coded.xlsx")
 coding_y <- readxl::read_excel("data/comments/comments_reliy_coded.xlsx")
 
-# coding_j <- coding_j |> head(50)
-# coding_y <- coding_y |> head(50)
+# coding_j <- coding_j |> head(150)
+# coding_y <- coding_y |> head(150)
 
 
 coding_comb <- coding_j |> 
@@ -127,7 +127,7 @@ icr <- coding_comb |>
                      na.omit = TRUE)
 
 icr
-writexl::write_xlsx(icr, "data/icr3.xlsx") # write excel for icr table
+writexl::write_xlsx(icr, "data/icr4.xlsx") # write excel for icr table
 
 
 ####-------------------------------------------------------------------------------------------------
