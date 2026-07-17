@@ -1,3 +1,4 @@
+krippendorff
 ollama
 openpyxl
 pandas 
