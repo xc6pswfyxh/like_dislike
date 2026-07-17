@@ -1,0 +1,30 @@
+---
+title: "Self-Disclosure Models"
+format: html
+---
+
+
+```{r}
+library(tidyverse)
+
+
+
+ids <- readr::read_csv("data/comments/id_match.csv")
+data <- readr::read_csv("data/data.csv")
+
+data <- data |> 
+  left_join(ids, by = c("id_survey_t1" = "ID_T1")) |> 
+  relocate(username, .after = "id_survey_t1")
+
+
+comments <- readxl::read_xlsx("data/comments/toupdate_data_comments_classified.xlsx")
+
+data_com <- data |> 
+  left_join(comments, by = c("username" = "user"))
+
+
+data_com |> 
+  count(username) |> 
+  arrange(desc(n))
+
+```

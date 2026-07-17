@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Anon">
-<meta name="dcterms.date" content="2026-04-19">
+<meta name="dcterms.date" content="2026-07-17">
 <meta name="keywords" content="privacy calculus, communication, popularity cues, field experiment, preregistration">
 
 <title>Likes or Dislikes, Gratifications or Concerns? – Like Dislike</title>
@@ -4455,7 +4455,7 @@ font-size: 1.2rem;
                 <div>
             <div class="quarto-title-meta-heading">Published</div>
             <div class="quarto-title-meta-contents">
-              <p class="date">April 19, 2026</p>
+              <p class="date">July 17, 2026</p>
             </div>
           </div>
           
@@ -4532,11 +4532,8 @@ font-size: 1.2rem;
   </div>
 </li>
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./04_comment_classification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Comment Classification</span></a>
-  </div>
-</li>
+ <span class="menu-text">04_comment_classification.qmd</span>
+  </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./05_analyses_additional.html" class="sidebar-item-text sidebar-link">
@@ -4789,7 +4786,7 @@ font-size: 1.2rem;
 <h2 class="anchored" data-anchor-id="data-analysis">Data Analysis</h2>
 <p>As preregistered, all hypotheses and research questions were initially tested using structural equation modeling with latent variables. The influence of the three websites was analyzed using contrast coding. Because the assumption of multivariate normality was violated, I estimated the models using robust maximum likelihood <span class="citation" data-cites="klinePrinciplesPracticeStructural2016">(<a href="#ref-klinePrinciplesPracticeStructural2016" role="doc-biblioref">Kline 2016</a>)</span>. As recommended by <span class="citation" data-cites="klinePrinciplesPracticeStructural2016">Kline (<a href="#ref-klinePrinciplesPracticeStructural2016" role="doc-biblioref">2016</a>)</span>, to assess global fit I report the model’s <span class="math inline">\(\chi^2\)</span>, RMSEA (90% CI), CFI, and SRMR. To exclude confounding influences, I controlled all variables for age, gender, and education, which have been shown to affect both privacy concerns and online communication <span class="citation" data-cites="masurUnderstandingEffectsConceptual2023 tifferetGenderDifferencesPrivacy2019a">(<a href="#ref-masurUnderstandingEffectsConceptual2023" role="doc-biblioref">Masur 2023</a>; <a href="#ref-tifferetGenderDifferencesPrivacy2019a" role="doc-biblioref">Tifferet 2019</a>)</span>. The preregistered hypotheses were tested with a one-sided significance level of 5%; the research questions were tested with a two-sided 5% significance level using family-wise Bonferroni-Holm correction.</p>
 <p>As became apparent when analyzing the data, the preregistered analyses had two major problems. First, communication was zero-inflated and gamma distributed. Although it is possible to analyze non-normal data with structural equation modeling, it is recommended to use analyses that model the variables’ distribution, which can be achieved with Bayesian hurdle models <span class="citation" data-cites="mcelreathStatisticalRethinkingBayesian2016">(<a href="#ref-mcelreathStatisticalRethinkingBayesian2016" role="doc-biblioref">McElreath 2016</a>)</span>. In conclusion, in the exploratory analyses I ran (unstandardized) Bayesian hurdle regression models, modeling the outcome as a zero-inflated gamma distribution using default (flat) priors <span class="citation" data-cites="R-brms_a">(chains = 4, iterations = 2,000, warm-up = 1,000, <a href="#ref-R-brms_a" role="doc-biblioref">Bürkner 2017</a>)</span>. Second, in the preregistered analyses several variables were combined that are theoretically and empirically closely related, leading to multicollinearity <span class="citation" data-cites="vanhoveCollinearityIsnDisease2021">(<a href="#ref-vanhoveCollinearityIsnDisease2021" role="doc-biblioref">Vanhove 2021</a>)</span>. As a remedy, I adopted a causal modeling perspective, controlling only for confounders—in this case, age, gender, and education—but not for mediators <span class="citation" data-cites="rohrerThinkingClearlyCorrelations2018">(<a href="#ref-rohrerThinkingClearlyCorrelations2018" role="doc-biblioref">Rohrer 2018</a>)</span>. To assess the effects, I tested whether or not the 95% highest density intervals of the average marginal effects excluded zero. If they excluded zero, effects can be considered “significant” <span class="citation" data-cites="mcelreathStatisticalRethinkingBayesian2016">(<a href="#ref-mcelreathStatisticalRethinkingBayesian2016" role="doc-biblioref">McElreath 2016</a>)</span>. I also plotted the distribution of the effects. For more information on the fitted models, see <a href="https://XMtRa.github.io/like_dislike">online companion website</a>.</p>
-<p>The data were analyzed using R <span class="citation" data-cites="R-base">(Version 4.5.3; <a href="#ref-R-base" role="doc-biblioref">R Core Team 2018</a>)</span> and the R-packages <em>brms</em> <span class="citation" data-cites="R-brms_a R-brms_b">(Version 2.23.0; <a href="#ref-R-brms_a" role="doc-biblioref">Bürkner 2017</a>, <a href="#ref-R-brms_b" role="doc-biblioref">2018</a>)</span>, <em>lavaan</em> <span class="citation" data-cites="R-lavaan">(Version 0.6.22.2551; <a href="#ref-R-lavaan" role="doc-biblioref">Rosseel 2012</a>)</span>, <em>marginaleffects</em> <span class="citation" data-cites="R-marginaleffects">(Version 0.32.0; <a href="#ref-R-marginaleffects" role="doc-biblioref">Arel-Bundock 2023</a>)</span>, <em>papaja</em> <span class="citation" data-cites="R-papaja">(Version 0.1.4; <a href="#ref-R-papaja" role="doc-biblioref">Aust and Barth 2018</a>)</span>, <em>pwr</em> <span class="citation" data-cites="R-pwr">(Version 1.3.0; <a href="#ref-R-pwr" role="doc-biblioref">Champely 2018</a>)</span>, <em>quanteda</em> <span class="citation" data-cites="R-quanteda">(Version 4.3.1; <a href="#ref-R-quanteda" role="doc-biblioref">Benoit 2018</a>)</span>, <em>semTools</em> <span class="citation" data-cites="R-semTools">(Version 0.5.8; <a href="#ref-R-semTools" role="doc-biblioref">Jorgensen et al. 2018</a>)</span>, and <em>tidyverse</em> <span class="citation" data-cites="R-tidyverse">(Version 2.0.0; <a href="#ref-R-tidyverse" role="doc-biblioref">Wickham 2017</a>)</span>.</p>
+<p>The data were analyzed using R <span class="citation" data-cites="R-base">(Version 4.5.3; <a href="#ref-R-base" role="doc-biblioref">R Core Team 2018</a>)</span> and the R-packages <em>brms</em> <span class="citation" data-cites="R-brms_a R-brms_b">(Version 2.23.0; <a href="#ref-R-brms_a" role="doc-biblioref">Bürkner 2017</a>, <a href="#ref-R-brms_b" role="doc-biblioref">2018</a>)</span>, <em>lavaan</em> <span class="citation" data-cites="R-lavaan">(Version 0.6.22.2587; <a href="#ref-R-lavaan" role="doc-biblioref">Rosseel 2012</a>)</span>, <em>marginaleffects</em> <span class="citation" data-cites="R-marginaleffects">(Version 0.32.0; <a href="#ref-R-marginaleffects" role="doc-biblioref">Arel-Bundock 2023</a>)</span>, <em>papaja</em> <span class="citation" data-cites="R-papaja">(Version 0.1.4; <a href="#ref-R-papaja" role="doc-biblioref">Aust and Barth 2018</a>)</span>, <em>pwr</em> <span class="citation" data-cites="R-pwr">(Version 1.3.0; <a href="#ref-R-pwr" role="doc-biblioref">Champely 2018</a>)</span>, <em>quanteda</em> <span class="citation" data-cites="R-quanteda">(Version 4.3.1; <a href="#ref-R-quanteda" role="doc-biblioref">Benoit 2018</a>)</span>, <em>semTools</em> <span class="citation" data-cites="R-semTools">(Version 0.5.8; <a href="#ref-R-semTools" role="doc-biblioref">Jorgensen et al. 2018</a>)</span>, and <em>tidyverse</em> <span class="citation" data-cites="R-tidyverse">(Version 2.0.0; <a href="#ref-R-tidyverse" role="doc-biblioref">Wickham 2017</a>)</span>.</p>
 </section>
 </section>
 <section id="results" class="level1">

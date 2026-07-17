@@ -1,4 +1,4 @@
-#### MANUAL CODING
+#### 1. MANUAL CODING
 
 library(tidyverse)
 
@@ -159,7 +159,7 @@ rm(list = ls())
 
 ####-------------------------------------------------------------------------------------------------
 
-## 2. FINAL CODING
+## 3. FINAL CODING
 comments_eval <- readxl::read_excel("data/comments/comments_manual_coding.xlsx")
 
 # remove NAs
@@ -176,18 +176,3 @@ for (v in vars) {
 
 writexl::write_xlsx(comments_eval, "data/comments/comments_eval.xlsx") # use this for classifier performance eval
 rm(list = setdiff(ls(), c("comments_eval"))) # clean env
-
-
-## 3. JOIN MANUALLY LABELLED DATA WITH REST OF DATASET
-
-# bluesky_pp <- bluesky_pp |> 
-#   left_join(labelled_observations |>  
-#               select(post_id, labels),
-#     by = "post_id"
-#   ) |> 
-#   relocate(labels, .after = "text")
-
-# write.csv(bluesky_pp, "data/bluesky_pp.csv", row.names = FALSE)
-
-
-## END
