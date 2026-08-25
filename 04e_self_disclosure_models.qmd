@@ -28,3 +28,94 @@ data_com |>
   arrange(desc(n))
 
 ```
+
+
+
+```{r}
+
+library(MASS)       # polr() for breadth (ordinal)
+library(nnet)       # multinom() for valence (unordered, 4 categories)
+library(sandwich)   # vcovCL() - cluster-robust variance-covariance
+library(lmtest)     # coeftest() - apply clustered vcov to get a coef table
+library(texreg)
+
+data_com <- data_com |>
+  mutate(
+    condition = factor(version, levels = c("Control", "Like", "Like & dislike")),
+
+    depth = pers_exp + emot_exp + pol_opin,
+    sd_index_raw = as.numeric(scale(depth)) +
+                   as.numeric(scale(breadth)) +
+                   as.numeric(scale(words_log)),
+    sd_index = as.numeric(scale(sd_index_raw)),
+
+    pers_exp_f = factor(pers_exp, levels = c(0, 1)),
+    emot_exp_f = factor(emot_exp, levels = c(0, 1)),
+    pol_opin_f = factor(pol_opin, levels = c(0, 1)),
+    contr_f    = factor(contr,    levels = c(0, 1)),
+    breadth_f  = factor(breadth,  levels = 0:3, ordered = TRUE),
+    valence_f  = factor(valence,  levels = 1:4,
+                         labels = c("positive", "negative", "ambivalent", "indifferent"))
+  )
+
+# Models
+
+## Self-Disclosure Index
+sdindex_ols1 <- glm(sd_index ~
+                       condition,
+                     data = data_com,
+                     family = "gaussian")
+
+## Personal Experience
+persexp_logit1 <- glm(pers_exp_f ~
+                         condition,
+                       data = data_com,
+                       family = "binomial")
+
+## Emotional Expression
+emotexp_logit1 <- glm(emot_exp_f ~
+                         condition,
+                       data = data_com,
+                       family = "binomial")
+
+## Political Opinion
+polopin_logit1 <- glm(pol_opin_f ~
+                         condition,
+                       data = data_com,
+                       family = "binomial")
+
+## Controversiality
+contr_logit1 <- glm(contr_f ~
+                       condition,
+                     data = data_com,
+                     family = "binomial")
+
+## Breadth (ordinal - glm() can't do ordinal, using polr())
+breadth_ordinal1 <- polr(breadth_f ~
+                            condition,
+                          data = data_com,
+                          Hess = TRUE)
+
+## Valence (multinomial - glm() can't do multinomial, using multinom())
+data_com$valence_f <- relevel(data_com$valence_f, ref = "indifferent")
+valence_multinom1 <- multinom(valence_f ~
+                                 condition,
+                               data = data_com)
+
+
+
+
+screenreg(
+  list(
+    sdindex_ols1,
+    persexp_logit1,
+    emotexp_logit1,
+    polopin_logit1,
+    contr_logit1,
+    breadth_ordinal1,
+    valence_multinom1
+  ),
+  digits = 3
+)
+
+```
