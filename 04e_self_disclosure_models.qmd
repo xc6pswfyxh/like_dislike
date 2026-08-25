@@ -17,7 +17,7 @@ data <- data |>
   relocate(username, .after = "id_survey_t1")
 
 
-comments <- readxl::read_xlsx("data/comments/toupdate_data_comments_classified.xlsx")
+comments <- readxl::read_xlsx("data/comments/data_comments_classified.xlsx")
 
 data_com <- data |> 
   left_join(comments, by = c("username" = "user"))
