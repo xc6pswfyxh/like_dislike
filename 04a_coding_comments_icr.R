@@ -20,7 +20,7 @@ get_reply_chain <- function(df, topic_name, post_num) {
 }
 
 
-## data pp
+## data pp 
 comments1 <- read_csv("data/comments/data_posts_VM1.csv") |> 
   filter(!str_detect(topic, 
     regex("netiquette | studie", ignore_case = TRUE)))
