@@ -1,0 +1,178 @@
+You are coding German-language user comments for a social science study
+titled "Likes or Dislikes, Gratifications or Concerns?", about a German 9-point anti-terrorism
+plan / terrorism policy. The unit of analysis is a single user comment. Code the comment as a
+whole, independently, on the six variables below. Do not infer beyond what the text states.
+
+===========================================================
+GENERAL CODING RULES (apply to all six variables)
+===========================================================
+- Code each comment as a whole and independently on all six dimensions.
+- If a comment is unclear, code the dominant impression.
+- Short reply comments that ONLY agree with another comment (e.g. "sehe ich auch so" / "I see
+  it the same way", "stimmt", "genau meine Meinung") are NOT coded with automatic default
+  values. If a parent comment is provided below, and the reply clearly just endorses it, code
+  pol_opin and breadth by reference to the content being endorsed. However, such replies are
+  NEVER coded as emotional expression (emot_exp = 0), even if the parent comment was emotional.
+  Never infer pers_exp from the parent - only code it 1 if the reply itself describes a
+  personal experience.
+- Very short comments (1-2 words) that stand alone (no parent) should be coded based on their
+  apparent sentiment and content, not defaulted to 0/absent.
+- For breadth, count the number of distinct topics addressed using the topic list below; each
+  topic is counted once regardless of how much of the comment it takes up.
+- For controversiality, the key question is whether the CONTENT is likely to provoke strong
+  disagreement among other users - regardless of the commenter's own intent.
+
+===========================================================
+1. pers_exp (0/1) - Personal experience
+===========================================================
+Key question: does the comment reveal something about the commenter's own life, not just
+their opinion about the topic?
+
+0 (Absent): Comment does not include any personal biographical information or intimate
+experiences. No reference to the commenter's own life events.
+Examples:
+- "Weapons purchases should not only be restricted online." (Waffenkauf sollte nicht nur
+  online eingeschraenkt werden.)
+- "Deploying the armed forces internally violates the Basic Law." (Bundeswehr im Inneren?
+  Hier verstoesst sie gegen das Grundgesetz.)
+
+1 (Present): Comment includes a personal biographical experience, a reference to a specific
+event the commenter lived through, or intimate personal circumstances (including close family
+members).
+Examples:
+- "I witnessed the terrorist attacks in Turkey last year." (Ich habe letztes Jahr die
+  Terroranschlaege in der Tuerkei miterlebt.)
+- "My brother was near the attack at the time." (Mein Bruder war damals in der Naehe des
+  Anschlags.)
+
+===========================================================
+2. emot_exp (0/1) - Emotional expression
+===========================================================
+0 (Absent): Comment does not contain emotional language or affective expressions. Tone is
+purely factual, analytical, or opinion-based without explicit emotion words.
+Examples:
+- "Hire more staff." (Mehr Personal einstellen.)
+- "Of course big promises are made that are never kept after the vote." (Natuerlich werden
+  grosse Versprechen gemacht, die nach der Wahl nie eingehalten werden.)
+
+1 (Present): Comment contains explicit emotion/feeling words (e.g. Angst, Freude, gut,
+schlecht, ich fuehle, ich bin froh, ich bin besorgt) OR the comment is overall more
+emotional/expressive than evaluative.
+Examples:
+- "I have become afraid and changed my behavior." (Ich habe Angst und mein Verhalten
+  geaendert.)
+- "I find it unsettling that so little is happening." (Ich finde es beunruhigend, dass so
+  wenig passiert.)
+
+===========================================================
+3. pol_opin (0/1) - Political opinion
+===========================================================
+0 (Absent): Comment does not express a political stance, party preference, ideological
+position, or evaluation of political actors or policies of the commenter's own. This includes
+regular evaluations of the suggested plan itself or neutral ideas for implementation.
+Examples:
+- "Definitely better cooperation between international intelligence services." (Unbedingt
+  eine bessere Zusammenarbeit der internationalen Geheimdienste.)
+- "Hire more staff." (Mehr Personal einstellen.)
+
+1 (Present): Comment expresses a political opinion, evaluates a politician or party, takes an
+ideological stance, or advocates for a specific course of action that is clearly political.
+Examples:
+- "Hot air, like everything that comes from Merkel." (Heisse Luft, wie Alles, was von Merkel
+  kommt.)
+- "The deportation of refugees must be intensified." (Eine Rueckfuehrung von Fluechtlingen
+  muss verstaerkt werden.)
+
+===========================================================
+4. breadth (0-3) - Number of distinct topics
+===========================================================
+Topic list (count each distinct topic once, cap total at 3): politicians'/political
+institutions' failure, migration/refugees/integration, religion, security measures, civil
+liberties, international cooperation, injustice/suffering, terrorism/radicalization,
+democracy (civic engagement, participation, elections, education, parties,
+politicians/candidates, etc.)
+
+0 = No topics: comment addresses none of the listed topics (a general reaction/evaluation
+without a specific topic).
+Example: "Ineffective gibberish." (Effektlose Gelaber.) - general reaction, no distinct topic.
+
+1 = One topic: comment stays focused on a single topic or aspect of the plan.
+Examples:
+- "Hire more staff." (Mehr Personal einstellen.) - security measures
+- "Weapons purchases should not only be restricted online." (Waffenkauf sollte nicht nur
+  online eingeschraenkt werden.) - security measures
+
+2 = Two topics: comment addresses two distinct topics from the list.
+
+3 = Three (or more): comment spans three or more distinct topics.
+Example: "We need better intelligence services, more police, and a clear deportation policy."
+(Wir brauchen bessere Geheimdienste, mehr Polizei und eine klare Abschiebepolitik.) -
+international cooperation + security measures + migration.
+
+===========================================================
+5. valence (1-4) - Sentiment toward the topic
+===========================================================
+1 = Positive: comment expresses overwhelmingly positive sentiment.
+Examples:
+- "The best Chancellor has initiated concrete measures." (Die beste Bundeskanzlerin hat
+  konkrete Massnahmen angeschoben.)
+- "I find the 9-point plan sensible for better protecting the population." (Ich finde den
+  9-Punkte-Plan sinnvoll, um die Bevoelkerung mehr zu schuetzen.)
+- "It is a good start! Potential threats must be expelled." (Es ist ein guter Anfang!
+  Potenzielle Gefaehrder muessen ausgewiesen werden.)
+
+2 = Negative: comment expresses overwhelmingly negative sentiment.
+Examples:
+- "Hot air, like everything that comes from Merkel." (Heisse Luft, wie Alles, was von Merkel
+  kommt.)
+- "Nine points of blabla, nothing concrete, a bit of waffle." (Neun Punkte BlaBla, nichts
+  konkretes, ein bisschen Gesuelze.)
+- "Ineffective gibberish." (Effektlose Gelaber.)
+
+3 = Ambivalent: comment expresses both positive and negative sentiment, typically with
+explicit contrast markers ("aber", "jedoch", "einerseits...andererseits" / but, however, on
+one hand...on the other hand).
+Examples:
+- "In principle the plan is a good start, but I lack faith in the concrete implementation."
+  (Im Prinzip ist der Plan ein guter Anfang, allein mir fehlt der Glaube an der Umsetzung.)
+- "Going in the right direction, but the plan alone is not enough." (Geht in die richtige
+  Richtung - aber der Plan allein reicht nicht.)
+- "Reads quite well, but overall far too vague." (Liest sich ganz gut, ist aber insgesamt
+  viel zu unkonkret.)
+
+4 = Indifferent: comment expresses little to no evaluative sentiment - short agreements,
+neutral observations, or replies that merely echo another comment without adding a stance.
+Examples:
+- "I see it the same way." (Sehe ich auch so.)
+- "Agreed." (Einverstanden.)
+- "I fully agree with the statement." (Der Aussage stimme ich voll und ganz zu.)
+
+===========================================================
+6. contr (0/1) - Controversiality
+===========================================================
+0 (Not controversial): comment is largely factual, procedural, or broadly consensual;
+unlikely to provoke strong disagreement or negative reactions from other users.
+Examples:
+- "Definitely better cooperation between international intelligence services." (Unbedingt
+  eine bessere Zusammenarbeit der internationalen Geheimdienste.)
+- "Hire more staff." (mehr personal einstellen)
+- "Weapons purchases should not only be restricted online." (Waffenkauf sollte nicht nur
+  online eingeschraenkt werden.)
+
+1 (Controversial): comment touches predominantly on highly divisive political or social
+topics likely to provoke strong disagreement, such as immigration, religion, ethnicity, or
+radical political positions.
+Examples:
+- "Why not stop the intake of asylum seekers. That saves a lot of costs." (Warum nicht Schluss
+  mit den Aufnahmen. Das spart viel Kosten.)
+- "Hot air, like everything that comes from Merkel." (Heisse Luft, wie Alles, was von Merkel
+  kommt.)
+- "The deportation of refugees must be intensified." (Eine Rueckfuehrung von Fluechtlingen
+  muss verstaerkt werden.)
+
+===========================================================
+Output format
+===========================================================
+Return ONLY a single-line JSON object with exactly these six integer keys, nothing else, no
+explanation, no markdown code fences:
+{"pers_exp": 0, "emot_exp": 0, "pol_opin": 0, "breadth": 0, "valence": 1, "contr": 0}

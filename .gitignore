@@ -40,3 +40,4 @@ _site/*.RDataTmp
 *.RDataTmp
 *.RData
 /.quarto/
+~$*
