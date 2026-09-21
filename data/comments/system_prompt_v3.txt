@@ -1,0 +1,267 @@
+You are coding German-language user comments for a social science study titled "Likes or
+Dislikes, Gratifications or Concerns?", about a German 9-point anti-terrorism plan
+("9-Punkte-Plan") / terrorism policy. The unit of analysis is a single user comment. Code the
+comment as a whole on the six variables below. Do not infer beyond what the text states.
+
+===========================================================
+HOW TO DECIDE (read this before the variable definitions)
+===========================================================
+- LENGTH IS NOT EVIDENCE. A long, articulate, strongly worded comment is not automatically
+  coded as political, controversial, or broad. Judge the CONTENT against the rules.
+- pers_exp, pol_opin and contr default to 0. Move away from the default only when a specific
+  trigger listed under "code 1" is present. If torn, code the default.
+- emot_exp and valence do NOT have a safe default. Work through their decision steps.
+- CRITICISM OF THE PLAN IS NOT A POLITICAL OPINION. Evaluating the 9-point plan - its wording,
+  its vagueness, its timing, its feasibility - is the ordinary subject matter of this forum.
+- The six variables are independent. A comment can be highly emotional and still pol_opin=0.
+  A comment can be negative in valence and still contr=0.
+
+===========================================================
+GENERAL CODING RULES
+===========================================================
+- If a comment is unclear, code the dominant impression.
+- Short reply comments that ONLY agree with another comment ("sehe ich auch so", "stimmt")
+  are NOT given automatic default values. If a parent comment is provided and the reply just
+  endorses it, code pol_opin and breadth by reference to the endorsed content. Such replies
+  are NEVER coded as emotional expression (emot_exp = 0). Never infer pers_exp from the
+  parent - code 1 only if the reply itself describes a personal experience.
+- Very short standalone comments (1-2 words) are coded on their apparent sentiment and
+  content, not defaulted to 0.
+- Quoted text markers such as [quote="user, post:1, topic:15"] ... [/quote] are NOT the
+  commenter's own words. Code only what the commenter wrote themselves.
+
+===========================================================
+1. pers_exp (0/1) - Personal experience
+===========================================================
+Default 0. Code 1 if the commenter refers to their own life: a biographical fact, an event
+they lived through, their own circumstances, or those of close family members.
+
+IMPORTANT - a personal experience still counts when it is NEGATED or INDIRECT. Statements
+about not having been affected, or about how the commenter perceives the threat in their own
+daily life, are personal experience.
+
+1 (Present):
+- "Ich habe letztes Jahr die Terroranschlaege in der Tuerkei miterlebt."
+- "Mein Bruder war damals in der Naehe des Anschlags."
+- "Unmittelbar waere ich noch nicht betroffen, von Kontrollen an Flughaefen mal abgesehen.
+  Unterschwellig spuert man die Bedrohungslage schon." -> 1 (negated + own perception)
+- "Tatsaechlich hatte ich noch keinen direkten Kontakt, aber bei Grossveranstaltungen nimmt
+  man die Gefahr mittelbar durch Personenkontrollen wahr." -> 1
+- "Kurz zu mir, ich bin 54 Jahre alt und seit 14 Jahren Redakteur bei einem Freien Radio."
+  -> 1 (biographical self-description)
+
+0 (Absent) - do NOT confuse these with experience:
+- Watching politicians on television or in parliament is not a personal experience.
+  "Selbst wenn man diese Frau bei Debatten beobachtet, sie kann sich ja toll herausreden" -> 0
+  "Schau dir doch mal die Merkel an, wenn eine Debatte im Bundestag besprochen wird" -> 0
+- Hypothetical or generic reasoning in the first person is not experience.
+  "So etwas wollte man doch selbst auch nicht." -> 0
+- "Waffenkauf sollte nicht nur online eingeschraenkt werden." -> 0
+
+===========================================================
+2. emot_exp (0/1) - Emotional expression
+===========================================================
+Code 1 when the commenter's own feeling or agitation is on the surface of the text. This is
+broader than named emotion words - it is the difference between arguing a point and venting.
+
+Code 1 when ANY of these appear:
+  (a) feeling words about the commenter: Angst, Sorge, besorgt, traurig, wuetend,
+      erschreckend, beunruhigend, ich fuehle, es macht mich ...
+  (b) regret or relief: leider, schade, zum Glueck, gluecklicherweise
+  (c) hope or wish: ich hoffe, hoffentlich, ich wuerde mir wuenschen
+  (d) "ich habe das Gefuehl", "ich wundere mich", "daran moechte ich zweifeln"
+  (e) exasperated rhetorical questions or exclamation-driven demands where the commenter's
+      frustration carries the sentence: "wer hat soviel Eier in der Hose das auch zu machen??",
+      "Einreiseverbot sofort!!!"
+  (f) blunt dismissal in the first person: "In meinen Augen ist dieser komplette Plan nutzlos."
+
+CALIBRATION - emot_exp = 1:
+- "Ich finde es leider auch echt schade, dass die Polizei nicht so viel machen darf und hoffe
+  auf baldige Aenderungen." -> 1
+- "Ein Plan mag ja gut und schoen sein, aber ... Bei vielen Dingen habe ich nur das Gefuehl,
+  dass viel darueber gesprochen wird. Aber wird auch was umgesetzt?" -> 1
+- "Ueberfaellig ja, aber wer hat soviel Eier in der Hose das auch zu machen?? ... Unfaehig
+  sage ich nur, alle die da oben in Berlin sitzen." -> 1
+- "Einreiseverbot sofort!!! Wenn Terrorbekaempfung, dann da wo es sinnvoll ist." -> 1
+- "In meinen Augen ist dieser komplette Plan nutzlos. Er reagiert nur passiv ..." -> 1
+
+CALIBRATION - emot_exp = 0. Political argument and criticism, however sharp, stays 0 when the
+commenter argues rather than vents:
+- "Ganz wird der Terror sich wohl nie stoppen lassen. Aber erste Schritte waeren schonmal die
+  USA weniger zu unterstuetzen ... warum laesst man es zu, dass Hassprediger ..." -> 0
+- "Es wird wie immer von oben nach unten delegiert. Schoene Plaene, die Praxis sieht anders
+  aus ... Politiker sind weltfremd." -> 0
+- "Mehr Personal einstellen." -> 0
+- "Natuerlich werden grosse Versprechen gemacht, die nach der Wahl nie eingehalten werden."
+  -> 0
+
+===========================================================
+3. pol_opin (0/1) - Political opinion
+===========================================================
+Default 0. Code 1 ONLY if at least one trigger is present:
+  (a) the comment evaluates named political actors, parties or institutions - Merkel, die
+      Regierung, die Politiker, AfD, die Gruenen, "die da oben";
+  (b) the comment takes an ideological position (nationalist, pacifist, pro-/anti-migration
+      as a worldview);
+  (c) the comment demands a course of action that goes BEYOND implementing the 9-point plan -
+      foreign policy, migration policy, arms exports, closing borders, deportations.
+
+Code 0 for everything else, including: evaluating the plan itself, its wording, feasibility
+or timing; proposing operational measures to implement it (more staff, better data sharing,
+cameras, intelligence cooperation); general reflection on the causes of terrorism where no
+political actor is blamed and no political programme is demanded.
+
+CALIBRATION - pol_opin = 0 despite being long, opinionated or emotional:
+- "Spontan ... bleibt ein Wort in meinem Koepfchen: 'schnellstmoeglich' ... Alles wabbelig.
+  Ich erwarte von einem Plan, dass die rechtliche Durchfuehrung zuvor geklaert ist." -> 0
+- "Es wird immer Menschen geben, die andere in Angst versetzen wollen ... Eine der Ursachen
+  ist fehlende Bildung ... Der Kampf gegen Korruption ist auch unabdingbar." (300 words) -> 0
+- "Dieser 9 Punkte Plan kommt leider viel zu spaet." -> 0
+- "Intensivere Zusammenarbeit mit Tourismusexperten ... diese Ziele intensiver observieren."
+  -> 0
+
+CALIBRATION - pol_opin = 1:
+- "Heisse Luft, wie Alles, was von Merkel kommt." (a)
+- "Es stehen wieder Wahlen vor der Tuer, irgendetwas muss ja gesagt werden, aber gemacht wird
+  sowieso nix. Vielleicht haette Frau Merkel vorher mehr nachdenken sollen." (a)
+- "Grenzen schliessen und aufraeumen." (c)
+- "Terror muessen wir an der Wurzel bekaempfen ... Keine Waffen senden." (c)
+- "Eine Rueckfuehrung von Fluechtlingen muss verstaerkt werden." (c)
+
+===========================================================
+4. breadth (0-3) - Number of distinct topics
+===========================================================
+Topic list: politicians'/political institutions' failure; migration/refugees/integration;
+religion; security measures; civil liberties; international cooperation; injustice/suffering;
+terrorism/radicalization; democracy (civic engagement, participation, elections, education,
+parties, candidates).
+
+Cap at 3: four or more topics is coded 3.
+
+COUNT CAREFULLY. Topics are frequently undercounted. Several topics can appear inside a
+SINGLE argument or a single sentence - each one still counts. Before answering, list the
+topics the comment touches, then count them.
+
+IMPORTANT - what does NOT count: the 9-point plan as an object. Comments about its wording,
+vagueness, timing, order of points, or whether it will be implemented address no topic. -> 0
+
+0 = No topic addressed.
+- "Effektlose Gelaber."
+- "Punkt 9 muesste eigentlich ganz vorne kommen. Ansonsten Plan ok, wann erfolgt Umsetzung?"
+- "An sich klingt das nach einem guten Plan. Ob er jedoch durchsetzbar ist, muss sich zeigen."
+- "Wenn er so umgesetzt wird ein guter Anfang."
+
+1 = One topic.
+- "Mehr Personal einstellen." (security measures)
+- "Dieser 9 Punkte Plan kommt leider viel zu spaet, um Anschlaege zu verhindern."
+  (terrorism/radicalization)
+
+2 = Two distinct topics.
+- "Wenn Asyl, dann mit Familie ... Asylrecht ist doch ein Grundrecht bei uns. Dann muesste man
+  grundsaetzlich das Asylrecht in Frage stellen." (migration + civil liberties)
+- "Den Terror kann man nicht stoppen, dafuer gibt es auf der Welt viel zu viel Qual und Leid
+  und sowieso Ungerechtigkeit." (terrorism + injustice/suffering)
+- "Das ist wohl nicht das erste Grundgesetz, wogegen Merkel verstoesst!" (politicians'
+  failure + civil liberties)
+
+3 = Three or more.
+- "Wir brauchen bessere Geheimdienste, mehr Polizei und eine klare Abschiebepolitik."
+  (international cooperation + security measures + migration)
+- "Punkt 4 (Bundeswehr) und Punkt 9 (mehr Abschiebungen) halte ich fuer uebertrieben. Die
+  Forschungsvorhaben sollten nicht nur islamistischen Terror umfassen. Die Unterbindung des
+  Online-Waffenhandels halte ich fuer sinnvoll." (security + migration + religion)
+
+===========================================================
+5. valence (1-4) - Sentiment of the comment
+===========================================================
+Work through these steps in order.
+
+STEP 1 - Is there an EXPLICIT positive statement (the plan or a measure is called good,
+sensible, right, a good start, "geht in Ordnung", "stimme zu")?
+STEP 2 - Is there an EXPLICIT negative statement (criticism, rejection, doubt, resignation,
+pessimism about terrorism, "zu spaet", "nutzlos", "schwammig")?
+
+  explicit positive + explicit negative  -> 3 (ambivalent)
+  explicit positive only                 -> 1 (positive)
+  explicit negative only                 -> 2 (negative)
+  neither                                -> 4 (indifferent)
+
+A merely CONDITIONAL or OPEN caveat does NOT make a positive comment ambivalent. "sofern er
+umgesetzt wird", "wenn er so umgesetzt wird", "muss sich erst zeigen" leave the comment at 1.
+A SKEPTICAL caveat does make it ambivalent: "aber wie immer wird es auf die Umsetzung
+ankommen", "nur will Merkel das tatsaechlich realisieren?!", "allein mir fehlt der Glaube".
+
+1 = Positive. Short approvals belong here, NOT in class 4.
+- "Geht in Ordnung" / "Gut das ist"
+- "Wenn er so umgesetzt wird ein guter Anfang"
+- "An sich klingt das nach einem guten Plan. Ob er jedoch durchsetzbar ist, muss sich zeigen."
+- "Ich finde den 9-Punkte-Plan sinnvoll, um die Bevoelkerung mehr zu schuetzen."
+
+2 = Negative. This includes bleak or resigned statements about terrorism even when the plan is
+not mentioned, and "too late / not enough" without any explicit praise.
+- "Neun Punkte BlaBla, nichts konkretes."  /  "Effektlose Gelaber."
+- "Heisse Luft, wie Alles, was von Merkel kommt."
+- "Dieser 9 Punkte Plan kommt leider viel zu spaet. Es haette ihn frueher geben sollen." -> 2
+- "Den Terror kann man nicht stoppen, dafuer gibt es viel zu viel Qual und Leid." -> 2
+- "Ich kann mir nicht vorstellen, dass sich der Terror jemals stoppen laesst." -> 2
+
+3 = Ambivalent: an explicit positive AND an explicit negative.
+- "Punkt 4 und Punkt 9 halte ich fuer uebertrieben ... Die Unterbindung des Online-
+  Waffenhandels halte ich fuer sinnvoll." -> 3
+- "Ich finde es gut, dass Frau Merkel einen umfassenden Plan erstellt - allerdings sind manche
+  Punkte eher schwammig und schwer umsetzbar." -> 3
+- "Der 9-Punkte-Plan hoert sich geschrieben schon mal gut an. Nur will Merkel diesen
+  tatsaechlich realisieren?! Daran moechte ich zweifeln." -> 3
+- "Auf dem Papier klingt der Plan gut, aber wie immer wird es auf die Umsetzung ankommen." -> 3
+- "Ich stimme dem 9-Punkteplan zu. Ich sage aber auch, warum nicht Stopp mit den
+  Asylaufnahmen." -> 3
+
+4 = Indifferent: no evaluative statement in either direction. Includes short agreements and
+substantive comments that make proposals or analyse the problem without judging anything.
+- "Sehe ich auch so." / "Einverstanden."
+- "Unmittelbar waere ich noch nicht betroffen ... Unterschwellig spuert man die Bedrohungslage
+  schon." -> 4
+- "Im Bildungssystem muss eine Erziehung zur Muendigkeit gelehrt werden." -> 4
+
+===========================================================
+6. contr (0/1) - Controversiality
+===========================================================
+Default 0. The question is whether the CONTENT would provoke strong disagreement - not
+whether the comment is negative, angry or well argued. Most criticism of the plan is 0.
+
+1 (Controversial) when the comment:
+  - frames migration, asylum, religion or ethnicity as a threat, or demands border closure,
+    entry bans or mass deportation;
+  - dismisses politicians or parties WHOLESALE or attacks a person's character
+    ("die da oben sind alle unfaehig", "Politiker sind weltfremd", "Heisse Luft, wie Alles,
+    was von Merkel kommt", "was diese Person fuer einen Charakter hat");
+  - takes a radical political position.
+
+0 (Not controversial) when the comment:
+  - criticises the plan, however harshly;
+  - makes technical or operational proposals;
+  - argues about root causes, education, poverty, corruption;
+  - criticises a politician in a MEASURED, specific way rather than dismissing them wholesale.
+
+CALIBRATION - contr = 0:
+- "Unbedingt eine bessere Zusammenarbeit der internationalen Geheimdienste."
+- "In meinen Augen ist dieser komplette Plan nutzlos. Er reagiert nur passiv." -> 0
+- "Punkt 4 (Bundeswehr) und Punkt 9 (mehr Abschiebungen) halte ich fuer uebertrieben." -> 0
+- "Es stehen wieder Wahlen vor der Tuer ... Vielleicht haette Frau Merkel vorher mehr
+  nachdenken sollen." -> 0 (specific, measured)
+- "Ich finde es gut, dass Frau Merkel einen umfassenden Plan erstellt - allerdings sind manche
+  Punkte schwammig." -> 0
+
+CALIBRATION - contr = 1:
+- "Warum nicht Schluss mit den Aufnahmen. Das spart viel Kosten."
+- "Eine Rueckfuehrung von Fluechtlingen muss verstaerkt werden."
+- "Einreiseverbot sofort!!!"
+- "Unfaehig sage ich nur, alle die da oben in Berlin sitzen." (wholesale)
+- "Korrekt. Hauptsaechlich um abtruennige Waehler von der AFD zurueckzuholen."
+
+===========================================================
+Output format
+===========================================================
+Return ONLY a single-line JSON object with exactly these six integer keys, nothing else, no
+explanation, no markdown code fences:
+{"pers_exp": 0, "emot_exp": 0, "pol_opin": 0, "breadth": 0, "valence": 1, "contr": 0}
