@@ -201,34 +201,15 @@ Zusammenarbeit; Ungerechtigkeit/Leid; Terrorismus/Radikalisierung; Demokratie
 
 Deckel bei 3: vier oder mehr Themen werden als 3 kodiert.
 
-ZÄHLE SORGFÄLTIG. Themen werden in beide Richtungen leicht falsch gezaehlt. Gehe den Kommentar
-klausel- bzw. satzweise durch und pruefe JEDE Klausel einzeln gegen die Themenliste, statt nach
-den ersten zwei offensichtlichen Themen aufzuhoeren - bei langen, mehrteiligen Kommentaren
-steckt das dritte/vierte Thema oft in einem kurzen Nebensatz (z.B. ein beilaeufiger Verweis auf
-eine Wahl, auf Toleranz/Respekt, oder auf soziale Missstaende) und wird leicht uebersehen.
-Besonders haeufig uebersehen: Demokratie (Wahlen, Beteiligung, Toleranz als Wert) und
-Ungerechtigkeit/Leid (soziale Missstaende, "im Stich gelassen", Leid allgemein) - diese werden
-selten durch ein einzelnes klares Schlagwort markiert.
-
-Zaehle aber jedes Thema nur EINMAL, auch wenn es mehrfach im Kommentar erwaehnt wird -
-Wiederholung desselben Themas erhoeht die Zahl nicht. Allgemeine Veraergerung, Ton oder Laenge
-sind selbst kein Thema.
-
-NICHT UEBERZAEHLEN: Wenn zwei Formulierungen im selben Gedankengang auf EIN UND DENSELBEN
-konkreten Sachverhalt verweisen, zaehlen sie als EIN Thema, nicht zwei - auch wenn beide
-Formulierungen technisch zu unterschiedlichen Eintraegen der Themenliste passen wuerden.
-Beispiel: Ein Kommentar, der ausschliesslich den Umgang mit TERROR-VERDAECHTIGEN behandelt
-(Ueberwachung, Ausweisung von Gefaehrdern), spricht EIN Thema an (Sicherheitsmassnahmen), auch
-wenn "das Land verlassen muessen" oberflaechlich nach Migration klingt - es geht hier nicht um
-Migrationspolitik im Allgemeinen, sondern um eine einzelne Sicherheitsmassnahme. Zaehle erst
-dann zwei Themen, wenn der Kommentar tatsaechlich zwei INHALTLICH UNTERSCHIEDLICHE Punkte
-macht.
+ZÄHLE SORGFÄLTIG. Themen werden häufig unterzählt. Mehrere Themen können innerhalb EINES
+Arguments oder EINES Satzes auftreten - jedes zählt trotzdem einzeln. Listen zuerst gedanklich
+die berührten Themen auf, dann zähle sie. Zähle aber jedes Thema nur EINMAL, auch wenn es
+mehrfach im Kommentar erwähnt wird - Wiederholung desselben Themas erhöht die Zahl nicht.
+Allgemeine Verärgerung, Ton oder Länge sind selbst kein Thema.
 
 WICHTIG - was NICHT zählt: der 9-Punkte-Plan als Objekt. Kommentare über seine Formulierung,
-Unschärfe, sein Timing, die Reihenfolge der Punkte, ob oder wie er umgesetzt wird, sprechen
-kein Thema aus der Liste an. Das gilt auch fuer Zweifel an der Umsetzung mitten in einem
-sonst thematischen Kommentar ("aber wie soll das umgesetzt werden?") - dieser Teilsatz zaehlt
-selbst nicht als eigenes Thema. -> 0
+Unschärfe, sein Timing, die Reihenfolge der Punkte oder ob er umgesetzt wird, sprechen kein
+Thema aus der Liste an. -> 0
 
 0 = Kein Thema angesprochen.
 - "Effektlose Gelaber."
@@ -240,17 +221,6 @@ selbst nicht als eigenes Thema. -> 0
 - "Mehr Personal einstellen." (Sicherheitsmassnahmen)
 - "Dieser 9 Punkte Plan kommt leider viel zu spaet, um Anschlaege zu verhindern."
   (Terrorismus/Radikalisierung)
-- "Gefaehrder zu ueberwachen duerfte schwierig sein. Ich bin der Meinung, dass alle
-  Verdaechtigen sofort unser Land verlassen muessten. Aber die Gefahr bleibt immer bestehen,
-  wir wissen nie genau, wie Gefaehrder ticken." (nur Sicherheitsmassnahmen - "Land verlassen"
-  bezieht sich hier auf Gefaehrder, nicht auf Migrationspolitik allgemein, zaehlt NICHT
-  zusaetzlich als Migration)
-- "Unser GG ist schon lange von der Regierung ausgehebelt worden ... Ich halte das Ganze fuer
-  eine Farce um die Verdummung der Buerger voranzutreiben." (nur ein Gedanke: Regierung
-  verletzt Grundrechte - zaehlt als EIN Thema, nicht als Politiker-Versagen UND buergerliche
-  Freiheiten getrennt)
-- "Das hoert sich ja alles gut an, aber wie soll es umgesetzt werden? Und mir fehlt der Punkt:
-  weniger Fluechtlinge ins Land lassen!" (nur Migration - die Umsetzungsfrage zaehlt nicht)
 
 2 = Zwei unterschiedliche Themen.
 - "Wenn Asyl, dann mit Familie ... Asylrecht ist doch ein Grundrecht bei uns. Dann muesste man
@@ -266,89 +236,49 @@ selbst nicht als eigenes Thema. -> 0
 - "Punkt 4 (Bundeswehr) und Punkt 9 (mehr Abschiebungen) halte ich fuer uebertrieben. Die
   Forschungsvorhaben sollten nicht nur islamistischen Terror umfassen. Die Unterbindung des
   Online-Waffenhandels halte ich fuer sinnvoll." (Sicherheit + Migration + Religion)
-- "Diese Punkte sind gut und richtig, nur viel zu spaet beschlossen ... Das Kompetenzgerangel
-  ueber die Dienste - Geheimdienst, Nachrichtendienst, Polizei und Politik - hat noch gar
-  nicht begonnen ... Dazu kommt die Bundestagswahl!" (Sicherheitsmassnahmen +
-  Politiker-/Institutionenversagen + Demokratie [Wahl] - das dritte Thema steckt in einem
-  kurzen Nebensatz, unbedingt mitzaehlen)
-- "Wir muessen potenziellen Gefaehrdern auch die Moeglichkeit geben, von selbst auszusteigen
-  ... sowas sollten wir auch fuer islamischen Terror in Erwaegung ziehen. Ausserdem sollten
-  wir endlich anfangen, Integration zu leben." (Sicherheitsmassnahmen + Religion + Migration/
-  Integration)
-- "Jeder sollte seine Meinung haben und diese auch aussprechen duerfen ... Respekt und
-  Toleranz spielen da eine grosse Rolle. Religionen sollten auch nicht dafuer genutzt werden,
-  Menschen zu verhetzen." (buergerliche Freiheiten [Meinungsfreiheit] + Demokratie [Toleranz]
-  + Religion)
 
 ===========================================================
 5. valence (1-4) - Grundstimmung des Kommentars (Valence)
 ===========================================================
 Arbeite diese Schritte IN DIESER REIHENFOLGE ab, für den gesamten Kommentar:
 
-SCHRITT 0 - Lies den ganzen Kommentar zu Ende, bevor du entscheidest.
-SCHRITT 1 - Durchsuche den GANZEN Text nach einer EXPLIZITEN positiven Aussage (siehe
-Wortliste unten). Suche systematisch weiter, auch wenn danach noch ein langer kritischer
-Abschnitt folgt - die LÄNGE des nachfolgenden negativen Teils entwertet eine bereits
-gefundene positive Aussage NICHT. Ein einziger positiver Satz am Anfang eines sonst langen,
-kritischen Kommentars reicht fuer den positiven Baustein.
-SCHRITT 2 - Durchsuche den GANZEN Text nach einer EXPLIZITEN negativen Aussage (Kritik,
-Ablehnung, Zweifel, Resignation, Pessimismus, "zu spaet", "nutzlos", "schwammig").
+SCHRITT 0 - Lies den ganzen Kommentar zuerst zu Ende, bevor du entscheidest. Ein Gegensatz
+oder eine Einschränkung steht oft im zweiten Satz oder nach einem "aber"/"allerdings" -
+wird der Kommentar nur bis zur ersten Aussage bewertet, geht dieses Signal verloren.
+SCHRITT 1 - Gibt es eine EXPLIZITE positive Aussage (der Plan oder eine Massnahme wird als
+gut, sinnvoll, richtig, ein guter Anfang bezeichnet, "geht in Ordnung", "stimme zu")?
+SCHRITT 2 - Gibt es eine EXPLIZITE negative Aussage (Kritik, Ablehnung, Zweifel,
+Resignation, Pessimismus gegenueber Terrorismus, "zu spaet", "nutzlos", "schwammig")?
 
   explizit positiv + explizit negativ  -> 3 (ambivalent)
   nur explizit positiv                 -> 1 (positiv)
   nur explizit negativ                 -> 2 (negativ)
   weder noch                           -> 4 (indifferent)
 
-WORTLISTE fuer den positiven Baustein (SCHRITT 1) - zaehlt als positiv:
-  - wertende Zustimmung: gut, sinnvoll, richtig, ein guter Anfang, "geht in Ordnung",
-    "stimme zu", wichtig, "befuerworte ich", "das finde ich gut/richtig/wichtig"
-  - eigene Erleichterung/Glueck: "zum Glueck", "gluecklicherweise", "Gott sei Dank"
-  - Hoffnung/Wunsch nach einer guten Entwicklung: "ich hoffe", "hoffentlich" - zaehlt auch
-    ohne explizites Lob-Wort als positiver Baustein.
-  NICHT ausreichend fuer den positiven Baustein: eine reine Notwendigkeits- oder
-  Tatsachenfeststellung ohne Wertung ("das ist noetig", "das ist klar", "das wissen wir",
-  "X muss getan werden", "es braucht mehr Y"). Solche Saetze beschreiben nur einen Bedarf,
-  loben aber nichts explizit - sie zaehlen NICHT als positiver Baustein, selbst wenn sie mit
-  Nachdruck oder Ausrufezeichen geschrieben sind.
-
 Eine rein BEDINGTE oder OFFENE Einschränkung macht einen positiven Kommentar NICHT
 ambivalent. "sofern er umgesetzt wird", "wenn er so umgesetzt wird", "muss sich erst zeigen"
 belassen den Kommentar bei 1. Eine SKEPTISCHE Einschränkung macht ihn dagegen ambivalent:
 "aber wie immer wird es auf die Umsetzung ankommen", "nur will Merkel das tatsaechlich
-realisieren?!", "allein mir fehlt der Glaube". Ein Kontrastmarker wie "obwohl", "trotzdem",
-"dennoch", "aber", "einerseits ... andererseits" signalisiert Ambivalenz NUR, wenn auf BEIDEN
-Seiten des Kontrasts eine echte WERTENDE Aussage steht (siehe Wortliste oben) - nicht, wenn
-eine Seite nur eine sachliche Feststellung, eine Notwendigkeitsaussage oder eine Bedingung
-ist. "Wir wissen, dass diese Massnahmen noetig sind, aber es ist nichts wirklich Neues"
-bleibt 2 (negativ), weil "noetig sind" keine Wertung, sondern eine Tatsachenfeststellung ist.
+realisieren?!", "allein mir fehlt der Glaube". Achte auch auf Kontrastmarker wie "obwohl",
+"trotzdem", "dennoch", "einerseits ... andererseits" - sie sind ein starkes Signal fuer
+Code 3 und werden leicht uebersehen, wenn nur der erste Satzteil betrachtet wird.
 
 1 = Positiv. Kurze Zustimmungen gehoeren hierher, NICHT in Klasse 4.
 - "Geht in Ordnung" / "Gut das ist"
 - "Wenn er so umgesetzt wird ein guter Anfang"
 - "An sich klingt das nach einem guten Plan. Ob er jedoch durchsetzbar ist, muss sich zeigen."
 - "Ich finde den 9-Punkte-Plan sinnvoll, um die Bevoelkerung mehr zu schuetzen."
-- "Hatte bisher keine Probleme mit dem Terror und hoffe dass es auch in Zukunft so sein
-  wird." -> 1 (Hoffnung auf gute Entwicklung, ohne Kritik = positiv, nicht indifferent)
 
 2 = Negativ. Dazu zaehlen auch duestere oder resignierte Aussagen ueber Terrorismus, selbst
 wenn der Plan nicht erwaehnt wird, sowie "zu spaet / nicht genug" ohne jegliches explizites
-Lob. WICHTIG: eine Notwendigkeits-/Tatsachenfeststellung ("X ist noetig", "ist doch klar")
-ist KEIN Lob und macht einen sonst negativen/kritischen Kommentar NICHT ambivalent.
+Lob.
 - "Neun Punkte BlaBla, nichts konkretes."  /  "Effektlose Gelaber."
 - "Heisse Luft, wie Alles, was von Merkel kommt."
 - "Dieser 9 Punkte Plan kommt leider viel zu spaet. Es haette ihn frueher geben sollen." -> 2
 - "Den Terror kann man nicht stoppen, dafuer gibt es viel zu viel Qual und Leid." -> 2
 - "Ich kann mir nicht vorstellen, dass sich der Terror jemals stoppen laesst." -> 2
-- "Also ich finde auch, dass die Bundeswehr im Inneren gegen das Gesetz verstoessen wuerde -
-  dass die Polizei eine bessere Ausruestung benoetigt ist auf alle Faelle klar! - die die
-  unser Asylrecht missbrauchen, sollten sofort abgeschoben werden." -> 2 ("ist klar!" ist
-  Tatsachenfeststellung, kein Lob - der ganze Kommentar bleibt kritisch/fordernd)
-- "Naja, alles Massnahmen, wo wir wissen, dass sie noetig sind, aber nichts wirklich Neues."
-  -> 2 ("noetig sind" ist keine Wertung)
 
-3 = Ambivalent: eine explizit positive UND eine explizit negative Aussage - unabhaengig
-davon, wie lang der jeweilige Teil ist. Auch ein einzelner kurzer Lob-Satz zu Beginn eines
-langen kritischen Kommentars macht diesen ambivalent, nicht negativ.
+3 = Ambivalent: eine explizit positive UND eine explizit negative Aussage.
 - "Punkt 4 und Punkt 9 halte ich fuer uebertrieben ... Die Unterbindung des Online-
   Waffenhandels halte ich fuer sinnvoll." -> 3
 - "Ich finde es gut, dass Frau Merkel einen umfassenden Plan erstellt - allerdings sind manche
@@ -358,20 +288,10 @@ langen kritischen Kommentars macht diesen ambivalent, nicht negativ.
 - "Auf dem Papier klingt der Plan gut, aber wie immer wird es auf die Umsetzung ankommen." -> 3
 - "Ich stimme dem 9-Punkteplan zu. Ich sage aber auch, warum nicht Stopp mit den
   Asylaufnahmen." -> 3
-- "Diese Punkte sind gut und richtig, nur viel zu spaet beschlossen und noch lange nicht
-  umgesetzt. Das Kompetenzgerangel ... hat noch gar nicht begonnen." -> 3 ("gut und richtig"
-  am Anfang bleibt gueltig, auch wenn danach lange kritisiert wird)
-- "Ich habe zum Glueck noch keine persoenlichen Erfahrungen mit Terror gemacht. Aber ich habe
-  Verwandte in Berlin, und ... war ich sehr besorgt und vollkommen veraengstigt." -> 3 ("zum
-  Glueck" = positiver Baustein, Angst/Sorge = negativer Baustein)
-- "Ich finde es leider auch echt schade, dass die Polizei nicht so viel machen darf und
-  hoffe auf baldige Aenderungen." -> 3 ("leider/schade" = negativ, "hoffe auf Aenderungen" =
-  positiver Baustein)
 
-4 = Indifferent: keine wertende Aussage in irgendeine Richtung - weder Lob noch Kritik, auch
-keine Hoffnung auf eine gute Entwicklung. Umfasst kurze Zustimmungen (die keine Wertung des
-Plans sind, sondern nur Zustimmung zu einer Aussage) und inhaltliche Kommentare, die
-Vorschlaege machen oder das Problem rein analytisch beschreiben, ohne etwas zu bewerten.
+4 = Indifferent: keine wertende Aussage in irgendeine Richtung. Umfasst kurze Zustimmungen
+und inhaltliche Kommentare, die Vorschlaege machen oder das Problem analysieren, ohne etwas
+zu bewerten.
 - "Sehe ich auch so." / "Einverstanden."
 - "Unmittelbar waere ich noch nicht betroffen ... Unterschwellig spuert man die Bedrohungslage
   schon." -> 4
