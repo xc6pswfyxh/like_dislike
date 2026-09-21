@@ -74,87 +74,42 @@ Bedrohungslage im eigenen Alltag wahrnimmt, gelten als persönliche Erfahrung.
 ===========================================================
 Kodiere 1, wenn das eigene Gefühl oder die Erregtheit des Kommentators auf der Textoberfläche
 sichtbar wird. Das ist weiter gefasst als blosse Gefühlswörter - es ist der Unterschied
-zwischen Argumentieren und Sich-Luft-machen.
-
-ENTSCHEIDENDER TEST: Liest sich der Satz auch als nuechterner Stichpunkt in einem sachlichen
-Positionspapier? Wenn ja -> 0, SELBST bei Fragezeichen, Ausrufezeichen, Ironie oder einem
-kurzen harten Verdikt. Diese Stilmittel allein sind KEIN Beweis fuer emot_exp - sie kommen in
-diesem Forum staendig auch in rein argumentativen Kommentaren vor. Kodiere 1 nur, wenn die
-eigene Erregtheit/das eigene Gefuehl des Kommentators unuebersehbar auf der Textoberflaeche
-liegt, nicht nur der Diskussionsgegenstand emotional aufgeladen ist (z.B. Terrorismus,
-Migration - das Thema selbst macht einen Kommentar NICHT automatisch zu emot_exp=1).
+zwischen Argumentieren und Sich-Luft-machen. Achte besonders auf implizite emotionale
+Signale (Ironie, Empörung, Erleichterung), nicht nur auf explizit genannte Gefühlswörter.
 
 Kodiere 1, wenn EINES der folgenden Merkmale vorliegt:
-  (a) Gefühlswörter, die das eigene Empfinden des Kommentators benennen: Angst, Sorge,
-      besorgt, traurig, wuetend, erschreckend (fuer mich), beunruhigend (fuer mich), ich
-      fuehle, es macht mich ...
-  (b) Bedauern oder Erleichterung UEBER DIE EIGENE SITUATION/Wahrnehmung: leider, schade, zum
-      Glueck, gluecklicherweise. Zaehlt NICHT, wenn "leider" nur ein rhetorisches Fuellwort
-      in einem sachlichen Argument ueber Dritte/Institutionen ist (siehe Kalibrierung unten).
-  (c) Hoffnung oder Wunsch MIT erkennbarem persoenlichem Anteil: ich hoffe, hoffentlich, ich
-      wuerde mir wuenschen - kombiniert mit einer weiteren Gefuehlsspur im selben Kommentar.
-      Ein einzelner, flach formulierter Hoffnungssatz ohne weitere Gefuehlsspur reicht ALLEIN
-      nicht aus (siehe Kalibrierung unten).
-  (d) "ich habe [nur] das Gefuehl, dass ...", "ich wundere mich", "daran moechte ich
-      zweifeln" - NICHT, wenn "Gefuehl" abgeschwächt auftritt ("ein wenig das Gefuehl") und
-      direkt in eine sachliche, analytische Fortsetzung uebergeht.
-  (e) Eine rhetorische Frage oder ein von Ausrufezeichen getragener Ausruf zaehlt NUR, wenn
-      zusaetzlich zur Interpunktion ein klarer persoenlicher Erregtheits-Marker vorliegt -
-      Umgangssprache, eine Beleidigung, eine uebertriebene Formulierung ("Eier in der Hose",
-      "sofort!!!"). Eine sachliche rhetorische Frage, die auch ruhig in einem Positionspapier
-      stehen koennte ("Oder sollen die Soldaten einfach zugucken?"), zaehlt NICHT - das ist
-      Argumentieren, keine sichtbare Erregtheit.
-  (f) Eine elaborierte, mit weiterem Affekt angereicherte Ablehnung in der Ich-Form zaehlt
-      ("In meinen Augen ist dieser komplette Plan nutzlos. Er reagiert nur passiv ..."). Ein
-      SEHR KURZES, isoliertes Verdikt (2-4 Woerter, z.B. "Halte ich fuer sinnlos.") OHNE
-      weitere Ausschmueckung oder Gefuehlsspur zaehlt NICHT - das ist eine knappe Meinung,
-      keine sichtbare Emotion.
+  (a) Gefühlswörter über den Kommentator selbst: Angst, Sorge, besorgt, traurig, wuetend,
+      erschreckend, beunruhigend, ich fuehle, es macht mich ...
+  (b) Bedauern oder Erleichterung: leider, schade, zum Glueck, gluecklicherweise
+  (c) Hoffnung oder Wunsch: ich hoffe, hoffentlich, ich wuerde mir wuenschen
+  (d) "ich habe das Gefuehl", "ich wundere mich", "daran moechte ich zweifeln"
+  (e) entnervte rhetorische Fragen oder von Ausrufezeichen getragene Forderungen, bei denen
+      die Verärgerung des Kommentators den Satz trägt: "wer hat soviel Eier in der Hose das
+      auch zu machen??", "Einreiseverbot sofort!!!"
+  (f) unverblümte Ablehnung in der Ich-Form: "In meinen Augen ist dieser komplette Plan
+      nutzlos."
+  (g) ironische oder sarkastische Marker, die erkennbar Frust statt eines nüchternen
+      Arguments ausdrücken: "typisch", "wie immer", "na klar" in abwertendem Kontext.
 
 KALIBRIERUNG - emot_exp = 1:
 - "Ich finde es leider auch echt schade, dass die Polizei nicht so viel machen darf und hoffe
-  auf baldige Aenderungen." -> 1 (Bedauern + Hoffnung zusammen, beide auf die eigene Reaktion
-  bezogen)
+  auf baldige Aenderungen." -> 1
 - "Ein Plan mag ja gut und schoen sein, aber ... Bei vielen Dingen habe ich nur das Gefuehl,
-  dass viel darueber gesprochen wird. Aber wird auch was umgesetzt?" -> 1 (ungehedgtes "nur
-  das Gefuehl" + abschliessende frustrierte Frage)
+  dass viel darueber gesprochen wird. Aber wird auch was umgesetzt?" -> 1
 - "Ueberfaellig ja, aber wer hat soviel Eier in der Hose das auch zu machen?? ... Unfaehig
-  sage ich nur, alle die da oben in Berlin sitzen." -> 1 (Umgangssprache + Beleidigung)
+  sage ich nur, alle die da oben in Berlin sitzen." -> 1
 - "Einreiseverbot sofort!!! Wenn Terrorbekaempfung, dann da wo es sinnvoll ist." -> 1
-  (uebersteigerte Dringlichkeit, kein sachlicher Ton)
 - "In meinen Augen ist dieser komplette Plan nutzlos. Er reagiert nur passiv ..." -> 1
-  (elaboriert, nicht nur ein knappes Verdikt)
-- "Bei mir wuerde Hass entstehen, wenn man mir meine liebsten Menschen nimmt, durch Krieg,
-  Bomben oder durch Folter und krasse Ungerechtigkeit." -> 1 (hypothetische, aber explizit
-  persoenliche Gefuehlsidentifikation: "bei mir")
-- "Mit Terroranschlaegen habe ich selbst noch keine Erfahrung gemacht, allerdings spuere ich
-  sehr wohl Veraenderungen im Alltag." -> 1 ("spuere ich" = eigene affektive Wahrnehmung)
 
-KALIBRIERUNG - emot_exp = 0. Politisches Argumentieren und Kritik bleiben 0, so scharf,
-sarkastisch oder mit Satzzeichen verstaerkt sie auch formuliert sind, solange der Kommentator
-argumentiert statt sichtbar Luft abzulassen:
+KALIBRIERUNG - emot_exp = 0. Politisches Argumentieren und Kritik bleiben 0, so scharf sie
+auch formuliert sind, solange der Kommentator argumentiert statt Luft abzulassen:
 - "Ganz wird der Terror sich wohl nie stoppen lassen. Aber erste Schritte waeren schonmal die
   USA weniger zu unterstuetzen ... warum laesst man es zu, dass Hassprediger ..." -> 0
 - "Es wird wie immer von oben nach unten delegiert. Schoene Plaene, die Praxis sieht anders
-  aus ... Politiker sind weltfremd." -> 0 (Ironie/Wiederholung "wie immer" bleibt 0, solange
-  der Kommentar insgesamt argumentiert)
+  aus ... Politiker sind weltfremd." -> 0
 - "Mehr Personal einstellen." -> 0
 - "Natuerlich werden grosse Versprechen gemacht, die nach der Wahl nie eingehalten werden."
   -> 0
-- "Oder sollen die Soldaten in Notsituationen einfach zugucken und nichts machen duerfen??"
-  -> 0 (rhetorische Frage OHNE zusaetzlichen Erregtheits-Marker - bleibt Argument)
-- "Hatte bisher keine Probleme mit dem Terror und hoffe dass es auch in Zukunft so sein wird."
-  -> 0 (flacher, isolierter Hoffnungssatz ohne weitere Gefuehlsspur)
-- "Halte ich fuer sinnlos." -> 0 (sehr kurzes Verdikt ohne Ausschmueckung)
-- "Es liest sich schoen, allerdings ist das Ergebnis eher beschaemend." -> 0 (wertendes
-  Adjektiv, aber sachlich-argumentativer Rahmen)
-- "Ich denke der Gedanke dahinter ist super! Jetzt muss aber auch danach gehandelt werden,
-  sonst macht die Politik sich unglaubwuerdig." -> 0 (Ausrufezeichen allein reicht nicht,
-  Fortsetzung bleibt argumentativ)
-- "Ach hurra, dann brauchen wir mehr Polizei und mehr Sozialarbeiter." -> 0 (Ironie innerhalb
-  einer politischen Argumentation bleibt 0)
-- "Ich habe ein wenig das Gefuehl, dass dieser Plan an mehreren Stellen dazu ausgenutzt werden
-  koennte, die Daten gewoehnlicher Buerger zu stehlen." -> 0 (abgeschwaechtes "ein wenig das
-  Gefuehl", geht in sachliche Analyse ueber)
 
 ===========================================================
 3. pol_opin (0/1) - Politische Meinung (Political Opinion)
