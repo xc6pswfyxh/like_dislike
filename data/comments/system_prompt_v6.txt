@@ -214,21 +214,15 @@ Zaehle aber jedes Thema nur EINMAL, auch wenn es mehrfach im Kommentar erwaehnt 
 Wiederholung desselben Themas erhoeht die Zahl nicht. Allgemeine Veraergerung, Ton oder Laenge
 sind selbst kein Thema.
 
-VORSICHT BEIM ZUSAMMENLEGEN: Nur EIN sehr enger Sonderfall wird als ein einzelnes Thema
-zusammengelegt, sonst NICHT zusammenlegen. Der Sonderfall: Wenn ein Kommentar AUSSCHLIESSLICH
-den Umgang mit bereits identifizierten TERROR-VERDAECHTIGEN/Gefaehrdern behandelt (z.B.
-"Gefaehrder sollen ueberwacht/ausgewiesen werden"), zaehlt "das Land verlassen muessen" NICHT
-zusaetzlich als eigenes Migrations-Thema, weil es sich um dieselbe Sicherheitsmassnahme
-handelt, nicht um Migrationspolitik allgemein.
-
-In JEDEM ANDEREN Fall gilt weiterhin: verschiedene Themen aus der Liste zaehlen einzeln, AUCH
-wenn sie inhaltlich benachbart sind oder im selben Satz stehen. Terrorismus/Radikalisierung
-(z.B. "Anschlaege", "Anschlag in Berlin") und Sicherheitsmassnahmen (z.B. "Gesetze
-konsequenter anwenden", "mehr Personal") sind bei allgemeiner Kritik an der
-Terrorismusbekaempfung weiterhin ZWEI getrennte Themen, nicht eines - auch wenn beide im
-gleichen Gedankengang vorkommen. Lege nur dann zwei Formulierungen zu einem Thema zusammen,
-wenn sie wortwoertlich denselben einzelnen Sachverhalt beschreiben (wie im Gefaehrder-Beispiel
-oben), nicht schon dann, wenn sie thematisch verwandt sind.
+NICHT UEBERZAEHLEN: Wenn zwei Formulierungen im selben Gedankengang auf EIN UND DENSELBEN
+konkreten Sachverhalt verweisen, zaehlen sie als EIN Thema, nicht zwei - auch wenn beide
+Formulierungen technisch zu unterschiedlichen Eintraegen der Themenliste passen wuerden.
+Beispiel: Ein Kommentar, der ausschliesslich den Umgang mit TERROR-VERDAECHTIGEN behandelt
+(Ueberwachung, Ausweisung von Gefaehrdern), spricht EIN Thema an (Sicherheitsmassnahmen), auch
+wenn "das Land verlassen muessen" oberflaechlich nach Migration klingt - es geht hier nicht um
+Migrationspolitik im Allgemeinen, sondern um eine einzelne Sicherheitsmassnahme. Zaehle erst
+dann zwei Themen, wenn der Kommentar tatsaechlich zwei INHALTLICH UNTERSCHIEDLICHE Punkte
+macht.
 
 WICHTIG - was NICHT zählt: der 9-Punkte-Plan als Objekt. Kommentare über seine Formulierung,
 Unschärfe, sein Timing, die Reihenfolge der Punkte, ob oder wie er umgesetzt wird, sprechen
@@ -327,18 +321,6 @@ Seiten des Kontrasts eine echte WERTENDE Aussage steht (siehe Wortliste oben) - 
 eine Seite nur eine sachliche Feststellung, eine Notwendigkeitsaussage oder eine Bedingung
 ist. "Wir wissen, dass diese Massnahmen noetig sind, aber es ist nichts wirklich Neues"
 bleibt 2 (negativ), weil "noetig sind" keine Wertung, sondern eine Tatsachenfeststellung ist.
-
-BESONDERS ZUVERLAESSIGES SIGNAL - die Konstruktion "zwar ..., aber ...": Das Wort "zwar"
-kuendigt fast immer eine Konzession an (ein zugestandener Punkt, der danach relativiert wird).
-Pruefe bei JEDEM "zwar" gezielt, ob der zugestandene Teil eine echte Wertung aus der
-Positiv-Wortliste enthaelt (z.B. "das ist zwar gut/sinnvoll/richtig, aber ..."). Wenn ja, ist
-das ein starkes, eigenstaendiges Signal fuer den positiven Baustein in SCHRITT 1 - unabhaengig
-davon, wie kritisch der Rest des Kommentars danach wird. "Es ist zwar gut, aber ..." ist damit
-so gut wie immer mindestens ambivalent (3), nie rein negativ (2). Wie beim allgemeinen
-Kontrastmarker gilt aber auch hier: "zwar" vor einer reinen Tatsachen-/Notwendigkeitsaussage
-("wir sind zwar immer noch ein Land, in dem...", "das ist zwar noetig") zaehlt NICHT
-automatisch als positiver Baustein - dann brauchst du wie sonst auch eine echte Wertung an
-anderer Stelle im Kommentar.
 
 1 = Positiv. Kurze Zustimmungen gehoeren hierher, NICHT in Klasse 4.
 - "Geht in Ordnung" / "Gut das ist"
