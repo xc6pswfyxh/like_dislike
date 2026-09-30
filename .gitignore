@@ -41,3 +41,9 @@ _site/*.RDataTmp
 *.RData
 /.quarto/
 ~$*
+*.fff
+*.ttt
+*_files/
+
+/.luarc.json
+
