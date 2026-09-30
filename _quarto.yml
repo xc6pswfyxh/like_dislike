@@ -13,8 +13,8 @@ website:
   back-to-top-navigation: true
   page-footer: 
     center: "© 2026, The Authors" 
-    right: "<img src='images/logo_uzh.png' height='30px'>"
-    left: "<img src='images/logo_dept.png' height='50px'>"
+    #right: "<img src='images/logo_inst.png' height='30px'>"
+    #left: "<img src='images/logo_dept.png' height='50px'>"
 
   navbar:
     collapse: true
@@ -29,8 +29,8 @@ website:
         text: "Preregistration"
 
     tools:
-      - icon: bluesky
-        href: https://bsky.app/
+      #- icon: bluesky
+      #  href: https://bsky.app/
       - icon: github
         menu:
           - text: Source Code
@@ -53,9 +53,9 @@ website:
       style: "floating"
       search: true
       contents:
-        - section: "Main Text"
-          contents:
-            - 01_manuscript_rev.qmd
+        - contents:
+        - href: 01_manuscript_rev.qmd
+          text: "Likes or Dislikes, Gratifications or Concerns?"
         - text: "---"
         - section: "Supplementary Material"
           contents:
@@ -97,7 +97,6 @@ format:
       dark: cyborg
     css: styles.css
     toc: true
-    toggle: true
 
     grid:
       margin-width: 300px

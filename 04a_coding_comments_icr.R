@@ -174,5 +174,5 @@ for (v in vars) {
   print(table(comments_eval[[v]], useNA = "ifany"))
 }
 
-writexl::write_xlsx(comments_eval, "data/comments/comments_eval.xlsx") # use this for classifier performance eval
+writexl::write_xlsx(comments_eval, "data/comments/comments_eval.xlsx") # use for classifier performance eval
 rm(list = setdiff(ls(), c("comments_eval"))) # clean env
