@@ -2358,3 +2358,318 @@ save(
   , file = "data/workspace.RData"
 )
 ```
+
+### Self Disclosure
+
+#### Self Disclosure Variable
+```{r}
+
+```
+
+#### Privacy Concerns
+
+```{r}
+run_hurdles(
+  object = d, 
+  name = "wrds_pricon",
+  outcome = "self_disc", 
+  predictor = "pri_con_fs",
+  y_lab = "Self Disclosure",
+  x_lab = "Privacy concerns"
+  )
+```
+
+Let's explore how number of communicated words differ for people very much concerned versus not concerned at all.
+
+```{r}
+# let's extract effects for 1
+self_disc_pricon_1 <- 
+  fig_wrds_pricon$data %>% 
+  filter(pri_con_fs == min(pri_con_fs)) %>% 
+  pull(estimate__) %>% 
+  round(0)
+
+# let's extract effects for 7
+self_dics_pricon_7 <- 
+  fig_wrds_pricon$data %>% 
+  filter(pri_con_fs == max(pri_con_fs)) %>% 
+  pull(estimate__) %>% 
+  round(0)
+```
+
+People who were not concerned at all communicated on average `r wrds_pricon_1 %>% round(0) %>% abs()` words, whereas people strongly concerned communicated on average `r wrds_pricon_7 %>% round(0)` words.
+
+#### Gratifications General
+
+```{r}
+run_hurdles(
+  object = d, 
+  name = "self_disc_grats",
+  outcome = "self_disc", 
+  predictor = "grats_gen_fs",
+  y_lab = "Self Disclosure",
+  x_lab = "Gratifications general"
+  )
+```
+
+#### Privacy Deliberation
+
+```{r}
+run_hurdles(
+  object = d, 
+  name = "self_disc_pridel",
+  outcome = "self_disc", 
+  predictor = "pri_del_fs",
+  y_lab = "Self Disclosure",
+  x_lab = "Privacy deliberation"
+  )
+```
+
+#### Trust General
+
+```{r}
+run_hurdles(
+  object = d, 
+  name = "self_disc_trust",
+  outcome = "self_disc", 
+  predictor = "trust_gen_fs",
+  y_lab = "Self Disclosure",
+  x_lab = "Trust general"
+  )
+```
+
+#### Self-Efficacy
+
+```{r}
+run_hurdles(
+  object = d, 
+  name = "self_disc_selfeff",
+  outcome = "self_disc", 
+  predictor = "self_eff_fs",
+  y_lab = "Self Disclosure",
+  x_lab = "Self-efficacy"
+  )
+```
+
+The effects is markedly exponential. Let's inspect the changes across values in self-efficacy.
+
+```{r}
+effects_self_disc_selfeff <- 
+  slopes(
+    fit_self_disc_selfeff, 
+    newdata = datagrid(
+      self_eff_fs = c(1, 6, 7)
+      ), 
+   grid_type = "counterfactual"
+    ) %>%
+  filter(
+    term == "self_eff_fs"
+    ) %T>%
+  print()
+
+# let's extract effects for 1
+effects_self_disc_selfeff_12 <- 
+  effects_self_disc_selfeff %>% 
+  filter(
+    self_eff_fs == 1 &
+      term == "self_eff_fs") %>% 
+  select(estimate)
+
+# let's extract effects for 7
+effects_self_disc_selfeff_67 <- 
+  effects_wrds_selfeff %>% 
+  filter(
+    self_eff_fs == 6 &
+      term == "self_eff_fs") %>% 
+  select(estimate)
+
+```
+
+Whereas a change in self-efficacy from 1 to 2 led to an increase of `r effects_self_disc_selfeff_12 %>% round(0)` words, a change from 6 to 7 led to an increase of `r effects_self_disc_selfeff_67 %>% round(0)` words.
+
+Let's explore  how number of communicated words differ for people very much self-efficacious versus not self-efficacious at all.
+
+```{r}
+# let's extract effects for 1
+self_disc_selfeff_1 <- 
+  fig_self_disc_selfeff$data %>% 
+  filter(self_eff_fs == min(self_eff_fs)) %>% 
+  pull(estimate__) %>% 
+  round(0)
+
+# let's extract effects for 7
+self_disc_selfeff_7 <- 
+  fig_self_disc_selfeff$data %>% 
+  filter(self_eff_fs == max(self_eff_fs)) %>% 
+  pull(estimate__) %>% 
+  round(0)
+```
+
+People who reported no self-efficacy at all communicated on average `r wrds_selfeff_1 %>% round(0) %>% abs()` words, whereas people with very high self-efficacy communicated on average `r wrds_selfeff_7 %>% round(0)` words.
+
+## Visualization
+
+```{r}
+fig_results <- 
+  plot_grid(
+    fig_self_disc_pricon, 
+    fig_self_disc_grats, 
+    fig_self_disc_pridel, 
+    fig_self_disc_trust, 
+    fig_self_disc_selfeff,
+    fig_self_disc_ctrl
+    ) %T>% 
+  print()
+
+# Save visualizations
+ggsave("figures/results/self_disc/effects.pdf")
+ggsave("figures/results/self_disc/effects.png")
+```
+
+## Table
+
+Make table of slopes
+
+```{r}
+tab_slopes <- 
+  rbind(
+    slopes_self_disc_pricon,
+    slopes_self_disc_grats,
+    slopes_self_disc_pridel,
+    slopes_self_disc_trust,
+    slopes_self_disc_selfeff,
+    slopes_self_disc_ctrl,
+    slopes_self_disc_lkdslk,
+    slopes_pricon_ctrl,
+    slopes_pricon_lkdslk,
+    slopes_grats_ctrl,
+    slopes_grats_lkdslk,
+    slopes_pridel_ctrl,
+    slopes_pridel_lkdslk,
+    slopes_trust_ctrl,
+    slopes_trust_lkdslk,
+    slopes_selfeff_ctrl,
+    slopes_selfeff_lkdslk
+    ) %>% 
+  as.data.frame() %>% 
+  mutate(
+    term = ifelse(
+      .$contrast == "Like - Control", 
+      "Like - Control",
+      ifelse(
+        .$contrast == "Like & dislike - Control", 
+        "Like & dislike - Control",
+        ifelse(
+          .$contrast == "Like - Like & dislike", 
+          "Like - Like & dislike", 
+          .$term
+          )
+        )
+      ),
+    Predictor = recode(
+      term, 
+      "Like - Control" = "Like vs. control",
+      "Like & dislike - Control" = "Like & dislike vs. control",
+      "Like - Like & dislike" = "Like vs. like & dislike",
+      "pri_con_fs" = "Privacy concerns",
+      "pri_del_fs" = "Privacy deliberation",
+      "grats_gen_fs" = "Expected gratifications",
+      "trust_gen_fs" = "Trust",
+      "self_eff_fs" = "Self-efficacy"
+    ),
+    Outcome = recode(
+      Outcome,
+      "pri_con_fs" = "Privacy concerns",
+      "pri_del_fs" = "Privacy deliberation",
+      "grats_gen_fs" = "Expected gratifications",
+      "trust_gen_fs" = "Trust",
+      "self_eff_fs" = "Self-efficacy"
+    )
+  ) %>% 
+  filter(
+    Predictor %in% c(
+      "Like vs. control",
+      "Like & dislike vs. control",
+      "Like vs. like & dislike",
+      "Privacy concerns",
+      "Privacy deliberation",
+      "Expected gratifications",
+      "Trust",
+      "Self-efficacy")
+  ) %>% 
+  mutate(
+    Predictor = factor(Predictor, levels = c(
+      "Self-efficacy",
+      "Trust",
+      "Privacy deliberation",
+      "Expected gratifications",
+      "Privacy concerns",
+      "Like vs. like & dislike",
+      "Like & dislike vs. control",
+      "Like vs. control"
+      )
+    ),
+    Estimate = 
+      ifelse(
+        Outcome == "words",
+        round(estimate),
+        estimate
+      ),
+    LL = 
+      ifelse(
+        Outcome == "words",
+        round(conf.low),
+        conf.low
+      ),
+    UL = 
+      ifelse(
+        Outcome == "words",
+        round(conf.high),
+        conf.high
+      ),
+  ) %>% 
+  select(
+    Outcome,
+    Predictor, 
+    Estimate,
+    LL, 
+    UL
+    ) 
+
+tab_slopes %>% 
+  kable() %>% 
+  kable_styling("striped") %>% 
+  scroll_box(width = "100%")
+```
+
+```{r SaveData, include=F, cache=F}
+write.csv(
+  d, 
+  file = "data/data.csv", 
+  row.names = FALSE
+  )
+
+save.image(
+  file = "data/workspace_full.RData"
+)
+
+save(
+  d_raw, d_all, d_fs, d
+  , fit_baseline, fit_prereg
+  , des_pridel
+  , facval_tab
+  , n_comments, n_desired, n_posts, n_speeding, n_time, n_words
+  , n_users, n_final
+  , resp_pattern, n_resp_pattern
+  , n_t1, age_t1_m, male_t1_m, college_t1_m
+  , n_t2, age_t2_m, male_t2_m, college_t2_m
+  , n_matched, n_final, age_final_m, male_final_m, college_final_m, words_m
+  , r_sesoi, r_sensitive, power_achieved
+  , no_words_perc
+  , effects_wrds_selfeff_12, effects_wrds_selfeff_67, effect_lkdlk_prcnt
+  , wrds_pricon_7, wrds_pricon_1, wrds_selfeff_1, wrds_selfeff_7
+  , tab_slopes
+  , file = "data/workspace.RData"
+)
+```
+### 
