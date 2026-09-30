@@ -2406,7 +2406,7 @@ cor(d %>% filter(words > 0) %>% select(words_log, breadth_mean, depth_mean))
 ```{r}
 run_hurdles(
   object = d, 
-  name = "wrds_pricon",
+  name = "self_disc_pricon",
   outcome = "self_disc", 
   predictor = "pri_con_fs",
   y_lab = "Self Disclosure",
@@ -2419,14 +2419,14 @@ Let's explore how number of communicated words differ for people very much conce
 ```{r}
 # let's extract effects for 1
 self_disc_pricon_1 <- 
-  fig_wrds_pricon$data %>% 
+  fig_self_disc_pricon$data %>% 
   filter(pri_con_fs == min(pri_con_fs)) %>% 
   pull(estimate__) %>% 
   round(0)
 
 # let's extract effects for 7
 self_dics_pricon_7 <- 
-  fig_wrds_pricon$data %>% 
+  fig_self_disc_pricon$data %>% 
   filter(pri_con_fs == max(pri_con_fs)) %>% 
   pull(estimate__) %>% 
   round(0)
@@ -2512,7 +2512,7 @@ effects_self_disc_selfeff_12 <-
 
 # let's extract effects for 7
 effects_self_disc_selfeff_67 <- 
-  effects_wrds_selfeff %>% 
+  effects_self_disc_selfeff %>% 
   filter(
     self_eff_fs == 6 &
       term == "self_eff_fs") %>% 
@@ -2566,7 +2566,7 @@ ggsave("figures/results/self_disc/effects.png")
 Make table of slopes
 
 ```{r}
-tab_slopes <- 
+tab_slopes_self_disc <- 
   rbind(
     slopes_self_disc_pricon,
     slopes_self_disc_grats,
