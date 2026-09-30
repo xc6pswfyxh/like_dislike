@@ -1,0 +1,14 @@
+---
+title: "Classifier Model Comparison"
+
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-fold: true
+    code-summary: "Show code"
+
+execute:
+  message: false
+  warning: false
+---

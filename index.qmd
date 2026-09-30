@@ -3,10 +3,8 @@ title: "Privacy Calculus Experiment"
 ---
 On this website, you can find the companion material for the paper _Likes or Dislikes, Gratifications or Concerns? A One-Week Field Experiment Analyzing the Effects of Popularity Cues on the Privacy Calculus in Online Communication_. 
 
-You can either read the paper [in your browser](01_manuscript_rev.qmd) or download it as [pdf](01_manuscript_rev.pdf). You can also find the detailed code and summaries of the [analyses](02_analyses.qmd) reported in the paper, as well as [additional analyses](05_analyses_additional.qmd) not reported in the paper. 
+You can either read the paper [in your browser](01b_manuscript_rev.qmd) or download it as [pdf](01b_manuscript_rev.pdf). You can also find the detailed code and summaries of the [analyses](05a_analyses.qmd) reported in the paper, as well as [additional analyses](05b_analyses_additional.qmd) not reported in the paper. 
     
 This website is produced directly from the project's [github repository](https://github.com/XMtRa/like_dislike/tree/main). You can download the material and the data, file an issue, or submit a pull request.
 
-![](figures/website/website_translated.png)       
-
-
+![](figures/website/website_translated.png)

@@ -1,6 +1,11 @@
 project:
   type: website
   output-dir: docs
+  render:
+    - "*.qmd"
+    - "*.rmd"
+    - "*.ipynb"
+    - "!05a_analyses.qmd"
 
 lang: en
 
@@ -21,9 +26,9 @@ website:
     left:
       - href: index.qmd
         text: "Home"
-      - href: 01_manuscript_rev.qmd
+      - href: 01b_manuscript_rev.qmd
         text: "Manuscript Revised"
-      - href: 07_manuscript.rmd
+      - href: 01a_manuscript_original.rmd
         text: "First Submission"
       - href: 08_preregistration_changes.rmd
         text: "Preregistration"
@@ -42,52 +47,52 @@ website:
       style: "floating"
       search: true
       contents:
-        - section: "Overview"
-          contents:
-            - index.qmd
-        - section: "Website"
-          contents:
-            - 00_website.rmd
-        - text: "---"
+        - href: index.qmd
+          text: "Overview"
+        - href: 00_website.rmd
+          text: "Website"
 
     - title: "Manuscript Revised"
       style: "floating"
       search: true
       contents:
-        - contents:
-        - href: 01_manuscript_rev.qmd
+        - href: 01b_manuscript_rev.qmd
           text: "Likes or Dislikes, Gratifications or Concerns?"
         - text: "---"
         - section: "Supplementary Material"
           contents:
-            - 02_analyses.qmd
-            - 03_items.rmd
-            - 04_comment_classification.qmd
-            - 05_analyses_additional.qmd
-            #- 06_analyses_revision.qmd
+            - 02_items.rmd
+            - 03_coding_manual_icr.qmd
+            - 04a_pretrained_classification.ipynb
+            - 04b_llm_classification.ipynb
+            - 04c_final_classification.ipynb
+            - 05a_analyses.qmd
+            - 05b_analyses_additional.qmd
+            - 05c_analyses_revision.qmd
+            - appendix_prereg_note.qmd
+            - appendix_codebook.qmd
+            - appendix_system_prompt.qmd
+            - appendix_model_comparison.qmd
 
     - title: "First Submission"
       style: "floating"
       search: true
       contents:
-        - section: "Main Text"
-          contents:
-            - 07_manuscript.rmd
+        - href: 01a_manuscript_original.rmd
+          text: "Main Text"
         - text: "---"
         - section: "Supplementary Material"
           contents:
-            - 02_analyses.qmd
-            - 03_items.rmd
-            - 05_analyses_additional.qmd
+            - 02_items.rmd
+            - 05a_analyses.qmd
+            - 05b_analyses_additional.qmd
 
     - title: "Preregistration"
       style: "floating"
       search: true
       contents:
-        - section: "Changes from Preregistration"
-          contents:
-            - 08_preregistration_changes.rmd
-        - text: "---"
+        - href: 08_preregistration_changes.rmd
+          text: "Changes from Preregistration"
 
 
 format:

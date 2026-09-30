@@ -1,0 +1,325 @@
+---
+title: "Additional Analyses"
+
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-fold: true
+    code-summary: "Show code"
+---
+
+```{r setup, include=F}
+knitr::opts_chunk$set(
+  cache = TRUE
+  , comment = NA
+  , warning = FALSE
+  , echo = TRUE
+  , error = FALSE
+  , message = FALSE
+  , prompt = FALSE
+  , tidy = TRUE
+  , fig.height = 4
+  )
+
+options(
+  digits = 3
+  , width = 120
+  )
+```
+
+In what follows, please find the results of additional analyses. These include models, results without covariates, results with all participants (hence, including those removed due to speeding).
+
+# Set-up
+
+Load packages.
+
+```{r r-setup, results='hide', cache=F}
+# define packages
+packages <- 
+  c(
+    "cowplot"
+    , "devtools"
+    , "faoutlier"
+    , "GGally"
+    , "kableExtra"
+    , "knitr"
+    , "lavaan"
+    , "magrittr"
+    , "MVN"
+    , "psych"
+    , "pwr"
+    , "quanteda"
+    , "semTools"
+    , "td"
+    , "tidyverse"
+    )
+
+# load packages
+lapply(
+  packages
+  , library
+  , character.only = TRUE
+  , quietly = TRUE
+  )
+```
+
+Load data.
+
+```{r Data-Wrangling, cache=F}
+# load workspace
+load("data/workspace.rdata")
+```
+
+# VIF
+
+In what follows, you can find estimations of variance inflation factors, which help gauge multicollinearity. Generally, values above 5 or even 10 are considered problematic. However, these are only rules of thumb, and multicollinearity can occur with lower values. Indeed, although the values reported below are not above 5, they are increased, suggesting that multicollinearity might be at play here, which the preregistered analyses also confirm.
+
+```{r vif}
+# Self-Efficacy
+model <- "
+pri_con =~ PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 
+grats_gen =~ GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05
+pri_delib =~ PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05
+self_eff =~ SE01_01 + SE01_02 + SE01_03 + SE01_04
+SE01_01 ~~ a*SE01_02
+SE01_03 ~~ a*SE01_04
+trust_community =~ TR01_01 + TR01_02 + TR01_03
+trust_provider =~ TR01_04 + TR01_05 + TR01_06 + TR01_07 + TR01_08 + TR01_09
+trust_spec =~ trust_community + trust_provider
+
+self_eff ~ pri_con + grats_gen + pri_delib + trust_spec
+
+# Covariates
+GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05 + PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 + TR01_01 + TR01_02 + TR01_03 + TR01_04 + TR01_05 + TR01_06 + TR01_07 + TR01_08 + TR01_09 + PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05 + SE01_01 + SE01_02 + SE01_03 + SE01_04 ~ male + age + edu
+"
+fit <- sem(model, data = d, estimator = "MLR", missing = "ML")
+r_self_eff <- inspect(fit, what = "rsquare")["self_eff"] # extract rsquare
+vif_self_eff <- 1 / (1 - r_self_eff) # compute vif
+
+# Privacy Deliberation
+model <- "
+pri_con =~ PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 
+grats_gen =~ GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05
+pri_delib =~ PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05
+self_eff =~ SE01_01 + SE01_02 + SE01_03 + SE01_04
+SE01_01 ~~ a*SE01_02
+SE01_03 ~~ a*SE01_04
+trust_community =~ TR01_01 + TR01_02 + TR01_03
+trust_provider =~ TR01_04 + TR01_05 + TR01_06 + TR01_07 + TR01_08 + TR01_09
+trust_spec =~ trust_community + trust_provider
+pri_delib ~ self_eff + pri_con + grats_gen + trust_spec
+
+# Covariates
+GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05 + PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 + TR01_01 + TR01_02 + TR01_03 + TR01_04 + TR01_05 + TR01_06 + TR01_07 + TR01_08 + TR01_09 + PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05 + SE01_01 + SE01_02 + SE01_03 + SE01_04 ~ male + age + edu
+"
+fit <- sem(model, data = d, estimator = "MLR", missing = "ML")
+r_pri_delib <- inspect(fit, what = "rsquare")["pri_delib"]
+vif_pri_delib <- 1 / (1 - r_pri_delib)
+
+## Privacy Concerns
+model <- "
+pri_con =~ PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 
+grats_gen =~ GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05
+pri_delib =~ PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05
+self_eff =~ SE01_01 + SE01_02 + SE01_03 + SE01_04
+SE01_01 ~~ a*SE01_02
+SE01_03 ~~ a*SE01_04
+trust_community =~ TR01_01 + TR01_02 + TR01_03
+trust_provider =~ TR01_04 + TR01_05 + TR01_06 + TR01_07 + TR01_08 + TR01_09
+trust_spec =~ trust_community + trust_provider
+
+pri_con ~ self_eff + pri_delib + grats_gen + trust_spec
+
+# Covariates
+GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05 + PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 + TR01_01 + TR01_02 + TR01_03 + TR01_04 + TR01_05 + TR01_06 + TR01_07 + TR01_08 + TR01_09 + PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05 + SE01_01 + SE01_02 + SE01_03 + SE01_04 ~ male + age + edu
+"
+fit <- sem(model, data = d, estimator = "MLR", missing = "ML")
+r_pri_con <- inspect(fit, what = "rsquare")["pri_con"]
+vif_pri_con <- 1 / (1 - r_pri_con)
+
+# Gratifications
+model <- "
+pri_con =~ PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 
+grats_gen =~ GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05
+pri_delib =~ PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05
+self_eff =~ SE01_01 + SE01_02 + SE01_03 + SE01_04
+SE01_01 ~~ a*SE01_02
+SE01_03 ~~ a*SE01_04
+trust_community =~ TR01_01 + TR01_02 + TR01_03
+trust_provider =~ TR01_04 + TR01_05 + TR01_06 + TR01_07 + TR01_08 + TR01_09
+trust_spec =~ trust_community + trust_provider
+grats_gen ~ self_eff + pri_con + pri_delib + trust_spec
+
+# Covariates
+GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05 + PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 + TR01_01 + TR01_02 + TR01_03 + TR01_04 + TR01_05 + TR01_06 + TR01_07 + TR01_08 + TR01_09 + PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05 + SE01_01 + SE01_02 + SE01_03 + SE01_04 ~ male + age + edu
+"
+fit <- sem(model, data = d, estimator = "MLR", missing = "ML")
+r_grats_gen <- inspect(fit, what = "rsquare")["grats_gen"]
+vif_grats_gen <- 1 / (1 - r_grats_gen)
+
+# Trust
+model <- "
+pri_con =~ PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 
+grats_gen =~ GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05
+pri_delib =~ PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05
+self_eff =~ SE01_01 + SE01_02 + SE01_03 + SE01_04
+SE01_01 ~~ a*SE01_02
+SE01_03 ~~ a*SE01_04
+trust_community =~ TR01_01 + TR01_02 + TR01_03
+trust_provider =~ TR01_04 + TR01_05 + TR01_06
+trust_system =~ TR01_07 + TR01_08 + TR01_09
+trust_spec =~ trust_community + trust_provider + trust_system
+
+trust_spec ~ self_eff + pri_con + grats_gen + pri_delib
+
+# Covariates
+GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05 + PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 + TR01_01 + TR01_02 + TR01_03 + TR01_04 + TR01_05 + TR01_06 + TR01_07 + TR01_08 + TR01_09 + PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05 + SE01_01 + SE01_02 + SE01_03 + SE01_04 ~ male + age + edu
+"
+fit <- sem(model, data = d, estimator = "MLR", missing = "ML")
+r_trust_spec <- inspect(fit, what = "rsquare")["trust_spec"]
+vif_trust_spec <- 1 / (1 - r_trust_spec)
+```
+
+```{r}
+# Table
+tibble("Gratifications" = vif_grats_gen, "Trust Specific" = vif_trust_spec, "Privacy Concerns" = vif_pri_con, "Privacy Deliberation" = vif_pri_delib, "Self-Efficacy" = vif_self_eff) %>% 
+  kable() %>% 
+  kable_styling("striped")
+```
+
+# Preregistered model
+
+I first analyze the model how it was initially preregistered.
+
+```{r}
+model <- "
+pri_con =~ PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 
+grats_gen =~ GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05
+pri_delib =~ PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05
+self_eff =~ SE01_01 + SE01_02 + SE01_03 + SE01_04
+  SE01_01 ~~ x*SE01_02
+  SE01_03 ~~ x*SE01_04
+trust_community =~ TR02_01 + TR01_01 + TR01_02 + TR01_03
+trust_provider =~ TR02_02 + TR01_04 + TR01_05 + TR01_06
+trust_system =~ TR02_03 + TR01_07 + TR01_08 + TR01_09
+trust =~ trust_community + trust_provider + trust_system
+
+self_dis_log ~ a1*pri_con + b1*grats_gen + c1*pri_delib + d1*self_eff + e1*trust
+
+# Covariates
+self_dis_log + GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05 + PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 + TR02_01 + TR02_02 + TR02_03 + TR01_01 + TR01_02 + TR01_03 + TR01_04 + TR01_05 + TR01_06 + TR01_07 + TR01_08 + TR01_09 + PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05 + SE01_01 + SE01_02 + SE01_03 + SE01_04 ~ male + age + edu
+"
+fit_prereg <- sem(model, data = d, estimator = "MLR", missing = "ML")
+summary(fit_prereg, fit = TRUE, std = TRUE)
+rsquare_fit_prereg <- inspect(fit_prereg, what = "rsquare")["self_dis_log"]
+```
+
+First, first is not optimal but still okaish, `r td::fit_txt(fit_prereg)`. The result show the same problems of multicollinearity, namely that trust reduces online communication (despite a positive and more "plausible" postive bivariate relation).
+
+# Results without covariates
+
+As stated in our preregistration, we also provide the results without controlling for covariates. Note were here now using the updated preregistered model as reported in the paper.
+
+```{r}
+model <- "
+  pri_con =~ PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 
+  grats_gen =~ GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05
+  pri_delib =~ PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05
+  self_eff =~ SE01_01 + SE01_02 + SE01_03 + SE01_04
+  SE01_01 ~~ x*SE01_02
+  SE01_03 ~~ x*SE01_04
+  trust_community =~ TR01_01 + TR01_02 + TR01_03
+  trust_provider =~ TR01_04 + TR01_05 + TR01_06
+  trust_system =~ TR01_07 + TR01_08 + TR01_09
+  trust_spec =~ trust_community + trust_provider + trust_system
+
+words_log ~ a1*pri_con + b1*grats_gen + c1*pri_delib + d1*self_eff + e1*trust_spec
+"
+fit_prereg <- sem(model, data = d, estimator = "MLR", missing = "ML")
+summary(fit_prereg, fit = TRUE, std = TRUE)
+rsquare_fit_prereg <- inspect(fit_prereg, what = "rsquare")["comm"]
+```
+
+The results remain virtually the same (see page [analyses](analyses.html)).
+
+# Results including removed participants
+
+As stated in the preregistration, we also report the analyses including the deleted participants.
+
+We first need to rerun the baseline model to get new factor scores (output not shown here).
+
+```{r results='hide'}
+model_baseline <- "
+  pri_con =~ PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07
+  grats_gen =~ GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05
+  grats_inf =~ GR01_01 + GR01_02 + GR01_03 
+  grats_rel =~ GR01_04 + GR01_05 + GR01_06 
+  grats_par =~ GR01_07 + GR01_08 + GR01_09
+  grats_ide =~ GR01_10 + GR01_11 + GR01_12 
+  grats_ext =~ GR01_13 + GR01_14 + GR01_15
+  grats_spec =~ grats_inf + grats_rel + grats_par + grats_ide + grats_ext
+  pri_delib =~ PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05
+  trust_gen =~ TR02_01 + TR02_02 + TR02_03
+  trust_community =~ TR01_01 + TR01_02 + TR01_03
+  trust_provider =~ TR01_04 + TR01_05 + TR01_06
+  trust_system =~ TR01_07 + TR01_08 + TR01_09
+  trust_spec =~ trust_community + trust_provider + trust_system
+  self_eff =~ SE01_01 + SE01_02 + SE01_03 + SE01_04
+    SE01_01 ~~ x*SE01_02
+    SE01_03 ~~ x*SE01_04
+  Words_log =~ words_log
+  
+  Words_log ~~ a1*pri_con + b1*grats_gen + c1*pri_delib + d1*self_eff + e1*trust_spec + f1*trust_gen + g1*grats_spec
+"
+fit_baseline <- sem(model_baseline, data = d_all, missing = "ML")
+summary(fit_baseline, standardized = TRUE, fit.measures = TRUE)
+```
+
+```{r results='hide'}
+# extract model predicted values for items & calc means
+d_fs <- lavPredict(fit_baseline, type = "ov") %>% 
+  as.data.frame() %>% 
+  mutate(version = d_all$version, 
+         grats_gen_fs = rowMeans(select(., starts_with("GR02"))),
+         grats_spec_fs = rowMeans(select(., starts_with("GR01"))), 
+         pri_con_fs = rowMeans(select(., starts_with("PC01"))),
+         trust_gen_fs = rowMeans(select(., TR02_01, TR02_02, TR02_03)),
+         trust_spec_fs = rowMeans(select(., TR01_01: TR01_09)),
+         pri_del_fs = rowMeans(select(., starts_with("PD01"))),
+         self_eff_fs = rowMeans(select(., starts_with("SE01")))) %>%
+  select(version, pri_con_fs, grats_gen_fs, grats_spec_fs, pri_del_fs, self_eff_fs, trust_gen_fs, trust_spec_fs, words_log)
+
+# combine d with d factor scores
+d_all %<>% cbind(select(d_fs, -version, -words_log))
+```
+
+Let's now inspect the results of the (updated) preregistered model including removed cases.
+
+```{r}
+model <- "
+  pri_con =~ PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 
+  grats_gen =~ GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05
+  pri_delib =~ PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05
+  self_eff =~ SE01_01 + SE01_02 + SE01_03 + SE01_04
+  SE01_01 ~~ x*SE01_02
+  SE01_03 ~~ x*SE01_04
+  trust_community =~ TR01_01 + TR01_02 + TR01_03
+  trust_provider =~ TR01_04 + TR01_05 + TR01_06
+  trust_system =~ TR01_07 + TR01_08 + TR01_09
+  trust_spec =~ trust_community + trust_provider + trust_system
+
+words_log ~ a1*pri_con + b1*grats_gen + c1*pri_delib + d1*self_eff + e1*trust_spec
+
+# Covariates
+words_log + GR02_01 + GR02_02 + GR02_03 + GR02_04 + GR02_05 + PC01_01 + PC01_02 + PC01_04 + PC01_05 + PC01_06 + PC01_07 + TR01_01 + TR01_02 + TR01_03 + TR01_04 + TR01_05 + TR01_06 + TR01_07 + TR01_08 + TR01_09 + PD01_01 + PD01_02 + PD01_03 + PD01_04 + PD01_05 + SE01_01 + SE01_02 + SE01_03 + SE01_04 ~ male + age + edu
+
+# Covariances
+male ~~ age + edu
+age ~~ edu
+"
+fit_prereg <- sem(model, data = d_all, estimator = "MLR", missing = "ML")
+summary(fit_prereg, fit = TRUE, std = TRUE)
+```
+
+First, we can see that the analyses now include the data of 590 participants. However, when comparing the analyses, we see that results don't differ in any meaningful way.
