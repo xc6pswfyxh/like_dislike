@@ -2363,7 +2363,47 @@ save(
 
 #### Self Disclosure Variable
 ```{r}
+# self-disclosure index: quantity (log words), breadth and depth, z-standardized and averaged
+# LLM codes per comment from 07a, aggregated per person
+comments_coded <- read_csv("data/comments/final/comments_classified_final.csv")
 
+sd_components <- 
+  comments_coded %>% 
+  filter(!is.na(id)) %>% 
+  group_by(id) %>% 
+  summarise(
+    breadth_mean = mean(breadth, na.rm = TRUE),   # 0-3, mean topics per comment
+    depth_mean   = mean(depth, na.rm = TRUE)      # 0-3, mean of pers_exp + emot_exp + pol_opin
+    )
+
+d <- 
+  d %>% 
+  select(-any_of(c("breadth_mean", "depth_mean"))) %>% 
+  left_join(sd_components, by = "id") %>% 
+  mutate(
+    # non-commenters disclosed nothing
+    across(c(breadth_mean, depth_mean), ~ replace_na(.x, 0)),
+    z_quantity = as.numeric(scale(words_log)),
+    z_breadth  = as.numeric(scale(breadth_mean)),
+    z_depth    = as.numeric(scale(depth_mean)),
+    self_disc_raw = (z_quantity + z_breadth + z_depth) / 3,
+    # shift so that "no disclosure" is exactly 0 (needed for the hurdle model)
+    self_disc = self_disc_raw - self_disc_raw[words == 0][1],
+    self_disc = if_else(words == 0, 0, self_disc)
+    )
+
+# checks everything
+stopifnot(all(d$self_disc[d$words > 0] > 0))
+table(d$self_disc == 0, d$words == 0)
+summary(d$self_disc[d$words > 0])
+cor(d %>% filter(words > 0) %>% select(words_log, breadth_mean, depth_mean))
+```
+
+```{r}
+   run_hurdles(object = d, name = "self_disc_ctrl", outcome = "self_disc",
+               predictor = "version", y_lab = "Self Disclosure", x_lab = "Experimental conditions")
+   run_hurdles(object = d, name = "self_disc_lkdslk", outcome = "self_disc",
+               predictor = "version_lkdslk", y_lab = "Self Disclosure", x_lab = "Experimental conditions")
 ```
 
 #### Privacy Concerns
