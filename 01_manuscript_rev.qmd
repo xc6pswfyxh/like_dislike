@@ -1,21 +1,18 @@
 ---
-title: |
-  Likes or Dislikes, Gratifications or Concerns?
+title: Likes or Dislikes, Gratifications or Concerns?
 
 shorttitle: "Popularity cues & privacy calculus"
 
-subtitle: |
-  A One-Week Field Experiment Analyzing the Effects of Popularity Cues on
-  the Privacy Calculus in Online Communication
+subtitle: A One-Week Field Experiment Analyzing the Effects of Popularity Cues on the Privacy Calculus in Online Communication
 
 date: last-modified
 wordcount: "8,204"
 
 author:
-  - name: Anon
-    orcid: 0000-0000-0000-0000
+  - name: Anonymous
+    #orcid: 0000-0000-0000-0000
     corresponding: true
-    email: example@uzh.ch
+    email: example@email.ch
     affiliations:
       - "University"
 
@@ -37,9 +34,6 @@ format:
   html: default
   apaquarto-pdf:
     documentmode: man
-
-format-links: true
-
 ---
 
 ```{r include=F}

@@ -1,7 +1,8 @@
 --- Does the string end with a specific character?
 --- http://lua-users.org/wiki/StringRecipes
 local function ends_with(str, ending)
-  return string.sub(str.text, -1) == ending
+  local text = pandoc.utils.stringify(str)
+  return string.sub(text, -1) == ending
 end
 
 --- Trim string
