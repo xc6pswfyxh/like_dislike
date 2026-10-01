@@ -5,7 +5,7 @@ project:
     - "*.qmd"
     - "*.rmd"
     - "*.ipynb"
-    - "!05a_analyses.qmd"
+    #- "!05a_analyses.qmd"
 
 lang: en
 
@@ -36,7 +36,6 @@ website:
     tools:
       #- icon: bluesky
       #  href: https://bsky.app/
-
       - icon: github
         menu:
           - text: Source Code
