@@ -2707,3 +2707,145 @@ save(
   , file = "data/workspace.RData"
 )
 ```
+
+### Self Disclosure without quantitity
+
+```{r}
+# self-disclosure without quantity: breadth + depth only (both 0-3, so no standardization needed)
+d <- d %>% 
+  mutate(self_disc2 = breadth_mean + depth_mean)   # 0-6, non-commenters = 0
+
+# check: commenters whose comments contain no topic and no disclosure also get 0
+d %>% 
+  summarise(
+    non_commenters        = sum(words == 0),
+    commenters            = sum(words > 0),
+    commenters_with_zero  = sum(words > 0 & self_disc2 == 0)
+  )
+summary(d$self_disc2[d$self_disc2 > 0])
+```
+
+
+```{r}
+# hurdle models for self_disc2, same specification as above
+predictors_sd2 <- c(
+  pricon  = "pri_con_fs",
+  grats   = "grats_gen_fs",
+  pridel  = "pri_del_fs",
+  trust   = "trust_gen_fs",
+  selfeff = "self_eff_fs",
+  ctrl    = "version",
+  lkdslk  = "version_lkdslk"
+)
+x_labs_sd2 <- c(
+  pricon = "Privacy concerns", grats = "Gratifications general", pridel = "Privacy deliberation",
+  trust = "Trust general", selfeff = "Self-efficacy",
+  ctrl = "Experimental conditions", lkdslk = "Experimental conditions"
+)
+
+for (k in names(predictors_sd2)) {
+  run_hurdles(
+    object    = d,
+    name      = paste0("self_disc2_", k),
+    outcome   = "self_disc2",
+    predictor = predictors_sd2[[k]],
+    y_lab     = "Self-disclosure (breadth + depth)",
+    x_lab     = x_labs_sd2[[k]]
+  )
+}
+```
+
+
+```{r}
+model_labels <- c(
+  pricon = "Privacy concerns", grats = "Expected gratifications", pridel = "Privacy deliberation",
+  trust = "Trust", selfeff = "Self-efficacy", ctrl = "Conditions", lkdslk = "Conditions"
+)
+
+tab_slopes_self_disc2 <- 
+  map_dfr(names(predictors_sd2), function(k) {
+    get(paste0("slopes_self_disc2_", k)) %>% 
+      as_tibble() %>% 
+      filter(term == predictors_sd2[[k]]) %>%                       # only the predictor, no controls
+      mutate(Predictor = if_else(contrast == "dY/dX", model_labels[[k]], contrast))
+  }) %>% 
+  distinct(Predictor, .keep_all = TRUE) %>% 
+  mutate(sig = if_else(conf.low > 0 | conf.high < 0, "*", "")) %>% 
+  select(Predictor, Estimate = estimate, LL = conf.low, UL = conf.high, sig)
+
+print(tab_slopes_self_disc2, n = Inf)
+```
+
+
+```{r}
+# decompose the effects: hurdle part vs. conditional (gamma) part
+get_parts <- function(k) {
+  fit  <- get(paste0("fit_self_disc2_", k))
+  pred <- predictors_sd2[[k]]
+  part <- function(dpar, label) {
+    avg_slopes(fit, variables = pred, dpar = dpar) %>%
+      as_tibble() %>%
+      mutate(part = label,
+             Predictor = if_else(contrast == "dY/dX", model_labels[[k]], contrast))
+  }
+  bind_rows(
+    avg_slopes(fit, variables = pred) %>% as_tibble() %>%
+      mutate(part = "Combined",
+             Predictor = if_else(contrast == "dY/dX", model_labels[[k]], contrast)),
+    part("hu", "Hurdle") %>%                                   # hu = P(zero) -> flip to P(disclosing)
+      mutate(across(c(estimate, conf.low, conf.high), ~ -.x)) %>%
+      rename(conf.low = conf.high, conf.high = conf.low),
+    part("mu", "Conditional")
+  )
+}
+
+tab_parts_sd2 <- 
+  map_dfr(c("pricon", "grats", "pridel", "trust", "selfeff", "ctrl", "lkdslk"), get_parts) %>%
+  filter(Predictor != "Control - Like & dislike") %>%          # duplicate of Like & dislike - Control
+  distinct(Predictor, part, .keep_all = TRUE) %>%
+  mutate(
+    sig  = if_else(conf.low > 0 | conf.high < 0, "*", ""),
+    cell = sprintf("%.2f [%.2f, %.2f]%s", estimate, conf.low, conf.high, sig)
+  ) %>%
+  select(Predictor, part, cell) %>%
+  pivot_wider(names_from = part, values_from = cell) %>%
+  select(Predictor, Combined, Hurdle, Conditional)
+
+tab_parts_sd2 %>%
+  kable(caption = "Average marginal effects on self-disclosure (breadth + depth). Hurdle = change in probability of disclosing anything; Conditional = change in self-disclosure among those who disclose. * = 95% interval excludes zero.") %>%
+  kable_styling("striped")
+```
+
+
+```{r}
+#| fig-height: 5
+#| fig-width: 10
+
+# numeric version of the decomposition for plotting
+parts_num_sd2 <- 
+  map_dfr(c("pricon", "grats", "pridel", "trust", "selfeff", "ctrl", "lkdslk"), get_parts) %>%
+  filter(Predictor != "Control - Like & dislike") %>%
+  distinct(Predictor, part, .keep_all = TRUE) %>%
+  mutate(
+    part      = factor(part, levels = c("Combined", "Hurdle", "Conditional"),
+                       labels = c("Combined", "Hurdle\n(probability of disclosing)", 
+                                  "Conditional\n(among those who disclose)")),
+    Predictor = factor(Predictor, levels = rev(c(
+      "Privacy concerns", "Expected gratifications", "Privacy deliberation", "Trust", 
+      "Self-efficacy", "Like - Control", "Like & dislike - Control", "Like - Like & dislike"))),
+    sig       = conf.low > 0 | conf.high < 0
+  )
+
+fig_parts_sd2 <- 
+  ggplot(parts_num_sd2, aes(x = estimate, y = Predictor)) +
+  geom_vline(xintercept = 0, linetype = "dashed", colour = "grey50") +
+  geom_pointrange(aes(xmin = conf.low, xmax = conf.high, shape = sig), size = .4) +
+  scale_shape_manual(values = c(`TRUE` = 16, `FALSE` = 1), guide = "none") +
+  facet_wrap(~ part, scales = "free_x") +
+  theme_bw() +
+  labs(x = "Average marginal effect (95% credible interval)", y = NULL,
+       caption = "Filled points: interval excludes zero. Outcome: self-disclosure (breadth + depth, 0-6).")
+
+print(fig_parts_sd2)
+ggsave("figures/results/self_disc/effects_sd2_parts.png", fig_parts_sd2, width = 10, height = 5)
+```
