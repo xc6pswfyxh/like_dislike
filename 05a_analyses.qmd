@@ -2671,7 +2671,7 @@ tab_slopes_self_disc <-
     UL
     ) 
 
-tab_slopes %>% 
+tab_slopes_self_disc %>% 
   kable() %>% 
   kable_styling("striped") %>% 
   scroll_box(width = "100%")
@@ -2773,7 +2773,10 @@ tab_slopes_self_disc2 <-
   mutate(sig = if_else(conf.low > 0 | conf.high < 0, "*", "")) %>% 
   select(Predictor, Estimate = estimate, LL = conf.low, UL = conf.high, sig)
 
-print(tab_slopes_self_disc2, n = Inf)
+tab_slopes_self_disc2 %>% 
+  filter(Predictor != "Control - Like & dislike") %>%   # duplicate of "Like & dislike - Control"
+  kable(digits = 2) %>% 
+  kable_styling("striped")
 ```
 
 
