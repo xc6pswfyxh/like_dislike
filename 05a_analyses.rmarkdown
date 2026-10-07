@@ -30,12 +30,16 @@ options(
   )
 ```
 
+
+
 In what follows, you can find the analyses for the results reported in the paper. To see the underlying code, click on the button "code".
 
 # Setup
 ## Packages
 
 Let's first load the packages we require for our analyses. Note that some need to be installed manually from github.
+
+
 
 ```{r results='hide', cache=F}
 # install github packages
@@ -79,9 +83,13 @@ lapply(
 # load("data/workspace.RData")
 ```
 
+
+
 ## Custom Functions
 
 We now build some custom functions required for the analyses. Note that here you can find the syntax for the main analyses wrapped in helper functions, which we will then call below.
+
+
 
 ```{r}
 # define function to silence result output
@@ -322,9 +330,13 @@ run_hurdles <-
 }
 ```
 
+
+
 ## Data-Wrangling
 
 Let's next tidy up and prepare the data, so we can analyze them.
+
+
 
 ```{r results='hide', cache=F}
 # load data
@@ -574,9 +586,13 @@ n_matched <- nrow(d)
 d_all <- d
 ```
 
+
+
 # Filter Participants
 
 I filtered participants who answered the questionnaire in less than three minutes, which I considered to be unreasonably fast.
+
+
 
 ```{r cache=F}
 # filter speeders
@@ -599,7 +615,11 @@ d <-
     )
 ```
 
+
+
 I inspected the data manually for cases with obvious response patterns. The following cases show extreme response patterns (alongside fast response times), and were hence removed.
+
+
 
 ```{r cache=F}
 # identify response patterns
@@ -641,6 +661,8 @@ male_final_m <- mean(d$male, na.rm = TRUE)
 college_final_m <- table(d$edu)[[3]] / n_final
 ```
 
+
+
 # Measures
 
 Let's next inspect all measures. I list all items, their distributions and CFAs.
@@ -660,6 +682,8 @@ Using the participation platform I had ...
 
 ### Distributions
 
+
+
 ```{r fig.height = 3}
 # plot distribution
 plot_dist(
@@ -673,7 +697,11 @@ get_desc(
 )
 ```
 
+
+
 ### CFA
+
+
 
 ```{r}
 name <- "pricon"
@@ -689,7 +717,11 @@ fit <-
     )
 ```
 
+
+
 Model fit:
+
+
 
 ```{r}
 facval <- 
@@ -701,7 +733,11 @@ facval <-
   print()
 ```
 
+
+
 Factor loadings:
+
+
 
 ```{r}
 inspect(
@@ -710,9 +746,13 @@ inspect(
     lambda
 ```
 
+
+
 Shows that PC01_03 doesn't load well. As it's an inverted item that's not surprising. Also from a theoretic perspective it's suboptimal, because it doesn't explicitly focus on privacy, but just concerns in general. Will be deleted.
 
 ### CFA 2
+
+
 
 ```{r}
 model <- "
@@ -727,7 +767,11 @@ fit <-
     )
 ```
 
+
+
 Model fit:
+
+
 
 ```{r}
 facval <- 
@@ -747,7 +791,11 @@ assign(
   )
 ```
 
+
+
 Factor loadings:
+
+
 
 ```{r}
 inspect(
@@ -756,6 +804,8 @@ inspect(
   ) %$% 
   lambda
 ```
+
+
 
 Updated version shows good fit.
 
@@ -772,6 +822,8 @@ Using the participation platform ...
 
 ### Distributions
 
+
+
 ```{r fig.height = 3}
 plot_dist(
   item = "GR02"
@@ -783,7 +835,11 @@ get_desc(
 )
 ```
 
+
+
 ### CFA
+
+
 
 ```{r}
 name <- "gratsgen"
@@ -799,7 +855,11 @@ fit <-
     )
 ```
 
+
+
 Model fit:
+
+
 
 ```{r}
 facval <- 
@@ -819,7 +879,11 @@ assign(
   )
 ```
 
+
+
 Factor loadings:
+
+
 
 ```{r}
 inspect(
@@ -828,6 +892,8 @@ inspect(
   ) %$% 
   lambda
 ```
+
+
 
 Model fit was good.
 
@@ -868,6 +934,8 @@ _Extrinsic benefits_
 
 ### Distributions
 
+
+
 ```{r}
 plot_dist(
   item = "GR01",
@@ -880,7 +948,11 @@ get_desc(
 )
 ```
 
+
+
 ### CFA
+
+
 
 ```{r}
 name <- "gratsspec"
@@ -900,7 +972,11 @@ fit <- lavaan::sem(
   )
 ```
 
+
+
 Model fit:
+
+
 
 ```{r}
 facval <- 
@@ -920,7 +996,11 @@ assign(
   )
 ```
 
+
+
 Factor loadings:
+
+
 
 ```{r}
 inspect(
@@ -929,6 +1009,8 @@ inspect(
   ) %$% 
   lambda
 ```
+
+
 
 Model fit was okay.
 
@@ -945,6 +1027,8 @@ Using the participation platform ...
 
 ### Distributions
 
+
+
 ```{r fig.height = 3}
 plot_dist(
   item = "PD01"
@@ -956,7 +1040,11 @@ get_desc(
 )
 ```
 
+
+
 ### CFA
+
+
 
 ```{r}
 name <- "pridel"
@@ -971,7 +1059,11 @@ fit <- lavaan::sem(
   )
 ```
 
+
+
 Model fit:
+
+
 
 ```{r}
 facval <- 
@@ -990,7 +1082,11 @@ assign(
   )
 ```
 
+
+
 Factor loadings:
+
+
 
 ```{r}
 inspect(
@@ -999,6 +1095,8 @@ inspect(
   ) %$%
   lambda
 ```
+
+
 
 Model fit was very good (which is nice, given it's a newly designed scale).
 
@@ -1011,6 +1109,8 @@ Model fit was very good (which is nice, given it's a newly designed scale).
 
 ### Distributions
 
+
+
 ```{r fig.height = 3}
 plot_dist(
   item = "TR02"
@@ -1021,9 +1121,13 @@ get_desc(
 )
 ```
 
+
+
 ### CFA
 
 Note that I constrained two loadings to be able to report model fit. I used operators and website, as these are theoretically closer.
+
+
 
 ```{r}
 name <- "trustgen"
@@ -1039,7 +1143,11 @@ fit <-
     )
 ```
 
+
+
 Model fit:
+
+
 
 ```{r}
 facval <- 
@@ -1059,7 +1167,11 @@ assign(
   )
 ```
 
+
+
 Factor loadings:
+
+
 
 ```{r}
 inspect(
@@ -1068,6 +1180,8 @@ inspect(
   ) %$%
   lambda
 ```
+
+
 
 Note that I constrained Items 5 and Item 9 to be equal. Explanation: First, they are theoretically related. Second, not constraining would yield to just-identified model, for which model fit cannot be interpreted meaningfully.
 
@@ -1094,6 +1208,8 @@ _Information System_
 
 ### Distributions
 
+
+
 ```{r}
 plot_dist(
   item = "TR01",
@@ -1105,7 +1221,11 @@ get_desc(
 )
 ```
 
+
+
 ### CFA
+
+
 
 ```{r}
 name <- "trustspec"
@@ -1124,7 +1244,11 @@ fit <- lavaan::sem(
   )
 ```
 
+
+
 Model fit:
+
+
 
 ```{r warning=T}
 facval <- 
@@ -1144,7 +1268,11 @@ assign(
   )
 ```
 
+
+
 Factor loadings:
+
+
 
 ```{r}
 inspect(
@@ -1152,6 +1280,8 @@ inspect(
   what = "std") %$%
   lambda
 ```
+
+
 
 Model fit was good (there's a Highwood case on level 1, which is not too problematic in this case.)
 
@@ -1167,6 +1297,8 @@ Model fit was good (there's a Highwood case on level 1, which is not too problem
 
 ### Distributions
 
+
+
 ```{r fig.height = 3}
 plot_dist(
   item = "SE01"
@@ -1177,7 +1309,11 @@ get_desc(
 )
 ```
 
+
+
 ### CFA
+
+
 
 ```{r}
 name <- "self-eff"
@@ -1193,7 +1329,11 @@ fit <-
     )
 ```
 
+
+
 Model fit:
+
+
 
 ```{r}
 facval <- 
@@ -1213,7 +1353,11 @@ assign(
   )
 ```
 
+
+
 Factor loadings:
+
+
 
 ```{r}
 inspect(
@@ -1222,9 +1366,13 @@ inspect(
   lambda
 ```
 
+
+
 Shows significant misfit. I will delete inverted items, while allowing covariations between Items 1 and 2 (tech-oriented) and Items 3 and 4 (topic-oriented). 
 
 ### CFA 2
+
+
 
 ```{r}
 name <- "selfeff"
@@ -1242,7 +1390,11 @@ fit <-
     )
 ```
 
+
+
 Model fit:
+
+
 
 ```{r}
 facval <- 
@@ -1262,7 +1414,11 @@ assign(
   )
 ```
 
+
+
 Factor loadings:
+
+
 
 ```{r}
 inspect(
@@ -1271,10 +1427,14 @@ inspect(
   lambda
 ```
 
+
+
 Adapted version shows better and adequate fit.
 
 ## Communication
 ### Density plot
+
+
 
 ```{r fig.height = 3}
 ggplot(
@@ -1296,7 +1456,11 @@ ggplot(
   theme_bw()
 ```
 
+
+
 We can see that Communication is severely skewed. Let's calculate how many participants actually commented.
+
+
 
 ```{r}
 no_words_perc <- 
@@ -1314,11 +1478,15 @@ words_m <-
     )
 ```
 
+
+
 `r no_words_perc` percent wrote a comment. The average number of communicated words was `r words_m`.
 
 Will hence be log-scaled for SEMs.
 
 ## Communication Logged
+
+
 
 ```{r}
 ggplot(
@@ -1340,9 +1508,13 @@ ggplot(
   theme_bw()
 ```
 
+
+
 ## Baseline model
 
 In what follows, please find the results of all variables combined in one model. This model will be used to extract factor scores.
+
+
 
 ```{r cache=F}
 model_baseline <- "
@@ -1382,9 +1554,13 @@ summary(
   )
 ```
 
+
+
 # Descriptive analyses
 
 I first report the factor validity of all variables combined.
+
+
 
 ```{r cache=F}
 # extract model factor scores / predicted values for items & calc means
@@ -1465,7 +1641,11 @@ facval_tab %>%
   kableExtra::scroll_box(width = "100%")
 ```
 
+
+
 In what follows, I report zero-order correlations, distributions, and scatterplots of the variables' factor scores.
+
+
 
 ```{r fig.height=9, fig.width=9}
 # corr_plot <- 
@@ -1494,9 +1674,13 @@ In what follows, I report zero-order correlations, distributions, and scatterplo
 # )
 ```
 
+
+
 # Power analyses
 
 In what follows, I report power analyses for our study. Please note that I conduct a rudimentary power-analysis, assuming bivariate correlations. (At the time I was not yet aware of the existence of power analyses for multivariate structural equation models.)
+
+
 
 ```{r include=F}
 # define pwr-criteria
@@ -1506,7 +1690,11 @@ power_desired <- .95
 r_sesoi <- .10
 ```
 
+
+
 I first estimate the sample size necessary to find small effects in 95% of all cases.
+
+
 
 ```{r}
 # estimate pwr-samplesize
@@ -1522,7 +1710,11 @@ pwr.r.test(
   n_desired
 ```
 
+
+
 I then compute the power we have achieved with our final sample size to detect small effects.
+
+
 
 ```{r}
 # compute pwr-achieved
@@ -1538,7 +1730,11 @@ pwr.r.test(
   power_achieved
 ```
 
+
+
 I finally compute what effect size we are likely to find in 95% of all cases given our final sample size.
+
+
 
 ```{r}
 # estimate pwr-sensitivity
@@ -1554,8 +1750,12 @@ pwr.r.test(
   r_sensitive
 ```
 
+
+
 # Assumptions
 ## Multivariate normal distribution
+
+
 
 ```{r}
 # create subset of data with all items that were used
@@ -1577,6 +1777,8 @@ mvn_result <- mvn(d_sub, mvn_test = "mardia")
 mvn_result$multivariateNormality
 ```
 
+
+
 Shows that multivariate normal distribution is violated. I hence use maximum likelihood estimation with robust standard errors and a Satorra-Bentler scaled test statistic.
 
 ## Influential cases
@@ -1584,6 +1786,8 @@ Shows that multivariate normal distribution is violated. I hence use maximum lik
 In what follows I test for influential cases in the baseline model, to detect potentially corrupt data (e.g., people who provided response patterns). Specifically, I compute Cook's distance.
 
 [Note: The following lines stopped working after some time, potentially due to changes in package. I can hence not recreate them here, but refer to results obtained before.]
+
+
 
 ```{r eval=F}
 # cooks_dis <- 
@@ -1594,7 +1798,11 @@ In what follows I test for influential cases in the baseline model, to detect po
 #   plot()
 ```
 
+
+
 The following ten cases have a particularly strong influence on the baseline model.
+
+
 
 ```{r eval=F}
 # infl_cases <- 
@@ -1607,7 +1815,11 @@ The following ten cases have a particularly strong influence on the baseline mod
 #     )
 ```
 
+
+
 Let's inspect these cases.
+
+
 
 ```{r eval=F}
 # infl_cases_tokens <- 
@@ -1631,11 +1843,15 @@ Let's inspect these cases.
 #   scroll_box(width = "100%")
 ```
 
+
+
 These data do not reveal potential cases of response patterns. Indeed, answer times suggest that respondents were diligent.
 
 # Results
 ## Preregistered
 ### Privacy calculus
+
+
 
 ```{r}
 model <- "
@@ -1682,12 +1898,16 @@ rsquare_fit_prereg <-
     )["words"]
 ```
 
+
+
 Results show that there's only one significant predictor of Communication, being self-efficacy. The other predictors are in the direction as planned, albeit not significant. Trust, however, shows the inverse relation as effect, that is, more trust, less communication.
 
 ### Effects of popularity cues
 #### Confidence intervals
 
 The easiest way to assess the effect of the experimental manipulation on the variables is by visualizing their means. If 83% confidence intervals don't overlap, the variables differ significantly across the conditions. One can quickly see that there aren't any major effects.
+
+
 
 ```{r}
 # violin plot
@@ -1750,11 +1970,15 @@ ggsave(
 fig_fs_m
 ```
 
+
+
 #### SEM
 
 In what follows, I also report explicit statistical tests of the differences between the conditions using contrasts. 
 
 **Like & Like-Dislike vs. Control**
+
+
 
 ```{r}
 model <- "
@@ -1792,9 +2016,13 @@ summary(
   )
 ```
 
+
+
 No significant effects of popularity cues on privacy calculus.
 
 **Like-Dislike & Control vs. Like**
+
+
 
 ```{r}
 model <- "
@@ -1828,6 +2056,8 @@ summary(
   )
 ```
 
+
+
 No significant effects of popularity cues on privacy calculus.
 
 ## Exploratory analyses
@@ -1851,6 +2081,8 @@ As a result, I reran the analyses controlling for confounding variables that are
 
 I first compare likes and likes plus dislikes to the control condition.
 
+
+
 ```{r words}
 run_hurdles(
   object = d,
@@ -1862,7 +2094,11 @@ run_hurdles(
   )
 ```
 
+
+
 Let's find out by how much people in like and like plus dislike condition wrote fewer words.
+
+
 
 ```{r}
 words_m_ctrl <- 
@@ -1891,9 +2127,13 @@ effect_lkdlk_prcnt <-
   round()
 ```
 
+
+
 Compared to the control condition, participants wrote `r effect_lkdlk_prcnt` percent fewer words on the platform with likes and dislikes.
 
 I then compare likes and likes plus dislikes to the control condition.
+
+
 
 ```{r words-lkdslk}
 run_hurdles(
@@ -1906,9 +2146,13 @@ run_hurdles(
   )
 ```
 
+
+
 #### Privacy Concerns
 
 I first compare likes and likes plus dislikes to the control condition.
+
+
 
 ```{r pricon-ctrl}
 run_hurdles(
@@ -1921,7 +2165,11 @@ run_hurdles(
   )
 ```
 
+
+
 I then compare the likes and control conditions to the likes plus dislikes condition.
+
+
 
 ```{r}
 run_hurdles(
@@ -1934,9 +2182,13 @@ run_hurdles(
   )
 ```
 
+
+
 #### Gratifications General
 
 I first compare likes and likes plus dislikes to the control condition.
+
+
 
 ```{r}
 run_hurdles(
@@ -1949,7 +2201,11 @@ run_hurdles(
   )
 ```
 
+
+
 I then compare the likes and control conditions to the likes plus dislikes condition.
+
+
 
 ```{r}
 run_hurdles(
@@ -1962,9 +2218,13 @@ run_hurdles(
   )
 ```
 
+
+
 #### Privacy Deliberation
 
 I first compare likes and likes plus dislikes to the control condition.
+
+
 
 ```{r}
 run_hurdles(
@@ -1977,7 +2237,11 @@ run_hurdles(
   )
 ```
 
+
+
 I then compare the likes and control conditions to the likes plus dislikes condition.
+
+
 
 ```{r}
 run_hurdles(
@@ -1990,9 +2254,13 @@ run_hurdles(
   )
 ```
 
+
+
 #### Trust general
 
 I first compare likes and likes plus dislikes to the control condition.
+
+
 
 ```{r}
 run_hurdles(
@@ -2005,7 +2273,11 @@ run_hurdles(
   )
 ```
 
+
+
 I then compare the likes and control conditions to the likes plus dislikes condition.
+
+
 
 ```{r}
 run_hurdles(
@@ -2018,9 +2290,13 @@ run_hurdles(
   )
 ```
 
+
+
 #### Self-Efficacy
 
 I first compare likes and likes plus dislikes to the control condition.
+
+
 
 ```{r}
 run_hurdles(
@@ -2033,7 +2309,11 @@ run_hurdles(
   )
 ```
 
+
+
 I then compare the likes and control conditions to the likes plus dislikes condition.
+
+
 
 ```{r}
 run_hurdles(
@@ -2046,8 +2326,12 @@ run_hurdles(
   )
 ```
 
+
+
 ### Words
 #### Privacy Concerns
+
+
 
 ```{r}
 run_hurdles(
@@ -2060,7 +2344,11 @@ run_hurdles(
   )
 ```
 
+
+
 Let's explore how number of communicated words differ for people very much concerned versus not concerned at all.
+
+
 
 ```{r}
 # let's extract effects for 1
@@ -2078,9 +2366,13 @@ wrds_pricon_7 <-
   round(0)
 ```
 
+
+
 People who were not concerned at all communicated on average `r wrds_pricon_1 %>% round(0) %>% abs()` words, whereas people strongly concerned communicated on average `r wrds_pricon_7 %>% round(0)` words.
 
 #### Gratifications General
+
+
 
 ```{r}
 run_hurdles(
@@ -2093,7 +2385,11 @@ run_hurdles(
   )
 ```
 
+
+
 #### Privacy Deliberation
+
+
 
 ```{r}
 run_hurdles(
@@ -2106,7 +2402,11 @@ run_hurdles(
   )
 ```
 
+
+
 #### Trust General
+
+
 
 ```{r}
 run_hurdles(
@@ -2119,7 +2419,11 @@ run_hurdles(
   )
 ```
 
+
+
 #### Self-Efficacy
+
+
 
 ```{r}
 run_hurdles(
@@ -2132,7 +2436,11 @@ run_hurdles(
   )
 ```
 
+
+
 The effects is markedly exponential. Let's inspect the changes across values in self-efficacy.
+
+
 
 ```{r}
 effects_wrds_selfeff <- 
@@ -2166,9 +2474,13 @@ effects_wrds_selfeff_67 <-
 
 ```
 
+
+
 Whereas a change in self-efficacy from 1 to 2 led to an increase of `r effects_wrds_selfeff_12 %>% round(0)` words, a change from 6 to 7 led to an increase of `r effects_wrds_selfeff_67 %>% round(0)` words.
 
 Let's explore  how number of communicated words differ for people very much self-efficacious versus not self-efficacious at all.
+
+
 
 ```{r}
 # let's extract effects for 1
@@ -2186,9 +2498,13 @@ wrds_selfeff_7 <-
   round(0)
 ```
 
+
+
 People who reported no self-efficacy at all communicated on average `r wrds_selfeff_1 %>% round(0) %>% abs()` words, whereas people with very high self-efficacy communicated on average `r wrds_selfeff_7 %>% round(0)` words.
 
 ## Visualization
+
+
 
 ```{r}
 fig_results <- 
@@ -2207,9 +2523,13 @@ ggsave("figures/results/effects.pdf")
 ggsave("figures/results/effects.png")
 ```
 
+
+
 ## Table
 
 Make table of slopes
+
+
 
 ```{r}
 tab_slopes <- 
@@ -2354,9 +2674,13 @@ save(
 )
 ```
 
+
+
 ### Self Disclosure
 
 #### Self Disclosure Variable
+
+
 ```{r}
 # self-disclosure index: quantity (log words), breadth and depth, z-standardized and averaged
 # LLM codes per comment from 07a, aggregated per person
@@ -2401,7 +2725,11 @@ cor(d %>% filter(words > 0) %>% select(words_log, breadth_mean, depth_mean))
                predictor = "version_lkdslk", y_lab = "Self Disclosure", x_lab = "Experimental conditions")
 ```
 
+
+
 #### Privacy Concerns
+
+
 
 ```{r}
 run_hurdles(
@@ -2414,7 +2742,11 @@ run_hurdles(
   )
 ```
 
+
+
 Let's explore how number of communicated words differ for people very much concerned versus not concerned at all.
+
+
 
 ```{r}
 # let's extract effects for 1
@@ -2432,9 +2764,13 @@ self_dics_pricon_7 <-
   round(0)
 ```
 
+
+
 People who were not concerned at all communicated on average `r wrds_pricon_1 %>% round(0) %>% abs()` words, whereas people strongly concerned communicated on average `r wrds_pricon_7 %>% round(0)` words.
 
 #### Gratifications General
+
+
 
 ```{r}
 run_hurdles(
@@ -2447,7 +2783,11 @@ run_hurdles(
   )
 ```
 
+
+
 #### Privacy Deliberation
+
+
 
 ```{r}
 run_hurdles(
@@ -2460,7 +2800,11 @@ run_hurdles(
   )
 ```
 
+
+
 #### Trust General
+
+
 
 ```{r}
 run_hurdles(
@@ -2473,7 +2817,11 @@ run_hurdles(
   )
 ```
 
+
+
 #### Self-Efficacy
+
+
 
 ```{r}
 run_hurdles(
@@ -2486,7 +2834,11 @@ run_hurdles(
   )
 ```
 
+
+
 The effects is markedly exponential. Let's inspect the changes across values in self-efficacy.
+
+
 
 ```{r}
 effects_self_disc_selfeff <- 
@@ -2520,9 +2872,13 @@ effects_self_disc_selfeff_67 <-
 
 ```
 
+
+
 Whereas a change in self-efficacy from 1 to 2 led to an increase of `r effects_self_disc_selfeff_12 %>% round(0)` words, a change from 6 to 7 led to an increase of `r effects_self_disc_selfeff_67 %>% round(0)` words.
 
 Let's explore  how number of communicated words differ for people very much self-efficacious versus not self-efficacious at all.
+
+
 
 ```{r}
 # let's extract effects for 1
@@ -2540,9 +2896,13 @@ self_disc_selfeff_7 <-
   round(0)
 ```
 
+
+
 People who reported no self-efficacy at all communicated on average `r wrds_selfeff_1 %>% round(0) %>% abs()` words, whereas people with very high self-efficacy communicated on average `r wrds_selfeff_7 %>% round(0)` words.
 
 ## Visualization
+
+
 
 ```{r}
 fig_results <- 
@@ -2561,9 +2921,13 @@ ggsave("figures/results/self_disc/effects.pdf")
 ggsave("figures/results/self_disc/effects.png")
 ```
 
+
+
 ## Table
 
 Make table of slopes
+
+
 
 ```{r}
 tab_slopes_self_disc <- 
@@ -2708,7 +3072,11 @@ save(
 )
 ```
 
+
+
 ### Self Disclosure without quantity
+
+
 
 ```{r}
 # self-disclosure without quantity: breadth + depth only (both 0-3, so no standardization needed)
@@ -2724,7 +3092,6 @@ d %>%
   )
 summary(d$self_disc2[d$self_disc2 > 0])
 ```
-
 
 ```{r}
 # hurdle models for self_disc2, same specification as above
@@ -2755,7 +3122,6 @@ for (k in names(predictors_sd2)) {
 }
 ```
 
-
 ```{r}
 model_labels <- c(
   pricon = "Privacy concerns", grats = "Expected gratifications", pridel = "Privacy deliberation",
@@ -2778,7 +3144,6 @@ tab_slopes_self_disc2 %>%
   kable(digits = 2) %>% 
   kable_styling("striped")
 ```
-
 
 ```{r}
 # decompose the effects: hurdle part vs. conditional (gamma) part
@@ -2818,7 +3183,6 @@ tab_parts_sd2 %>%
   kable(caption = "Average marginal effects on self-disclosure (breadth + depth). Hurdle = change in probability of disclosing anything; Conditional = change in self-disclosure among those who disclose. * = 95% interval excludes zero.") %>%
   kable_styling("striped")
 ```
-
 
 ```{r}
 #| fig-height: 5
