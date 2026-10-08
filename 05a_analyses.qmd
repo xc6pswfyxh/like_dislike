@@ -2188,7 +2188,7 @@ wrds_selfeff_7 <-
 
 People who reported no self-efficacy at all communicated on average `r wrds_selfeff_1 %>% round(0) %>% abs()` words, whereas people with very high self-efficacy communicated on average `r wrds_selfeff_7 %>% round(0)` words.
 
-## Visualization
+## Visualization words
 
 ```{r}
 fig_results <- 
@@ -2207,7 +2207,7 @@ ggsave("figures/results/effects.pdf")
 ggsave("figures/results/effects.png")
 ```
 
-## Table
+## Table words
 
 Make table of slopes
 
@@ -2414,25 +2414,14 @@ run_hurdles(
   )
 ```
 
-Let's explore how number of communicated words differ for people very much concerned versus not concerned at all.
+Let's explore how self-disclosure differs for people very much concerned versus not concerned at all.
 
 ```{r}
-# let's extract effects for 1
-self_disc_pricon_1 <- 
-  fig_self_disc_pricon$data %>% 
-  filter(pri_con_fs == min(pri_con_fs)) %>% 
-  pull(estimate__) %>% 
-  round(0)
-
-# let's extract effects for 7
-self_dics_pricon_7 <- 
-  fig_self_disc_pricon$data %>% 
-  filter(pri_con_fs == max(pri_con_fs)) %>% 
-  pull(estimate__) %>% 
-  round(0)
+self_disc_pricon_1 <- fig_self_disc_pricon$data %>% filter(pri_con_fs == min(pri_con_fs)) %>% pull(estimate__) %>% round(2)
+self_disc_pricon_7 <- fig_self_disc_pricon$data %>% filter(pri_con_fs == max(pri_con_fs)) %>% pull(estimate__) %>% round(2)
 ```
 
-People who were not concerned at all communicated on average `r wrds_pricon_1 %>% round(0) %>% abs()` words, whereas people strongly concerned communicated on average `r wrds_pricon_7 %>% round(0)` words.
+People who were not concerned at all had a predicted self-disclosure index of `r self_disc_pricon_1`, whereas people strongly concerned had `r self_disc_pricon_7`.
 
 #### Gratifications General
 
@@ -2502,27 +2491,17 @@ effects_self_disc_selfeff <-
     ) %T>%
   print()
 
-# let's extract effects for 1
-effects_self_disc_selfeff_12 <- 
-  effects_self_disc_selfeff %>% 
-  filter(
-    self_eff_fs == 1 &
-      term == "self_eff_fs") %>% 
-  select(estimate)
+# let's extract effects for 1 -> 2
+effects_self_disc_selfeff_12 <- effects_self_disc_selfeff %>% filter(self_eff_fs == 1) %>% pull(estimate) %>% mean() %>% round(2)
 
-# let's extract effects for 7
-effects_self_disc_selfeff_67 <- 
-  effects_self_disc_selfeff %>% 
-  filter(
-    self_eff_fs == 6 &
-      term == "self_eff_fs") %>% 
-  select(estimate)
+# let's extract effects for 6 -> 7
+effects_self_disc_selfeff_67 <- effects_self_disc_selfeff %>% filter(self_eff_fs == 6) %>% pull(estimate) %>% mean() %>% round(2)
 
 ```
 
-Whereas a change in self-efficacy from 1 to 2 led to an increase of `r effects_self_disc_selfeff_12 %>% round(0)` words, a change from 6 to 7 led to an increase of `r effects_self_disc_selfeff_67 %>% round(0)` words.
+Whereas a change in self-efficacy from 1 to 2 increased the self-disclosure index by `r effects_self_disc_selfeff_12` points, a change from 6 to 7 increased it by `r effects_self_disc_selfeff_67` points.
 
-Let's explore  how number of communicated words differ for people very much self-efficacious versus not self-efficacious at all.
+Let's explore how self-disclosure differs for people very much self-efficacious versus not self-efficacious at all.
 
 ```{r}
 # let's extract effects for 1
@@ -2530,19 +2509,19 @@ self_disc_selfeff_1 <-
   fig_self_disc_selfeff$data %>% 
   filter(self_eff_fs == min(self_eff_fs)) %>% 
   pull(estimate__) %>% 
-  round(0)
+  round(2)
 
 # let's extract effects for 7
 self_disc_selfeff_7 <- 
   fig_self_disc_selfeff$data %>% 
   filter(self_eff_fs == max(self_eff_fs)) %>% 
   pull(estimate__) %>% 
-  round(0)
+  round(2)
 ```
 
-People who reported no self-efficacy at all communicated on average `r wrds_selfeff_1 %>% round(0) %>% abs()` words, whereas people with very high self-efficacy communicated on average `r wrds_selfeff_7 %>% round(0)` words.
+People who reported no self-efficacy at all had a predicted self-disclosure index of `r self_disc_selfeff_1`, whereas people with very high self-efficacy had `r self_disc_selfeff_7`.
 
-## Visualization
+## Visualization Self-Disclosure
 
 ```{r}
 fig_results <- 
@@ -2561,7 +2540,7 @@ ggsave("figures/results/self_disc/effects.pdf")
 ggsave("figures/results/self_disc/effects.png")
 ```
 
-## Table
+## Table Self-Disclosure
 
 Make table of slopes
 
@@ -2677,38 +2656,7 @@ tab_slopes_self_disc %>%
   scroll_box(width = "100%")
 ```
 
-```{r SaveData2, include=F, cache=F}
-write.csv(
-  d, 
-  file = "data/data.csv", 
-  row.names = FALSE
-  )
-
-save.image(
-  file = "data/workspace_full.RData"
-)
-
-save(
-  d_raw, d_all, d_fs, d
-  , fit_baseline, fit_prereg
-  , des_pridel
-  , facval_tab
-  , n_comments, n_desired, n_posts, n_speeding, n_time, n_words
-  , n_users, n_final
-  , resp_pattern, n_resp_pattern
-  , n_t1, age_t1_m, male_t1_m, college_t1_m
-  , n_t2, age_t2_m, male_t2_m, college_t2_m
-  , n_matched, n_final, age_final_m, male_final_m, college_final_m, words_m
-  , r_sesoi, r_sensitive, power_achieved
-  , no_words_perc
-  , effects_wrds_selfeff_12, effects_wrds_selfeff_67, effect_lkdlk_prcnt
-  , wrds_pricon_7, wrds_pricon_1, wrds_selfeff_1, wrds_selfeff_7
-  , tab_slopes
-  , file = "data/workspace.RData"
-)
-```
-
-### Self Disclosure without quantity
+#### Self Disclosure without quantity
 
 ```{r}
 # self-disclosure without quantity: breadth + depth only (both 0-3, so no standardization needed)
@@ -2851,4 +2799,131 @@ fig_parts_sd2 <-
 
 print(fig_parts_sd2)
 ggsave("figures/results/self_disc/effects_sd2_parts.png", fig_parts_sd2, width = 10, height = 5)
+```
+
+
+#### Descriptives
+
+Correlations of the self-disclosure components among commenters.
+
+```{r}
+d %>% 
+  filter(words > 0) %>% 
+  select(words_log, breadth_mean, depth_mean, self_disc2) %>% 
+  cor() %>% 
+  round(2)
+```
+
+#### Experimental Factors
+
+```{r}
+sd2_m_ctrl   <- fig_self_disc2_ctrl$data %>% filter(effect1__ == "Control")        %>% pull(estimate__)
+sd2_m_lk     <- fig_self_disc2_ctrl$data %>% filter(effect1__ == "Like")           %>% pull(estimate__)
+sd2_m_lkdslk <- fig_self_disc2_ctrl$data %>% filter(effect1__ == "Like & dislike") %>% pull(estimate__)
+
+effect_lk_prcnt_sd2    <- round((sd2_m_ctrl - sd2_m_lk)     / sd2_m_ctrl * 100)
+effect_lkdlk_prcnt_sd2 <- round((sd2_m_ctrl - sd2_m_lkdslk) / sd2_m_ctrl * 100)
+```
+
+Compared to the control condition, self-disclosure (breadth + depth) was `r effect_lkdlk_prcnt_sd2` percent lower on the platform with likes and dislikes and `r effect_lk_prcnt_sd2` percent lower on the platform with likes only.
+
+#### Privacy Concerns
+
+```{r}
+sd2_pricon_1 <- fig_self_disc2_pricon$data %>% filter(pri_con_fs == min(pri_con_fs)) %>% pull(estimate__) %>% round(2)
+sd2_pricon_7 <- fig_self_disc2_pricon$data %>% filter(pri_con_fs == max(pri_con_fs)) %>% pull(estimate__) %>% round(2)
+```
+
+People who were not concerned at all had a predicted self-disclosure (breadth + depth) of `r sd2_pricon_1`, whereas people strongly concerned had `r sd2_pricon_7`.
+
+#### Self-Efficacy
+
+```{r}
+effects_sd2_selfeff <- 
+  slopes(
+    fit_self_disc2_selfeff,
+    newdata   = datagrid(self_eff_fs = c(1, 6, 7)),
+    grid_type = "counterfactual"
+  ) %>% 
+  filter(term == "self_eff_fs") %T>% 
+  print()
+
+effects_sd2_selfeff_12 <- effects_sd2_selfeff %>% filter(self_eff_fs == 1) %>% pull(estimate) %>% mean() %>% round(2)
+effects_sd2_selfeff_67 <- effects_sd2_selfeff %>% filter(self_eff_fs == 6) %>% pull(estimate) %>% mean() %>% round(2)
+
+sd2_selfeff_1 <- fig_self_disc2_selfeff$data %>% filter(self_eff_fs == min(self_eff_fs)) %>% pull(estimate__) %>% round(2)
+sd2_selfeff_7 <- fig_self_disc2_selfeff$data %>% filter(self_eff_fs == max(self_eff_fs)) %>% pull(estimate__) %>% round(2)
+```
+
+Whereas a change in self-efficacy from 1 to 2 increased self-disclosure (breadth + depth) by `r effects_sd2_selfeff_12` points, a change from 6 to 7 increased it by `r effects_sd2_selfeff_67` points. People who reported no self-efficacy at all had a predicted self-disclosure of `r sd2_selfeff_1`, whereas people with very high self-efficacy had `r sd2_selfeff_7`.
+
+## Visualization Self-Disclosure 2
+
+```{r}
+fig_results_sd2 <- 
+  plot_grid(
+    fig_self_disc2_pricon, fig_self_disc2_grats, fig_self_disc2_pridel,
+    fig_self_disc2_trust,  fig_self_disc2_selfeff, fig_self_disc2_ctrl
+  ) %T>% 
+  print()
+
+ggsave("figures/results/self_disc/effects_sd2.pdf", fig_results_sd2, width = 8, height = 8)
+ggsave("figures/results/self_disc/effects_sd2.png", fig_results_sd2, width = 8, height = 8)
+```
+
+## Table Self-Disclosure 2
+
+```{r}
+tab_slopes_self_disc2_long <- 
+  tab_slopes_self_disc2 %>% 
+  filter(Predictor != "Control - Like & dislike") %>% 
+  mutate(
+    Outcome   = "self_disc2",
+    Predictor = recode(Predictor,
+      "Like & dislike - Control" = "Like & dislike vs. control",
+      "Like - Control"           = "Like vs. control",
+      "Like - Like & dislike"    = "Like vs. like & dislike")
+  ) %>% 
+  select(Outcome, Predictor, Estimate, LL, UL)
+
+tab_slopes_self_disc2_long %>% 
+  kable(digits = 2) %>% 
+  kable_styling("striped") %>% 
+  scroll_box(width = "100%")
+```
+
+```{r SaveData2, include=F, cache=F}
+write.csv(
+  d, 
+  file = "data/data.csv", 
+  row.names = FALSE
+  )
+
+save.image(
+  file = "data/workspace_full.RData"
+)
+
+save(
+  d_raw, d_all, d_fs, d
+  , fit_baseline, fit_prereg
+  , des_pridel
+  , facval_tab
+  , n_comments, n_desired, n_posts, n_speeding, n_time, n_words
+  , n_users, n_final
+  , resp_pattern, n_resp_pattern
+  , n_t1, age_t1_m, male_t1_m, college_t1_m
+  , n_t2, age_t2_m, male_t2_m, college_t2_m
+  , n_matched, n_final, age_final_m, male_final_m, college_final_m, words_m
+  , r_sesoi, r_sensitive, power_achieved
+  , no_words_perc
+  , effects_wrds_selfeff_12, effects_wrds_selfeff_67, effect_lkdlk_prcnt
+  , wrds_pricon_7, wrds_pricon_1, wrds_selfeff_1, wrds_selfeff_7
+  , tab_slopes
+  , tab_slopes_self_disc
+  , tab_slopes_self_disc2, tab_slopes_self_disc2_long, tab_parts_sd2
+  , effect_lkdlk_prcnt_sd2, effect_lk_prcnt_sd2
+  , sd2_pricon_1, sd2_pricon_7, sd2_selfeff_1, sd2_selfeff_7
+  , effects_sd2_selfeff_12, effects_sd2_selfeff_67
+  , file = "data/workspace.RData"
+)
 ```
