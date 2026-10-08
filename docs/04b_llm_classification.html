@@ -4344,6 +4344,12 @@ font-size: 1.2rem;
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./05a_analyses.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Analyses</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./05b_analyses_additional.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Additional Analyses</span></a>
   </div>
@@ -4352,6 +4358,30 @@ font-size: 1.2rem;
   <div class="sidebar-item-container"> 
   <a href="./05c_analyses_revision.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Interaction Analyses</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendix_prereg_note.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Open Science &amp; Preregistration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendix_codebook.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Codebook</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendix_system_prompt.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">System Prompt</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendix_model_comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classifier Model Comparison</span></a>
   </div>
 </li>
       </ul>
@@ -4401,7 +4431,7 @@ font-size: 1.2rem;
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> krippendorff</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> classification_report, cohen_kappa_score</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cell-4" class="cell" data-execution_count="5">
+<div id="cell-4" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># loading the complete comments dataset (all comments, needed for parent texts)</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>data_cpath <span class="op">=</span> <span class="st">&quot;data/comments/comments.csv&quot;</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>data_comments <span class="op">=</span> pd.read_csv(data_cpath, encoding<span class="op">=</span><span class="st">&quot;latin1&quot;</span>)</span>
@@ -4414,17 +4444,17 @@ font-size: 1.2rem;
 <pre><code>150 rows in the evaluation set</code></pre>
 </div>
 </div>
-<div id="cell-5" class="cell" data-execution_count="7">
+<div id="cell-5" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cap human-coded breadth at 3: the codebook defines breadth as 0-3 (3 = three or more topics),</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the model can only output 0-3, but the manual coding counted up to 8 topics</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>data_eval[<span class="st">&quot;breadth&quot;</span>] <span class="op">=</span> data_eval[<span class="st">&quot;breadth&quot;</span>].clip(upper<span class="op">=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cell-6" class="cell" data-execution_count="10">
+<div id="cell-6" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># loading the system prompt (contains the full codebook) from file</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">&quot;data/comments/system_prompt.txt&quot;</span>, <span class="st">&quot;r&quot;</span>, encoding<span class="op">=</span><span class="st">&quot;utf-8&quot;</span>) <span class="im">as</span> f:</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    SYSTEM_PROMPT <span class="op">=</span> f.read()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cell-7" class="cell" data-execution_count="11">
+<div id="cell-7" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sanity check: is the correct (final) system prompt loaded?</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(SYSTEM_PROMPT))                           <span class="co"># length of the prompt in characters</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;LÄNGE IST KEIN BEWEIS&quot;</span> <span class="kw">in</span> SYSTEM_PROMPT)     <span class="co"># marker (&quot;length is not proof&quot;) only present in the final version</span></span>
@@ -4438,7 +4468,7 @@ gegen Terrorismus (&quot;9-Punkte-Plan&quot;) bzw. zur Terrorismuspolitik allgem
 ist ein einzelner Nutzerkomm</code></pre>
 </div>
 </div>
-<div id="cell-8" class="cell" data-execution_count="12">
+<div id="cell-8" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define classifier function with qwen3.8:27b as default</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> Client(timeout<span class="op">=</span><span class="dv">300</span>)</span>
@@ -4497,7 +4527,7 @@ ist ein einzelner Nutzerkomm</code></pre>
 <span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cell-9" class="cell" data-execution_count="13">
+<div id="cell-9" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># post_number resets per topic, so it&#39;s not unique on its own - build a composite key instead</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_id(topic, post_number):</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f&quot;</span><span class="sc">{</span>topic<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span><span class="bu">int</span>(post_number)<span class="sc">}</span><span class="ss">&quot;</span></span>
@@ -4570,443 +4600,10 @@ Classifying 150 comments</code></pre>
 <span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>    data_comments.to_excel(<span class="ss">f&quot;data/comments/eval_predictions_</span><span class="sc">{</span>model_tag<span class="sc">}</span><span class="ss">.xlsx&quot;</span>, index<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;saved: eval_predictions_</span><span class="sc">{</span>model_tag<span class="sc">}</span><span class="ss">.xlsx&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Classifying (qwen3.8:27b-q4_K_M):   0%|          | 0/135 [00:30&lt;?, ?it/s]</code></pre>
-</div>
-<div class="cell-output cell-output-error">
-<div class="ansi-escaped-output">
-<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-
-<span class="ansi-red-fg">KeyboardInterrupt</span>                         Traceback (most recent call last)
-
-Cell <span class="ansi-green-fg">In[80], line 13</span>
-
-<span class="ansi-green-fg ansi-bold">     11</span> <span style="font-weight:bold;color:rgb(0,135,0)">for</span> i, row <span style="font-weight:bold;color:rgb(175,0,255)">in</span> tqdm(data_comments<span style="color:rgb(98,98,98)">.</span>iterrows(), total<span style="color:rgb(98,98,98)">=</span><span style="color:rgb(0,135,0)">len</span>(data_comments), desc<span style="color:rgb(98,98,98)">=</span><span style="color:rgb(175,0,0)">f</span><span style="color:rgb(175,0,0)">&quot;</span><span style="color:rgb(175,0,0)">Classifying (</span><span style="font-weight:bold;color:rgb(175,95,135)">{</span>model_name<span style="font-weight:bold;color:rgb(175,95,135)">}</span><span style="color:rgb(175,0,0)">)</span><span style="color:rgb(175,0,0)">&quot;</span>):
-
-<span class="ansi-green-fg ansi-bold">     12</span>     parent_text <span style="color:rgb(98,98,98)">=</span> get_parent_text(row)
-
-<span class="ansi-green-fg">---&gt; 13</span>     codes <span style="color:rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">classify_comment</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">texts</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">loc</span><span class="ansi-yellow-bg">[</span><span class="ansi-yellow-bg">i</span><span class="ansi-yellow-bg">]</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">parent_text</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">parent_text</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">model</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">model_name</span><span class="ansi-yellow-bg">)</span>
-
-<span class="ansi-green-fg ansi-bold">     14</span>     results<span style="color:rgb(98,98,98)">.</span>append(codes)
-
-<span class="ansi-green-fg ansi-bold">     16</span> results_df <span style="color:rgb(98,98,98)">=</span> pd<span style="color:rgb(98,98,98)">.</span>DataFrame(results)
-
-
-
-Cell <span class="ansi-green-fg">In[77], line 20</span>, in <span class="ansi-cyan-fg">classify_comment</span><span class="ansi-blue-fg">(text, parent_text, model)</span>
-
-<span class="ansi-green-fg ansi-bold">     17</span>     user_msg <span style="color:rgb(98,98,98)">+</span><span style="color:rgb(98,98,98)">=</span> <span style="color:rgb(175,0,0)">f</span><span style="color:rgb(175,0,0)">&quot;</span><span style="font-weight:bold;color:rgb(175,95,0)">\n</span><span style="font-weight:bold;color:rgb(175,95,0)">\n</span><span style="color:rgb(175,0,0)">(This is a reply to the following parent comment: </span><span style="font-weight:bold;color:rgb(175,95,135)">{</span>parent_text<span style="font-weight:bold;color:rgb(175,95,135)">}</span><span style="color:rgb(175,0,0)">)</span><span style="color:rgb(175,0,0)">&quot;</span>
-
-<span class="ansi-green-fg ansi-bold">     19</span> <span style="font-weight:bold;color:rgb(0,135,0)">try</span>:
-
-<span class="ansi-green-fg">---&gt; 20</span>     response <span style="color:rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">client</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">chat</span><span class="ansi-yellow-bg">(</span>
-
-<span class="ansi-green-fg ansi-bold">     21</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">model</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">model</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">     22</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">messages</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">[</span>
-
-<span class="ansi-green-fg ansi-bold">     23</span> <span class="ansi-yellow-bg">            </span><span class="ansi-yellow-bg">{</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">role</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span class="ansi-yellow-bg">:</span><span class="ansi-yellow-bg"> </span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">system</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">content</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span class="ansi-yellow-bg">:</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">SYSTEM_PROMPT</span><span class="ansi-yellow-bg">}</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">     24</span> <span class="ansi-yellow-bg">            </span><span class="ansi-yellow-bg">{</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">role</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span class="ansi-yellow-bg">:</span><span class="ansi-yellow-bg"> </span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">user</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">content</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span class="ansi-yellow-bg">:</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">user_msg</span><span class="ansi-yellow-bg">}</span>
-
-<span class="ansi-green-fg ansi-bold">     25</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">]</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">     26</span> <span class="ansi-yellow-bg">        </span><span style="color:rgb(0,135,0)" class="ansi-yellow-bg">format</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">json</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">     27</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">think</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span style="font-weight:bold;color:rgb(0,135,0)" class="ansi-yellow-bg">False</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">     28</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">keep_alive</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">30m</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">     29</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">options</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">{</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">temperature</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span class="ansi-yellow-bg">:</span><span class="ansi-yellow-bg"> </span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">0</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">num_ctx</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span class="ansi-yellow-bg">:</span><span class="ansi-yellow-bg"> </span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">8192</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">num_predict</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&quot;</span><span class="ansi-yellow-bg">:</span><span class="ansi-yellow-bg"> </span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">400</span><span class="ansi-yellow-bg">}</span>
-
-<span class="ansi-green-fg ansi-bold">     30</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">)</span>
-
-<span class="ansi-green-fg ansi-bold">     31</span> <span style="font-weight:bold;color:rgb(0,135,0)">except</span> <span style="font-weight:bold;color:rgb(215,95,95)">Exception</span> <span style="font-weight:bold;color:rgb(0,135,0)">as</span> e:
-
-<span class="ansi-green-fg ansi-bold">     32</span>     <span style="color:rgb(0,135,0)">print</span>(<span style="color:rgb(175,0,0)">f</span><span style="color:rgb(175,0,0)">&quot;</span><span style="color:rgb(175,0,0)">Fehler: </span><span style="font-weight:bold;color:rgb(175,95,135)">{</span>e<span style="font-weight:bold;color:rgb(175,95,135)">}</span><span style="color:rgb(175,0,0)">&quot;</span>)
-
-
-
-File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/lib/python3.10/site-packages/ollama/_client.py:387</span>, in <span class="ansi-cyan-fg">Client.chat</span><span class="ansi-blue-fg">(self, model, messages, tools, stream, think, logprobs, top_logprobs, format, options, keep_alive)</span>
-
-<span class="ansi-green-fg ansi-bold">    340</span> <span style="font-weight:bold;color:rgb(0,135,0)">def</span><span style="color:rgb(188,188,188)"> </span><span style="color:rgb(0,0,255)">chat</span>(
-
-<span class="ansi-green-fg ansi-bold">    341</span>   <span style="color:rgb(0,135,0)">self</span>,
-
-<span class="ansi-green-fg ansi-bold">    342</span>   model: <span style="color:rgb(0,135,0)">str</span> <span style="color:rgb(98,98,98)">=</span> <span style="color:rgb(175,0,0)">&#39;</span><span style="color:rgb(175,0,0)">&#39;</span>,
-
-<span class="ansi-green-fg">   (...)</span>
-
-<span class="ansi-green-fg ansi-bold">    352</span>   keep_alive: Optional[Union[<span style="color:rgb(0,135,0)">float</span>, <span style="color:rgb(0,135,0)">str</span>]] <span style="color:rgb(98,98,98)">=</span> <span style="font-weight:bold;color:rgb(0,135,0)">None</span>,
-
-<span class="ansi-green-fg ansi-bold">    353</span> ) <span style="color:rgb(98,98,98)">-</span><span style="color:rgb(98,98,98)">&gt;</span> Union[ChatResponse, Iterator[ChatResponse]]:
-
-<span class="ansi-green-fg ansi-bold">    354</span> <span style="color:rgb(188,188,188)">  </span><span style="font-style:italic;color:rgb(175,0,0)">&quot;&quot;&quot;</span>
-
-<span class="ansi-green-fg ansi-bold">    355</span> <span style="font-style:italic;color:rgb(175,0,0)">  Create a chat response using the requested model.</span>
-
-<span class="ansi-green-fg ansi-bold">    356</span> 
-
-<span class="ansi-green-fg">   (...)</span>
-
-<span class="ansi-green-fg ansi-bold">    385</span> <span style="font-style:italic;color:rgb(175,0,0)">  Returns `ChatResponse` if `stream` is `False`, otherwise returns a `ChatResponse` generator.</span>
-
-<span class="ansi-green-fg ansi-bold">    386</span> <span style="font-style:italic;color:rgb(175,0,0)">  &quot;&quot;&quot;</span>
-
-<span class="ansi-green-fg">--&gt; 387</span>   <span style="font-weight:bold;color:rgb(0,135,0)">return</span> <span style="color:rgb(0,135,0)" class="ansi-yellow-bg">self</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">_request</span><span class="ansi-yellow-bg">(</span>
-
-<span class="ansi-green-fg ansi-bold">    388</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">ChatResponse</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    389</span> <span class="ansi-yellow-bg">    </span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&#39;</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">POST</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&#39;</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    390</span> <span class="ansi-yellow-bg">    </span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&#39;</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">/api/chat</span><span style="color:rgb(175,0,0)" class="ansi-yellow-bg">&#39;</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    391</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">json</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">ChatRequest</span><span class="ansi-yellow-bg">(</span>
-
-<span class="ansi-green-fg ansi-bold">    392</span> <span class="ansi-yellow-bg">      </span><span class="ansi-yellow-bg">model</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">model</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    393</span> <span class="ansi-yellow-bg">      </span><span class="ansi-yellow-bg">messages</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span style="color:rgb(0,135,0)" class="ansi-yellow-bg">list</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">_copy_messages</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">messages</span><span class="ansi-yellow-bg">)</span><span class="ansi-yellow-bg">)</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    394</span> <span class="ansi-yellow-bg">      </span><span class="ansi-yellow-bg">tools</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span style="color:rgb(0,135,0)" class="ansi-yellow-bg">list</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">_copy_tools</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">tools</span><span class="ansi-yellow-bg">)</span><span class="ansi-yellow-bg">)</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    395</span> <span class="ansi-yellow-bg">      </span><span class="ansi-yellow-bg">stream</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">stream</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    396</span> <span class="ansi-yellow-bg">      </span><span class="ansi-yellow-bg">think</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">think</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    397</span> <span class="ansi-yellow-bg">      </span><span class="ansi-yellow-bg">logprobs</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">logprobs</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    398</span> <span class="ansi-yellow-bg">      </span><span class="ansi-yellow-bg">top_logprobs</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">top_logprobs</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    399</span> <span class="ansi-yellow-bg">      </span><span style="color:rgb(0,135,0)" class="ansi-yellow-bg">format</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span style="color:rgb(0,135,0)" class="ansi-yellow-bg">format</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    400</span> <span class="ansi-yellow-bg">      </span><span class="ansi-yellow-bg">options</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">options</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    401</span> <span class="ansi-yellow-bg">      </span><span class="ansi-yellow-bg">keep_alive</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">keep_alive</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    402</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">)</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">model_dump</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">exclude_none</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span style="font-weight:bold;color:rgb(0,135,0)" class="ansi-yellow-bg">True</span><span class="ansi-yellow-bg">)</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    403</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">stream</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">stream</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    404</span> <span class="ansi-yellow-bg">  </span><span class="ansi-yellow-bg">)</span>
-
-
-
-File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/lib/python3.10/site-packages/ollama/_client.py:199</span>, in <span class="ansi-cyan-fg">Client._request</span><span class="ansi-blue-fg">(self, cls, stream, *args, **kwargs)</span>
-
-<span class="ansi-green-fg ansi-bold">    195</span>         <span style="font-weight:bold;color:rgb(0,135,0)">yield</span> <span style="color:rgb(0,135,0)">cls</span>(<span style="color:rgb(98,98,98)">*</span><span style="color:rgb(98,98,98)">*</span>part)
-
-<span class="ansi-green-fg ansi-bold">    197</span>   <span style="font-weight:bold;color:rgb(0,135,0)">return</span> inner()
-
-<span class="ansi-green-fg">--&gt; 199</span> <span style="font-weight:bold;color:rgb(0,135,0)">return</span> <span style="color:rgb(0,135,0)">cls</span>(<span style="color:rgb(98,98,98)">*</span><span style="color:rgb(98,98,98)">*</span><span style="color:rgb(0,135,0)" class="ansi-yellow-bg">self</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">_request_raw</span><span class="ansi-yellow-bg">(</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">args</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">*</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">kwargs</span><span class="ansi-yellow-bg">)</span><span style="color:rgb(98,98,98)">.</span>json())
-
-
-
-File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/lib/python3.10/site-packages/ollama/_client.py:139</span>, in <span class="ansi-cyan-fg">Client._request_raw</span><span class="ansi-blue-fg">(self, *args, **kwargs)</span>
-
-<span class="ansi-green-fg ansi-bold">    137</span> <span style="font-weight:bold;color:rgb(0,135,0)">def</span><span style="color:rgb(188,188,188)"> </span><span style="color:rgb(0,0,255)">_request_raw</span>(<span style="color:rgb(0,135,0)">self</span>, <span style="color:rgb(98,98,98)">*</span>args, <span style="color:rgb(98,98,98)">*</span><span style="color:rgb(98,98,98)">*</span>kwargs):
-
-<span class="ansi-green-fg ansi-bold">    138</span>   <span style="font-weight:bold;color:rgb(0,135,0)">try</span>:
-
-<span class="ansi-green-fg">--&gt; 139</span>     r <span style="color:rgb(98,98,98)">=</span> <span style="color:rgb(0,135,0)" class="ansi-yellow-bg">self</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">_client</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">request</span><span class="ansi-yellow-bg">(</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">args</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">*</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">kwargs</span><span class="ansi-yellow-bg">)</span>
-
-<span class="ansi-green-fg ansi-bold">    140</span>     r<span style="color:rgb(98,98,98)">.</span>raise_for_status()
-
-<span class="ansi-green-fg ansi-bold">    141</span>     <span style="font-weight:bold;color:rgb(0,135,0)">return</span> r
-
-
-
-File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/lib/python3.10/site-packages/httpx/_client.py:825</span>, in <span class="ansi-cyan-fg">Client.request</span><span class="ansi-blue-fg">(self, method, url, content, data, files, json, params, headers, cookies, auth, follow_redirects, timeout, extensions)</span>
-
-<span class="ansi-green-fg ansi-bold">    810</span>     warnings<span style="color:rgb(98,98,98)">.</span>warn(message, <span style="font-weight:bold;color:rgb(215,95,95)">DeprecationWarning</span>, stacklevel<span style="color:rgb(98,98,98)">=</span><span style="color:rgb(98,98,98)">2</span>)
-
-<span class="ansi-green-fg ansi-bold">    812</span> request <span style="color:rgb(98,98,98)">=</span> <span style="color:rgb(0,135,0)">self</span><span style="color:rgb(98,98,98)">.</span>build_request(
-
-<span class="ansi-green-fg ansi-bold">    813</span>     method<span style="color:rgb(98,98,98)">=</span>method,
-
-<span class="ansi-green-fg ansi-bold">    814</span>     url<span style="color:rgb(98,98,98)">=</span>url,
-
-<span class="ansi-green-fg">   (...)</span>
-
-<span class="ansi-green-fg ansi-bold">    823</span>     extensions<span style="color:rgb(98,98,98)">=</span>extensions,
-
-<span class="ansi-green-fg ansi-bold">    824</span> )
-
-<span class="ansi-green-fg">--&gt; 825</span> <span style="font-weight:bold;color:rgb(0,135,0)">return</span> <span style="color:rgb(0,135,0)" class="ansi-yellow-bg">self</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">send</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">request</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">auth</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">auth</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">follow_redirects</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">follow_redirects</span><span class="ansi-yellow-bg">)</span>
-
-
-
-File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/lib/python3.10/site-packages/httpx/_client.py:914</span>, in <span class="ansi-cyan-fg">Client.send</span><span class="ansi-blue-fg">(self, request, stream, auth, follow_redirects)</span>
-
-<span class="ansi-green-fg ansi-bold">    910</span> <span style="color:rgb(0,135,0)">self</span><span style="color:rgb(98,98,98)">.</span>_set_timeout(request)
-
-<span class="ansi-green-fg ansi-bold">    912</span> auth <span style="color:rgb(98,98,98)">=</span> <span style="color:rgb(0,135,0)">self</span><span style="color:rgb(98,98,98)">.</span>_build_request_auth(request, auth)
-
-<span class="ansi-green-fg">--&gt; 914</span> response <span style="color:rgb(98,98,98)">=</span> <span style="color:rgb(0,135,0)" class="ansi-yellow-bg">self</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">_send_handling_auth</span><span class="ansi-yellow-bg">(</span>
-
-<span class="ansi-green-fg ansi-bold">    915</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">request</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    916</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">auth</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">auth</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    917</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">follow_redirects</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">follow_redirects</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    918</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">history</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">[</span><span class="ansi-yellow-bg">]</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    919</span> <span class="ansi-yellow-bg">)</span>
-
-<span class="ansi-green-fg ansi-bold">    920</span> <span style="font-weight:bold;color:rgb(0,135,0)">try</span>:
-
-<span class="ansi-green-fg ansi-bold">    921</span>     <span style="font-weight:bold;color:rgb(0,135,0)">if</span> <span style="font-weight:bold;color:rgb(175,0,255)">not</span> stream:
-
-
-
-File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/lib/python3.10/site-packages/httpx/_client.py:942</span>, in <span class="ansi-cyan-fg">Client._send_handling_auth</span><span class="ansi-blue-fg">(self, request, auth, follow_redirects, history)</span>
-
-<span class="ansi-green-fg ansi-bold">    939</span> request <span style="color:rgb(98,98,98)">=</span> <span style="color:rgb(0,135,0)">next</span>(auth_flow)
-
-<span class="ansi-green-fg ansi-bold">    941</span> <span style="font-weight:bold;color:rgb(0,135,0)">while</span> <span style="font-weight:bold;color:rgb(0,135,0)">True</span>:
-
-<span class="ansi-green-fg">--&gt; 942</span>     response <span style="color:rgb(98,98,98)">=</span> <span style="color:rgb(0,135,0)" class="ansi-yellow-bg">self</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">_send_handling_redirects</span><span class="ansi-yellow-bg">(</span>
-
-<span class="ansi-green-fg ansi-bold">    943</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">request</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    944</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">follow_redirects</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">follow_redirects</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    945</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">history</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">history</span><span class="ansi-yellow-bg">,</span>
-
-<span class="ansi-green-fg ansi-bold">    946</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">)</span>
-
-<span class="ansi-green-fg ansi-bold">    947</span>     <span style="font-weight:bold;color:rgb(0,135,0)">try</span>:
-
-<span class="ansi-green-fg ansi-bold">    948</span>         <span style="font-weight:bold;color:rgb(0,135,0)">try</span>:
-
-
-
-File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/lib/python3.10/site-packages/httpx/_client.py:979</span>, in <span class="ansi-cyan-fg">Client._send_handling_redirects</span><span class="ansi-blue-fg">(self, request, follow_redirects, history)</span>
-
-<span class="ansi-green-fg ansi-bold">    976</span> <span style="font-weight:bold;color:rgb(0,135,0)">for</span> hook <span style="font-weight:bold;color:rgb(175,0,255)">in</span> <span style="color:rgb(0,135,0)">self</span><span style="color:rgb(98,98,98)">.</span>_event_hooks[<span style="color:rgb(175,0,0)">&quot;</span><span style="color:rgb(175,0,0)">request</span><span style="color:rgb(175,0,0)">&quot;</span>]:
-
-<span class="ansi-green-fg ansi-bold">    977</span>     hook(request)
-
-<span class="ansi-green-fg">--&gt; 979</span> response <span style="color:rgb(98,98,98)">=</span> <span style="color:rgb(0,135,0)" class="ansi-yellow-bg">self</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">_send_single_request</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">request</span><span class="ansi-yellow-bg">)</span>
-
-<span class="ansi-green-fg ansi-bold">    980</span> <span style="font-weight:bold;color:rgb(0,135,0)">try</span>:
-
-<span class="ansi-green-fg ansi-bold">    981</span>     <span style="font-weight:bold;color:rgb(0,135,0)">for</span> hook <span style="font-weight:bold;color:rgb(175,0,255)">in</span> <span style="color:rgb(0,135,0)">self</span><span style="color:rgb(98,98,98)">.</span>_event_hooks[<span style="color:rgb(175,0,0)">&quot;</span><span style="color:rgb(175,0,0)">response</span><span style="color:rgb(175,0,0)">&quot;</span>]:
-
-
-
-File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/lib/python3.10/site-packages/httpx/_client.py:1014</span>, in <span class="ansi-cyan-fg">Client._send_single_request</span><span class="ansi-blue-fg">(self, request)</span>
-
-<span class="ansi-green-fg ansi-bold">   1009</span>     <span style="font-weight:bold;color:rgb(0,135,0)">raise</span> <span style="font-weight:bold;color:rgb(215,95,95)">RuntimeError</span>(
-
-<span class="ansi-green-fg ansi-bold">   1010</span>         <span style="color:rgb(175,0,0)">&quot;</span><span style="color:rgb(175,0,0)">Attempted to send an async request with a sync Client instance.</span><span style="color:rgb(175,0,0)">&quot;</span>
-
-<span class="ansi-green-fg ansi-bold">   1011</span>     )
-
-<span class="ansi-green-fg ansi-bold">   1013</span> <span style="font-weight:bold;color:rgb(0,135,0)">with</span> request_context(request<span style="color:rgb(98,98,98)">=</span>request):
-
-<span class="ansi-green-fg">-&gt; 1014</span>     response <span style="color:rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">transport</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">handle_request</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">request</span><span class="ansi-yellow-bg">)</span>
-
-<span class="ansi-green-fg ansi-bold">   1016</span> <span style="font-weight:bold;color:rgb(0,135,0)">assert</span> <span style="color:rgb(0,135,0)">isinstance</span>(response<span style="color:rgb(98,98,98)">.</span>stream, SyncByteStream)
-
-<span class="ansi-green-fg ansi-bold">   1018</span> response<span style="color:rgb(98,98,98)">.</span>request <span style="color:rgb(98,98,98)">=</span> request
-
-
-
-File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/lib/python3.10/site-packages/httpx/_transports/default.py:250</span>, in <span class="ansi-cyan-fg">HTTPTransport.handle_request</span><span class="ansi-blue-fg">(self, request)</span>
-
-<span class="ansi-green-fg ansi-bold">    237</span> req <span style="color:rgb(98,98,98)">=</span> httpcore<span style="color:rgb(98,98,98)">.</span>Request(
-
-<span class="ansi-green-fg ansi-bold">    238</span>     method<span style="color:rgb(98,98,98)">=</span>request<span style="color:rgb(98,98,98)">.</span>method,
-
-<span class="ansi-green-fg ansi-bold">    239</span>     url<span style="color:rgb(98,98,98)">=</span>httpcore<span style="color:rgb(98,98,98)">.</span>URL(
-
-<span class="ansi-green-fg">   (...)</span>
-
-<span class="ansi-green-fg ansi-bold">    247</span>     extensions<span style="color:rgb(98,98,98)">=</span>request<span style="color:rgb(98,98,98)">.</span>extensions,
-
-<span class="ansi-green-fg ansi-bold">    248</span> )
-
-<span class="ansi-green-fg ansi-bold">    249</span> <span style="font-weight:bold;color:rgb(0,135,0)">with</span> map_httpcore_exceptions():
-
-<span class="ansi-green-fg">--&gt; 250</span>     resp <span style="color:rgb(98,98,98)">=</span> <span style="color:rgb(0,135,0)" class="ansi-yellow-bg">self</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">_pool</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">handle_request</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">req</span><span class="ansi-yellow-bg">)</span>
-
-<span class="ansi-green-fg ansi-bold">    252</span> <span style="font-weight:bold;color:rgb(0,135,0)">assert</span> <span style="color:rgb(0,135,0)">isinstance</span>(resp<span style="color:rgb(98,98,98)">.</span>stream, typing<span style="color:rgb(98,98,98)">.</span>Iterable)
-
-<span class="ansi-green-fg ansi-bold">    254</span> <span style="font-weight:bold;color:rgb(0,135,0)">return</span> Response(
-
-<span class="ansi-green-fg ansi-bold">    255</span>     status_code<span style="color:rgb(98,98,98)">=</span>resp<span style="color:rgb(98,98,98)">.</span>status,
-
-<span class="ansi-green-fg ansi-bold">    256</span>     headers<span style="color:rgb(98,98,98)">=</span>resp<span style="color:rgb(98,98,98)">.</span>headers,
-
-<span class="ansi-green-fg ansi-bold">    257</span>     stream<span style="color:rgb(98,98,98)">=</span>ResponseStream(resp<span style="color:rgb(98,98,98)">.</span>stream),
-
-<span class="ansi-green-fg ansi-bold">    258</span>     extensions<span style="color:rgb(98,98,98)">=</span>resp<span style="color:rgb(98,98,98)">.</span>extensions,
-
-<span class="ansi-green-fg ansi-bold">    259</span> )
-
-
-
-File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/lib/python3.10/site-packages/httpcore/_sync/connection_pool.py:256</span>, in <span class="ansi-cyan-fg">ConnectionPool.handle_request</span><span class="ansi-blue-fg">(self, request)</span>
-
-<span class="ansi-green-fg ansi-bold">    253</span>         closing <span style="color:rgb(98,98,98)">=</span> <span style="color:rgb(0,135,0)">self</span><span style="color:rgb(98,98,98)">.</span>_assign_requests_to_connections()
-
-<span class="ansi-green-fg ansi-bold">    255</span>     <span style="color:rgb(0,135,0)">self</span><span style="color:rgb(98,98,98)">.</span>_close_connections(closing)
-
-<span class="ansi-green-fg">--&gt; 256</span>     <span style="font-weight:bold;color:rgb(0,135,0)">raise</span> exc <span style="font-weight:bold;color:rgb(0,135,0)">from</span><span style="color:rgb(188,188,188)"> </span><span style="font-weight:bold;color:rgb(0,135,0)">None</span>
-
-<span class="ansi-green-fg ansi-bold">    258</span> <span style="font-style:italic;color:rgb(95,135,135)"># Return the response. Note that in this case we still have to manage</span>
-
-<span class="ansi-green-fg ansi-bold">    259</span> <span style="font-style:italic;color:rgb(95,135,135)"># the point at which the response is closed.</span>
-
-<span class="ansi-green-fg ansi-bold">    260</span> <span style="font-weight:bold;color:rgb(0,135,0)">assert</span> <span style="color:rgb(0,135,0)">isinstance</span>(response<span style="color:rgb(98,98,98)">.</span>stream, typing<span style="color:rgb(98,98,98)">.</span>Iterable)
-
-
-
-File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/lib/python3.10/site-packages/httpcore/_sync/connection_pool.py:236</span>, in <span class="ansi-cyan-fg">ConnectionPool.handle_request</span><span class="ansi-blue-fg">(self, request)</span>
-
-<span class="ansi-green-fg ansi-bold">    232</span> connection <span style="color:rgb(98,98,98)">=</span> pool_request<span style="color:rgb(98,98,98)">.</span>wait_for_connection(timeout<span style="color:rgb(98,98,98)">=</span>timeout)
-
-<span class="ansi-green-fg ansi-bold">    234</span> <span style="font-weight:bold;color:rgb(0,135,0)">try</span>:
-
-<span class="ansi-green-fg ansi-bold">    235</span>     <span style="font-style:italic;color:rgb(95,135,135)"># Send the request on the assigned connection.</span>
-
-<span class="ansi-green-fg">--&gt; 236</span>     response <span style="color:rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">connection</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">handle_request</span><span class="ansi-yellow-bg">(</span>
-
-<span class="ansi-green-fg ansi-bold">    237</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">pool_request</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">request</span>
-
-<span class="ansi-green-fg ansi-bold">    238</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">)</span>
-
-<span class="ansi-green-fg ansi-bold">    239</span> <span style="font-weight:bold;color:rgb(0,135,0)">except</span> ConnectionNotAvailable:
-
-<span class="ansi-green-fg ansi-bold">    240</span>     <span style="font-style:italic;color:rgb(95,135,135)"># In some cases a connection may initially be available to</span>
-
-<span class="ansi-green-fg ansi-bold">    241</span>     <span style="font-style:italic;color:rgb(95,135,135)"># handle a request, but then become unavailable.</span>
-
-<span class="ansi-green-fg ansi-bold">    242</span>     <span style="font-style:italic;color:rgb(95,135,135)">#</span>
-
-<span class="ansi-green-fg ansi-bold">    243</span>     <span style="font-style:italic;color:rgb(95,135,135)"># In this case we clear the connection and try again.</span>
-
-<span class="ansi-green-fg ansi-bold">    244</span>     pool_request<span style="color:rgb(98,98,98)">.</span>clear_connection()
-
-
-
-File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/lib/python3.10/site-packages/httpcore/_sync/connection.py:103</span>, in <span class="ansi-cyan-fg">HTTPConnection.handle_request</span><span class="ansi-blue-fg">(self, request)</span>
-
-<span class="ansi-green-fg ansi-bold">    100</span>     <span style="color:rgb(0,135,0)">self</span><span style="color:rgb(98,98,98)">.</span>_connect_failed <span style="color:rgb(98,98,98)">=</span> <span style="font-weight:bold;color:rgb(0,135,0)">True</span>
-
-<span class="ansi-green-fg ansi-bold">    101</span>     <span style="font-weight:bold;color:rgb(0,135,0)">raise</span> exc
-
-<span class="ansi-green-fg">--&gt; 103</span> <span style="font-weight:bold;color:rgb(0,135,0)">return</span> <span style="color:rgb(0,135,0)" class="ansi-yellow-bg">self</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">_connection</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">handle_request</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">request</span><span class="ansi-yellow-bg">)</span>
-
-
-
-File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/lib/python3.10/site-packages/httpcore/_sync/http11.py:136</span>, in <span class="ansi-cyan-fg">HTTP11Connection.handle_request</span><span class="ansi-blue-fg">(self, request)</span>
-
-<span class="ansi-green-fg ansi-bold">    134</span>     <span style="font-weight:bold;color:rgb(0,135,0)">with</span> Trace(<span style="color:rgb(175,0,0)">&quot;</span><span style="color:rgb(175,0,0)">response_closed</span><span style="color:rgb(175,0,0)">&quot;</span>, logger, request) <span style="font-weight:bold;color:rgb(0,135,0)">as</span> trace:
-
-<span class="ansi-green-fg ansi-bold">    135</span>         <span style="color:rgb(0,135,0)">self</span><span style="color:rgb(98,98,98)">.</span>_response_closed()
-
-<span class="ansi-green-fg">--&gt; 136</span> <span style="font-weight:bold;color:rgb(0,135,0)">raise</span> exc
-
-
-
-File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/lib/python3.10/site-packages/httpcore/_sync/http11.py:106</span>, in <span class="ansi-cyan-fg">HTTP11Connection.handle_request</span><span class="ansi-blue-fg">(self, request)</span>
-
-<span class="ansi-green-fg ansi-bold">     95</span>     <span style="font-weight:bold;color:rgb(0,135,0)">pass</span>
-
-<span class="ansi-green-fg ansi-bold">     97</span> <span style="font-weight:bold;color:rgb(0,135,0)">with</span> Trace(
-
-<span class="ansi-green-fg ansi-bold">     98</span>     <span style="color:rgb(175,0,0)">&quot;</span><span style="color:rgb(175,0,0)">receive_response_headers</span><span style="color:rgb(175,0,0)">&quot;</span>, logger, request, kwargs
-
-<span class="ansi-green-fg ansi-bold">     99</span> ) <span style="font-weight:bold;color:rgb(0,135,0)">as</span> trace:
-
-<span class="ansi-green-fg ansi-bold">    100</span>     (
-
-<span class="ansi-green-fg ansi-bold">    101</span>         http_version,
-
-<span class="ansi-green-fg ansi-bold">    102</span>         status,
-
-<span class="ansi-green-fg ansi-bold">    103</span>         reason_phrase,
-
-<span class="ansi-green-fg ansi-bold">    104</span>         headers,
-
-<span class="ansi-green-fg ansi-bold">    105</span>         trailing_data,
-
-<span class="ansi-green-fg">--&gt; 106</span>     ) <span style="color:rgb(98,98,98)">=</span> <span style="color:rgb(0,135,0)" class="ansi-yellow-bg">self</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">_receive_response_headers</span><span class="ansi-yellow-bg">(</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">*</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">kwargs</span><span class="ansi-yellow-bg">)</span>
-
-<span class="ansi-green-fg ansi-bold">    107</span>     trace<span style="color:rgb(98,98,98)">.</span>return_value <span style="color:rgb(98,98,98)">=</span> (
-
-<span class="ansi-green-fg ansi-bold">    108</span>         http_version,
-
-<span class="ansi-green-fg ansi-bold">    109</span>         status,
-
-<span class="ansi-green-fg ansi-bold">    110</span>         reason_phrase,
-
-<span class="ansi-green-fg ansi-bold">    111</span>         headers,
-
-<span class="ansi-green-fg ansi-bold">    112</span>     )
-
-<span class="ansi-green-fg ansi-bold">    114</span> network_stream <span style="color:rgb(98,98,98)">=</span> <span style="color:rgb(0,135,0)">self</span><span style="color:rgb(98,98,98)">.</span>_network_stream
-
-
-
-File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/lib/python3.10/site-packages/httpcore/_sync/http11.py:177</span>, in <span class="ansi-cyan-fg">HTTP11Connection._receive_response_headers</span><span class="ansi-blue-fg">(self, request)</span>
-
-<span class="ansi-green-fg ansi-bold">    174</span> timeout <span style="color:rgb(98,98,98)">=</span> timeouts<span style="color:rgb(98,98,98)">.</span>get(<span style="color:rgb(175,0,0)">&quot;</span><span style="color:rgb(175,0,0)">read</span><span style="color:rgb(175,0,0)">&quot;</span>, <span style="font-weight:bold;color:rgb(0,135,0)">None</span>)
-
-<span class="ansi-green-fg ansi-bold">    176</span> <span style="font-weight:bold;color:rgb(0,135,0)">while</span> <span style="font-weight:bold;color:rgb(0,135,0)">True</span>:
-
-<span class="ansi-green-fg">--&gt; 177</span>     event <span style="color:rgb(98,98,98)">=</span> <span style="color:rgb(0,135,0)" class="ansi-yellow-bg">self</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">_receive_event</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">timeout</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">timeout</span><span class="ansi-yellow-bg">)</span>
-
-<span class="ansi-green-fg ansi-bold">    178</span>     <span style="font-weight:bold;color:rgb(0,135,0)">if</span> <span style="color:rgb(0,135,0)">isinstance</span>(event, h11<span style="color:rgb(98,98,98)">.</span>Response):
-
-<span class="ansi-green-fg ansi-bold">    179</span>         <span style="font-weight:bold;color:rgb(0,135,0)">break</span>
-
-
-
-File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/lib/python3.10/site-packages/httpcore/_sync/http11.py:217</span>, in <span class="ansi-cyan-fg">HTTP11Connection._receive_event</span><span class="ansi-blue-fg">(self, timeout)</span>
-
-<span class="ansi-green-fg ansi-bold">    214</span>     event <span style="color:rgb(98,98,98)">=</span> <span style="color:rgb(0,135,0)">self</span><span style="color:rgb(98,98,98)">.</span>_h11_state<span style="color:rgb(98,98,98)">.</span>next_event()
-
-<span class="ansi-green-fg ansi-bold">    216</span> <span style="font-weight:bold;color:rgb(0,135,0)">if</span> event <span style="font-weight:bold;color:rgb(175,0,255)">is</span> h11<span style="color:rgb(98,98,98)">.</span>NEED_DATA:
-
-<span class="ansi-green-fg">--&gt; 217</span>     data <span style="color:rgb(98,98,98)">=</span> <span style="color:rgb(0,135,0)" class="ansi-yellow-bg">self</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">_network_stream</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">read</span><span class="ansi-yellow-bg">(</span>
-
-<span class="ansi-green-fg ansi-bold">    218</span> <span class="ansi-yellow-bg">        </span><span style="color:rgb(0,135,0)" class="ansi-yellow-bg">self</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">READ_NUM_BYTES</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">timeout</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">timeout</span>
-
-<span class="ansi-green-fg ansi-bold">    219</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">)</span>
-
-<span class="ansi-green-fg ansi-bold">    221</span>     <span style="font-style:italic;color:rgb(95,135,135)"># If we feed this case through h11 we&#39;ll raise an exception like:</span>
-
-<span class="ansi-green-fg ansi-bold">    222</span>     <span style="font-style:italic;color:rgb(95,135,135)">#</span>
-
-<span class="ansi-green-fg ansi-bold">    223</span>     <span style="font-style:italic;color:rgb(95,135,135)">#     httpcore.RemoteProtocolError: can&#39;t handle event type</span>
-
-<span class="ansi-green-fg">   (...)</span>
-
-<span class="ansi-green-fg ansi-bold">    227</span>     <span style="font-style:italic;color:rgb(95,135,135)"># perspective. Instead we handle this case distinctly and treat</span>
-
-<span class="ansi-green-fg ansi-bold">    228</span>     <span style="font-style:italic;color:rgb(95,135,135)"># it as a ConnectError.</span>
-
-<span class="ansi-green-fg ansi-bold">    229</span>     <span style="font-weight:bold;color:rgb(0,135,0)">if</span> data <span style="color:rgb(98,98,98)">==</span> <span style="color:rgb(175,0,0)">b</span><span style="color:rgb(175,0,0)">&quot;</span><span style="color:rgb(175,0,0)">&quot;</span> <span style="font-weight:bold;color:rgb(175,0,255)">and</span> <span style="color:rgb(0,135,0)">self</span><span style="color:rgb(98,98,98)">.</span>_h11_state<span style="color:rgb(98,98,98)">.</span>their_state <span style="color:rgb(98,98,98)">==</span> h11<span style="color:rgb(98,98,98)">.</span>SEND_RESPONSE:
-
-
-
-File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/lib/python3.10/site-packages/httpcore/_backends/sync.py:128</span>, in <span class="ansi-cyan-fg">SyncStream.read</span><span class="ansi-blue-fg">(self, max_bytes, timeout)</span>
-
-<span class="ansi-green-fg ansi-bold">    126</span> <span style="font-weight:bold;color:rgb(0,135,0)">with</span> map_exceptions(exc_map):
-
-<span class="ansi-green-fg ansi-bold">    127</span>     <span style="color:rgb(0,135,0)">self</span><span style="color:rgb(98,98,98)">.</span>_sock<span style="color:rgb(98,98,98)">.</span>settimeout(timeout)
-
-<span class="ansi-green-fg">--&gt; 128</span>     <span style="font-weight:bold;color:rgb(0,135,0)">return</span> <span style="color:rgb(0,135,0)" class="ansi-yellow-bg">self</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">_sock</span><span style="color:rgb(98,98,98)" class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">recv</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">max_bytes</span><span class="ansi-yellow-bg">)</span>
-
-
-
-<span class="ansi-red-fg">KeyboardInterrupt</span>: </pre>
+<pre><code>Classifying (qwen3.8:27b-q4_K_M):  65%|██████▍   | 97/150 [23:14&lt;14:07, 16.00s/it]  </code></pre>
 </div>
 </div>
-</div>
-<div id="cell-11" class="cell" data-execution_count="14">
+<div id="cell-11" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># quick test call with a codebook example</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># expected (codebook): pers_exp 0, emot_exp 0, pol_opin 1, breadth 1, valence 2, contr 1</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> client.chat(</span>
@@ -5022,7 +4619,7 @@ File <span class="ansi-green-fg">~/Documents/Mediapsychology/like_dislike/.venv/
 <pre><code>&#39;{&quot;pers_exp&quot;: 0, &quot;emot_exp&quot;: 0, &quot;pol_opin&quot;: 1, &quot;breadth&quot;: 1, &quot;valence&quot;: 2, &quot;contr&quot;: 1}&#39;</code></pre>
 </div>
 </div>
-<div id="cell-12" class="cell" data-execution_count="16">
+<div id="cell-12" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># parse failures (-1) per model: failed comments and failed cells per variable</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> model_name <span class="kw">in</span> MODELS:</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    tag <span class="op">=</span> model_name.replace(<span class="st">&quot;:&quot;</span>, <span class="st">&quot;_&quot;</span>).replace(<span class="st">&quot;.&quot;</span>, <span class="st">&quot;_&quot;</span>)</span>
@@ -5109,8 +4706,8 @@ Cell <span class="ansi-green-fg">In[16], line 2</span>
 <span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a>                })</span>
 <span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>report_df <span class="op">=</span> pd.DataFrame(all_rows)</span>
-<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a>report_df.to_excel(<span class="st">&quot;data/comments/eval_report_coding_v10.xlsx&quot;</span>, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Saved eval_report_coding_v10.xlsx&quot;</span>)</span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a>report_df.to_excel(<span class="st">&quot;data/comments/eval_report_coding_v11.xlsx&quot;</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Saved eval_report_coding_v11.xlsx&quot;</span>)</span>
 <span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a><span class="co"># summary: one row per variable, checked against the targets (accuracy &gt;= .80, kappa &gt;= .60)</span></span>
 <span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> (report_df.groupby([<span class="st">&quot;model&quot;</span>, <span class="st">&quot;variable&quot;</span>])</span>
@@ -5123,8 +4720,8 @@ Cell <span class="ansi-green-fg">In[16], line 2</span>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># save the merged table (human codes &quot;_true&quot; next to the model predictions) for error analysis:</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># open it in Excel and filter rows where a variable&#39;s &quot;_true&quot; and prediction columns differ,</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># to see which comments the model gets wrong and why</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>merged.to_excel(<span class="st">&quot;data/comments/errors_report_v10.xlsx&quot;</span>, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Saved errors_report_v10.xlsx&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>merged.to_excel(<span class="st">&quot;data/comments/errors_report_v11.xlsx&quot;</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Saved errors_report_v11.xlsx&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>gespeichert</code></pre>
 </div>
