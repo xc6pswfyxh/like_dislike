@@ -5,6 +5,7 @@ project:
     - "*.qmd"
     - "*.rmd"
     - "*.ipynb"
+    - "*.pdf"
     #- "!05a_analyses.qmd"
 
 lang: en

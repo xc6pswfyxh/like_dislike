@@ -5,16 +5,15 @@ shorttitle: "Popularity cues & privacy calculus"
 
 subtitle: A One-Week Field Experiment Analyzing the Effects of Popularity Cues on the Privacy Calculus in Online Communication
 
-date: last-modified
+date: today
 wordcount: "XXX"
 
 author:
-  - name: Anonymous
-    #orcid: 0000-0000-0000-0000
+  - name: "Anonymous Submission"
     corresponding: true
-    #email: example@email.com
+    email: blinded@review.org
     affiliations:
-      - "University"
+      - name: "Blinded for Review"
 
 keywords:
   - privacy calculus
@@ -24,7 +23,7 @@ keywords:
   - preregistration
 
 abstract: |
-  The privacy calculus model states that people weigh risks and benefits before communicating online. This paper analyzes three questions: How robust is the privacy calculus, can it be replicated with actual behavior in realistic online settings? Do we need to extend the model by integrating more socio-psychological measures such as trust, self-efficacy, and privacy deliberation? How strongly is the privacy calculus affected by affordances such as like and dislike buttons? In a preregistered one-week field experiment (_N_ = 590), participants discussed a current political topic on an online website, which included either (a) like buttons, (b) both like and dislike buttons, or (c) no buttons. The privacy calculus model was confirmed: Benefits and concerns affected communication. Deliberating about privacy by comparing benefits and risks decreased communication, whereas experiencing self-efficacy and trust increased communication. Although like and dislike buttons did not affect concerns, experiences, trust, efficacy, and deliberation, they had a strong effect on behavior: They reduced communication by 45 percent.
+  The privacy calculus model states that people weigh risks and benefits before communicating online. This paper analyzes three questions: (1) How robust is the privacy calculus, can it be replicated with actual behavior in realistic online settings? (2) Do we need to extend the model by integrating more socio-psychological measures such as trust, self-efficacy, and privacy deliberation? (3) How strongly is the privacy calculus affected by affordances such as like and dislike buttons? In a preregistered one-week field experiment (_N_ = 590), participants discussed a current political topic on an online website, which included either (a) like buttons, (b) both like and dislike buttons, or (c) no buttons. The privacy calculus model was confirmed: Benefits and concerns affected communication. Deliberating about privacy by comparing benefits and risks decreased communication, whereas experiencing self-efficacy and trust increased communication. Although like and dislike buttons did not affect concerns, experiences, trust, efficacy, and deliberation, they had a strong effect on behavior: They reduced communication by 45 percent.
 
 bibliography:
   - bibliography/r-references.bib
@@ -34,6 +33,7 @@ format:
   html: default
   apaquarto-pdf:
     documentmode: man
+    floatsintext: true
 ---
 
 ```{r include=F}
@@ -105,55 +105,25 @@ load("data/workspace.rData")
 
 # Introduction
 
-According to the privacy paradox, the way users share information online is erratic [@barnesPrivacyParadoxSocial2006]:
-Although being strongly concerned about their privacy, people communicate much personal information online  [@taddickenUsesPrivacyOnline2011].
-However, despite its popularity in both academic research [@masurUnderstandingEffectsConceptual2023] and the public press [@newyorkpublicradioPrivacyParadox2018], empirical support for the privacy paradox is tenuous [@baruhOnlinePrivacyConcerns2017]. 
-Research is increasingly building on the privacy calculus model [@dienlinPrivacyCalculusTheories2023], which states that communication online can be explained by perceived risks and expected benefits [@bolUnderstandingEffectsPersonalization2018; @krasnovaOnlineSocialNetworks2010].
+According to the privacy paradox, the way users share information online is erratic [@barnesPrivacyParadoxSocial2006]:Although being strongly concerned about their privacy, people communicate much personal information online  [@taddickenUsesPrivacyOnline2011]. However, despite its popularity in both academic research [@masurUnderstandingEffectsConceptual2023] and the public press [@newyorkpublicradioPrivacyParadox2018], empirical support for the privacy paradox is tenuous [@baruhOnlinePrivacyConcerns2017]. **As an alternative explanation**, research is increasingly building on the privacy calculus model [@dienlinPrivacyCalculusTheories2023], which states that communication online can be explained by perceived risks and expected benefits [@bolUnderstandingEffectsPersonalization2018; @krasnovaOnlineSocialNetworks2010].
 
-Although the privacy calculus has gained momentum in academic research, several important questions remain unanswered. 
-First, the privacy calculus' empirical foundation needs to be improved [@knijnenburgDeathPrivacyCalculus2017]. 
-To date, much research on the privacy calculus builds on (a) self-reports of behavior [@krasnovaOnlineSocialNetworks2010], (b) vignette approaches [@bolUnderstandingEffectsPersonalization2018], or (c) one-shot experiments in the lab [@treptePrivacyCalculusContextualized2020]. 
-Self-reports are often unreliable measures of online behavior [@parrySystematicReviewMetaanalysis2021], vignette approaches have limited external validity, and one-shot experiments cannot analyze effects of sustained use.
-The first aim is therefore to replicate the privacy calculus model in a more authentic and long-term setting using actual behavioral data.
-Doing so will show its robustness, and it will help understand if behavior is better explained by the privacy paradox approach or by the privacy calculus model.
+Although the privacy calculus has gained momentum in academic research, several important questions remain unanswered. First, the privacy calculus' empirical foundation needs to be improved [@knijnenburgDeathPrivacyCalculus2017]. To date, much research on the privacy calculus builds on (a) self-reports of behavior [@krasnovaOnlineSocialNetworks2010], (b) vignette approaches [@bolUnderstandingEffectsPersonalization2018], or (c) one-shot experiments in the lab [@treptePrivacyCalculusContextualized2020]. Self-reports are often unreliable measures of online behavior [@parrySystematicReviewMetaanalysis2021], vignette approaches have limited external validity, and one-shot experiments cannot analyze effects of sustained use. The first aim is therefore to replicate the privacy calculus model in a more authentic and long-term setting using actual behavioral data. Doing so will show its robustness, and it will help understand if behavior is better explained by the privacy paradox approach or by the privacy calculus model.
 
-Second, the privacy calculus model is criticized for neglecting the actual process of weighing pros and cons, and for over-emphasizing rationality  [@knijnenburgDeathPrivacyCalculus2017].
-According to critics, simply showing that both concerns and gratifications correlate with communication online does not prove that an explicit weighing process took place.
-Instead, we would need to find out if people deliberately compare costs and benefits before communicating online. 
-Therefore, I will also analyze the process of comparing pros and cons explicitly, by elaborating on what I will call the the privacy deliberation process [@omarzuDisclosureDecisionModel2000]. 
-Next, focusing exclusively on costs and benefits might not fully capture how and why users engage online.
-I, hence, extend the privacy calculus by analyzing how online communication is affected by trust and self-efficacy, two variables less focused on rationality and more oriented toward socio-psychological aspects critical in online contexts [@metzgerPrivacyTrustDisclosure2004].
+Second, the privacy calculus model is criticized for neglecting the actual process of weighing pros and cons, and for over-emphasizing rationality  [@knijnenburgDeathPrivacyCalculus2017]. According to critics, simply showing that both concerns and gratifications correlate with communication online does not prove that an explicit weighing process took place. Instead, we would need to find out if people deliberately compare costs and benefits before communicating online. Therefore, we will also analyze the process of comparing pros and cons explicitly, **drawing on the privacy deliberation process described by @omarzuDisclosureDecisionModel2000.** Next, focusing exclusively on costs and benefits might not fully capture how and why users engage online.
+We, hence, extend the privacy calculus by analyzing how online communication is affected by trust and self-efficacy, two variables less focused on rationality and more oriented toward socio-psychological aspects critical in online contexts [@metzgerPrivacyTrustDisclosure2004].
 
-Online behavior is determined by the person itself and their external circumstances [@bazarovaIntegrationIndividualisticNetworked2020; @treptePrivacyCalculusContextualized2020; @spottswoodShouldShareThat2017].
-The privacy calculus upholds that much of behavior is rational and self-determined, but how strongly does this process depend on online affordances?
-It is well known that the affordances of many online services are optimized to elicit as much interaction as possible [@ellisonSocialNetworkSite2015; @masurBehavioralContagionSocial2021], for example via low threshold communication features such as likes, shares, replies, or reactions  [@carrPredictingThresholdPerceived2018]. 
-Implicit and explicit cues on how a website is used can increase communication [@spottswoodShouldShareThat2017; @treptePrivacyCalculusContextualized2020].
-How large are the effects of external popularity cues such as like and dislike buttons compared to the internal weighing of pros and cons?
-And how easily can the mechanisms of the privacy calculus be affected by means of popularity cues?
+Online behavior is determined by the person itself and their external circumstances [@bazarovaIntegrationIndividualisticNetworked2020; @treptePrivacyCalculusContextualized2020; @spottswoodShouldShareThat2017]. **Implies moderation, in line with reviewer comment. Moderation analyses added to companion "Moderation Analyses".: The privacy calculus upholds that much of behavior is rational and self-determined, but how strongly does this process depend on online affordances? Update Fig 1?** It is well known that the affordances of many online services are optimized to elicit as much interaction as possible [@ellisonSocialNetworkSite2015; @masurBehavioralContagionSocial2021], for example via low threshold communication features such as likes, shares, replies, or reactions  [@carrPredictingThresholdPerceived2018]. Implicit and explicit cues on how a website is used can increase communication [@spottswoodShouldShareThat2017; @treptePrivacyCalculusContextualized2020]. How large are the effects of external popularity cues such as like and dislike buttons compared to the internal weighing of pros and cons? And how easily can the mechanisms of the privacy calculus be affected by means of popularity cues?
 
-In conclusion, in this paper we contribute to communication theory by means of (a) replication, (b) falsification, (c) extending the range of existing theory, (d) elucidating mechanisms, and (e) theory comparison [@deandreaIncreasingClarityWhere2017].
+**Update** In conclusion, in this paper we contribute to communication theory by means of (a) replication, (b) falsification, (c) extending the range of existing theory, (d) elucidating mechanisms, and (e) theory comparison [@deandreaIncreasingClarityWhere2017].
 
 ## Replicating the Privacy Calculus
 
-The privacy calculus analyzes why people communicate online.
-When are we willing to engage in a conversation?
-It builds on the calculus of behavior [@lauferPrivacyConceptSocial1977] and states that people are weighing risks and benefits before actively communicating.
-Communication is closely related to privacy, which is defined as a "voluntary and temporary withdrawal of a person from the general society" [@westinPrivacyFreedom1967, p. 7].
-People regulate their privacy by deciding what and what not to communicate [@dienlinPrivacyProcessModel2014].
-Communication is therefore also closely related to self-disclosure.
-Just as it is impossible to not communicate, communication inherently promotes self-disclosure. 
-In a recent study, communication quantity and the frequency of expressing one's political opinion was almost indistinguishable (_r_ = .91; AUTHORS).
-Next to breadth and depth, communication quantity is hence often considered a central dimension of self-disclosure [@omarzuDisclosureDecisionModel2000].
+The privacy calculus analyzes why people communicate online. When are we willing to engage in a conversation? It builds on the calculus of behavior [@lauferPrivacyConceptSocial1977] and states that people are weighing risks and benefits before actively communicating. Communication is closely related to privacy, which is defined as a "voluntary and temporary withdrawal of a person from the general society" [@westinPrivacyFreedom1967, p. 7].
+People regulate their privacy by deciding what and what not to communicate [@dienlinPrivacyProcessModel2014]. Communication is therefore also closely related to self-disclosure. Just as it is impossible to not communicate, communication inherently promotes self-disclosure. In a recent study, communication quantity and the frequency of expressing one's political opinion was almost indistinguishable (_r_ = .91; **AUTHORS**). Next to breadth and depth, communication quantity is hence often considered a central dimension of self-disclosure [@omarzuDisclosureDecisionModel2000].
 
-Sharing information carries risks, as recipients may reuse it in different contexts, potentially harming the original sender [@masurBehavioralContagionSocial2021].
-As a result, people who aim to avoid risks should be inclined to share less information, especially in online contexts where audiences are much larger [@vitakImpactContextCollapse2012].
-Indeed, empirical research confirms that people with higher privacy needs and privacy concerns are less likely to communicate online [@krasnovaOnlineSocialNetworks2010; @masurTransformativeNotHow2021; @masurUnderstandingEffectsConceptual2023].
-This finding is now confirmed by several meta-analyses and reviews [@baruhOnlinePrivacyConcerns2017; @dienlinDoesPrivacyParadox2021; @gerberExplainingPrivacyParadox2018].
-Similarly, people who are more concerned about their privacy also engage in more privacy protection behaviors [@baruhOnlinePrivacyConcerns2017; @stubenvollLivingEasyEyes2022].
+Sharing information carries risks, as recipients may reuse it in different contexts, potentially harming the original sender [@masurBehavioralContagionSocial2021]. As a result, people who aim to avoid risks should be inclined to share less information, especially in online contexts where audiences are much larger [@vitakImpactContextCollapse2012]. Indeed, empirical research confirms that people with higher privacy needs and privacy concerns are less likely to communicate online [@krasnovaOnlineSocialNetworks2010; @masurTransformativeNotHow2021; @masurUnderstandingEffectsConceptual2023]. This finding is now confirmed by several meta-analyses and reviews [@baruhOnlinePrivacyConcerns2017; @dienlinDoesPrivacyParadox2021; @gerberExplainingPrivacyParadox2018]. Similarly, people who are more concerned about their privacy also engage in more privacy protection behaviors [@baruhOnlinePrivacyConcerns2017; @stubenvollLivingEasyEyes2022].
 
-Even outweighing concerns, the most relevant drivers of online communication are expected gratifications [@dienlinExtendedPrivacyCalculus2016; @bolUnderstandingEffectsPersonalization2018; @kezerGettingPrivacyCalculus2022].
-On average, people are happy to trade in parts of their privacy to receive something more valuable in return [@lauferPrivacyConceptSocial1977].
-In online communication, the most important benefits include social support, social capital, entertainment, information-seeking, and self-presentation [@dhirUnderstandingRelationshipIntensity2017; @ellisonBenefitsFacebookFriends2007; @krasnovaOnlineSocialNetworks2010; @whitingWhyPeopleUse2013].
+Even outweighing concerns, the most relevant drivers of online communication are expected gratifications [@dienlinExtendedPrivacyCalculus2016; @bolUnderstandingEffectsPersonalization2018; @kezerGettingPrivacyCalculus2022]. On average, people are happy to trade in parts of their privacy to receive something more valuable in return [@lauferPrivacyConceptSocial1977]. In online communication, the most important benefits include social support, social capital, entertainment, information-seeking, and self-presentation [@dhirUnderstandingRelationshipIntensity2017; @ellisonBenefitsFacebookFriends2007; @krasnovaOnlineSocialNetworks2010; @whitingWhyPeopleUse2013].
 
 H1: People who are more concerned about their privacy are less likely to communicate actively on a website.
 
@@ -161,47 +131,23 @@ H2: People who obtain more gratifications from using a website are more likely t
 
 ## Extending the Privacy Calculus
 
-Although privacy calculus implies that people explicitly compare benefits and risks before communicating online, prior research has neglected this aspect [@knijnenburgDeathPrivacyCalculus2017].
-Only observing that privacy concerns or expected gratifications and communication online are related does not prove that an explicit weighing process took place [@knijnenburgDeathPrivacyCalculus2017]. 
-Instead, we need to analyze if, and if so by how much, people actively deliberate about their privacy by comparing benefits and risks, and whether doing so influences their willingness to communicate.
-Self-disclosure theory [@omarzuDisclosureDecisionModel2000;  @altmanPrivacyConceptualAnalysis1976] suggests that if the benefits of communication are attractive, deciding whether or not to communicate is a "conscious and deliberative process"  [@omarzuDisclosureDecisionModel2000, p. 183].
-I hence introduce and investigate a novel concept termed _privacy deliberation_.
-Privacy deliberation captures the extent to which individuals explicitly compare risks and benefits before communicating with others.
+Although privacy calculus implies that people explicitly compare benefits and risks before communicating online, prior research has neglected this aspect [@knijnenburgDeathPrivacyCalculus2017]. Only observing that privacy concerns or expected gratifications and communication online are related does not prove that an explicit weighing process took place [@knijnenburgDeathPrivacyCalculus2017]. Instead, we need to analyze if, and if so by how much, people actively deliberate about their privacy by comparing benefits and risks, and whether doing so influences their willingness to communicate. Self-disclosure theory [@omarzuDisclosureDecisionModel2000;  @altmanPrivacyConceptualAnalysis1976] suggests that if the benefits of communication are attractive, deciding whether or not to communicate is a "conscious and deliberative process"  [@omarzuDisclosureDecisionModel2000, p. 183]. **We hence extend the privacy calculus by introducing a measure of privacy deliberation.** Privacy deliberation captures the extent to which individuals explicitly compare risks and benefits before communicating with others (**AUTHORS****).
 
-How could deliberating about one's privacy affect communication?
-On the one hand, it could reduce subsequent communication.
-Refraining from communication---the primary means of connecting with others [@altmanPrivacyConceptualAnalysis1976]---often requires restraint [@omarzuDisclosureDecisionModel2000]. 
-This is especially true for social media, which are designed to foster communication and participation [@ellisonSocialNetworkSite2015; @masurBehavioralContagionSocial2021].
-Actively thinking about whether communicating is worthwhile might be the first step not to participate.
-In addition, actively reflecting about one's behavior represents a central and Type 2 approach toward decision making, which is often associated with more critical and cautious behavior [@kahnemanThinkingFastSlow2011; @pettyCommunicationPersuasionCentral1986].
+How could deliberating about one's privacy affect communication? On the one hand, it could reduce subsequent communication. Refraining from communication---the primary means of connecting with others [@altmanPrivacyConceptualAnalysis1976]---often requires restraint [@omarzuDisclosureDecisionModel2000]. This is especially true for social media, which are designed to foster communication and participation [@ellisonSocialNetworkSite2015; @masurBehavioralContagionSocial2021]. Actively thinking about whether communicating is worthwhile might be the first step not to participate. In addition, actively reflecting about one's behavior represents a central and **Type 2 EXPLANATION?** approach toward decision making, which is often associated with more critical and cautious behavior [@kahnemanThinkingFastSlow2011; @pettyCommunicationPersuasionCentral1986].
 
-On the other hand, deliberating about privacy might also increase communication. 
-The default behavior in online contexts is passively browsing the content, but not actively engaging in communication [@ozimekActivePassiveBehavior2023]. 
-Especially in new contexts without prior experience, actively pondering one's options might trigger users to leave their default state of passiveness and to become active and involved.
-In light of the numerous benefits mentioned above, it might make sense to conclude that participation is beneficial, thereby fostering communication [@krasnovaOnlineSocialNetworks2010].
+On the other hand, deliberating about privacy might also increase communication. The default behavior in online contexts is passively browsing the content, but not actively engaging in communication [@ozimekActivePassiveBehavior2023]. Especially in new contexts without prior experience, actively pondering one's options might trigger users to leave their default state of passiveness and to become active and involved. In light of the numerous benefits mentioned above, it might make sense to conclude that participation is beneficial, thereby fostering communication [@krasnovaOnlineSocialNetworks2010].
 
-RQ1: Do people who deliberate more actively about their privacy communicate more or less online?
+RQ1: Do people who deliberate more actively about their privacy communicate more or less **often** online?
 
 <!-- The aforementioned weighing process is not flawless or perfect. -->
-It is useful to understand the privacy calculus from the perspective of _bounded rationality_ [@simonBoundedRationality1990].
-Bounded rationality states that "(1) humans are cognitively constrained; (2) these constraints impact decision making; and (3) difficult problems reveal the constraints and highlight their significance." [@bendorBoundedRationality2015, p. 1303].
-It is important to emphasize that although human behavior is considered _partly_ irrational, bounded rationality does not state that it is _completely_ irrational [@gigerenzerBoundedRationalityAdaptive2002].
-Instead, rationality needs to be understood as a continuum. 
-And in the context of online privacy, rationality is impeded by information asymmetries, presence bias, intangibility, illusory control, or herding [@acquistiSecretsLikesDrive2020].
-It follows that to provide a more complete picture, additional factors less focused on rationality but more on socio-psychological aspects should also explain communication.
+It is useful to understand the privacy calculus from the perspective of _bounded rationality_ [@simonBoundedRationality1990]. Bounded rationality states that "(1) humans are cognitively constrained; (2) these constraints impact decision making; and (3) difficult problems reveal the constraints and highlight their significance." [@bendorBoundedRationality2015, p. 1303]. It is important to emphasize that although human behavior is considered _partly_ irrational, bounded rationality does not state that it is _completely_ irrational [@gigerenzerBoundedRationalityAdaptive2002]. Instead, rationality needs to be understood as a continuum.  And in the context of online privacy, rationality is impeded by information asymmetries, presence bias, intangibility, illusory control, or herding [@acquistiSecretsLikesDrive2020]. It follows that to provide a more complete picture, additional factors less focused on rationality but more on socio-psychological aspects should also explain communication.
 
-Two central factors that help us understand online communication are self-efficacy and trust [@hossainICTEnabledVirtual2004; @metzgerPrivacyTrustDisclosure2004].
-Privacy violations create psychological distress [@ledbetterParentchildPrivacyBoundary2019].
-Experiencing online contexts as a safe space that users can sufficiently control is important for engaging in online communication. 
-If users are more familiar, experienced, and knowledgeable in a given online context, they are more likely to navigate that online contexts successfully and to communicate actively [@baruhOnlinePrivacyConcerns2017; @kramerMasteringChallengeBalancing2020; @parkDigitalLiteracyPrivacy2013a].
-People with more privacy self-efficacy engage more successfully in self-withdrawal [@dienlinExtendedPrivacyCalculus2016] and protective online behavior [@boermanExploringMotivationsOnline2021a; @vanooijenPrivacyCynicismIts2022].
-Hence, if users possess more self-efficacy to participate, they should also communicate more.
+Two central factors that help us understand online communication are self-efficacy and trust [@hossainICTEnabledVirtual2004; @metzgerPrivacyTrustDisclosure2004]. Privacy violations create psychological distress [@ledbetterParentchildPrivacyBoundary2019]. Experiencing online contexts as a safe space that users can sufficiently control is important for engaging in online communication. If users are more familiar, experienced, and knowledgeable in a given online context, they are more likely to navigate that online contexts successfully and to communicate actively [@baruhOnlinePrivacyConcerns2017; @kramerMasteringChallengeBalancing2020; @parkDigitalLiteracyPrivacy2013a]. People with more privacy self-efficacy engage more successfully in self-withdrawal [@dienlinExtendedPrivacyCalculus2016] and protective online behavior [@boermanExploringMotivationsOnline2021a; @vanooijenPrivacyCynicismIts2022]. Hence, if users possess more self-efficacy to participate, they should also communicate more.
 
 H3: People are more likely to communicate on a website when their self-efficacy to actively use the website is higher.
 
 In all situations where people lack experience, control, or competence, a central variable to understand behavior is trust [@gefenTrustTAMOnline2003].
-Trust plays a key role especially in online contexts [@metzgerPrivacyTrustDisclosure2004; @metzgerEffectsSiteVendor2006a].
-Users often cannot control the environment or the way their information is handled [@acquistiSecretsLikesDrive2020; @braunlichLinkingLooseEnds2020].
+Trust plays a key role especially in online contexts [@metzgerPrivacyTrustDisclosure2004; @metzgerEffectsSiteVendor2006a]. Users often cannot control the environment or the way their information is handled [@acquistiSecretsLikesDrive2020; @braunlichLinkingLooseEnds2020].
 Trust either captures "_specific_ beliefs dealing primarily with the integrity, benevolence, and ability of another party" [@gefenTrustTAMOnline2003, p. 55, emphasis added] or a "_general_ belief that another party can be trusted" [@gefenTrustTAMOnline2003, p.55, emphasis added]. 
 In online contexts, there are different targets of trust, including (a) the information system, (b) the provider, (c) the Internet, and (d) the community of other users [@sollnerWhyDifferentTrust2016]. 
 People who put more trust in the providers of networks, for example, disclose more personal information [@liEmpiricalStudiesOnline2011]. 
@@ -250,7 +196,10 @@ H6.	Compared to a control group with no like and dislike buttons, people who use
 
 H7.	Compared to people who use a website with only like buttons, people who use a website with like and dislike buttons (a) are more concerned about their privacy, and (b) deliberate more about whether they should communicate online.
 
+
 In conclusion, this leads to an updated and extended model of the privacy calculus, in which the affordances of online contexts affect communication mediated via experienced privacy concerns, expected gratifications, privacy deliberation, self-efficacy, and trust. For an overview of the theoretical model, see Figure \@ref(fig:model).
+
+**Update Figure?**
 
 ```{r model, fig.cap="Overview of the extended privacy calculus model.", fig.align='center', out.width=".8\\textwidth"}
 # knitr::include_graphics("figures/design/model_simplified.pdf")
@@ -260,32 +209,19 @@ knitr::include_graphics("figures/design/model_simplified.png")
 # Methods
 ## Open Science
 
-This manuscript features a [companion website](https://XMtRa.github.io/like_dislike), which includes the data, research materials, analysis scripts, and a reproducible version of this manuscript (see https://XMtRa.github.io/like_dislike).
+**UPDATE** This manuscript features a [companion website](https://XMtRa.github.io/like_dislike), which includes the data, research materials, analysis scripts, and a reproducible version of this manuscript (see https://XMtRa.github.io/like_dislike).
 The hypotheses, sample size, research materials, analyses, and exclusion criteria were preregistered (see https://osf.io/a6tzc/?view_only=5d0ef9fe5e1745878cd1b19273cdf859). 
 In some cases, the preregistered approach had to be changed (see [companion website](https://XMtRa.github.io/like_dislike/preregistration_changes)). 
 Analyses not preregistered are reported as exploratory analyses.
 
 ## Procedure
 
-The study was designed as an online field experiment with three different groups. 
-The first experimental group used a website that included like buttons; the second experimental group used an identical website including both like and dislike buttons; and the control group used an identical website without like and dislike buttons. 
-Participants were randomly distributed to one of the three websites in a between-subject design.
-
-The data were collected in Germany.
-Participants were recruited using the professional panel agency Norstat.
-As incentive, participants were awarded digital points, to receive special offers from online retailers. 
-Participants had to be over 18 years old and reside in Germany.
-In a first step, the company sent its panel members an invitation to participate in the study. 
-In this invitation, panel members were asked to participate in a study analyzing the current threat posed by terrorist attacks.
-Members who agreed to participate were sent the first questionnaire (_T1_).
-The questionnaire asked participants about their sociodemographic background, (b) provided more details about the study, and (c) included a registration link for the website, which was introduced as "participation platform".
-Afterward, participants were randomly assigned to one of the three websites. 
-After registration was completed, participants were invited (but not obliged) to visit the website and to discuss the topic of the terrorism threat in Germany. 
-Participants could use the website and write comments over the course of one week.
-Subsequently, participants received a follow-up questionnaire in which the self-reported measures reported below were collected (_T2_). 
+The study was designed as an online field experiment with three different groups. The first experimental group used a website that included like buttons; the second experimental group used an identical website including both like and dislike buttons; and the control group used an identical website without like and dislike buttons. Participants were randomly distributed to one of the three websites in a between-subject design.
+The data were collected in Germany. Participants were recruited using the professional panel agency Norstat. **Norstat allowed us to draw a quota sample matching the German population in age, gender, and federal state. We collected the data in Germany because the website, topic, and materials were designed in German.** As incentive, participants were awarded digital points, to receive special offers from online retailers. Participants had to be over 18 years old and reside in Germany. In a first step, the company sent its panel members an invitation to participate in the study. In this invitation, panel members were asked to participate in a study analyz-ing the current threat posed by terrorist attacks. Members who agreed to participate were sent the first questionnaire (*T1*). The questionnaire asked participants about their sociodem-ographic background, (b) provided more details about the study, and (c) included a registra-tion link for the website, which was introduced as “participation platform”. Afterward, par-ticipants were randomly assigned to one of the three websites. After registration was com-pleted, participants were invited (but not obliged) to visit the website and to discuss the topic of the terrorism threat in Germany. **We chose terrorism as the discussion topic because it attracts strong media attention and shapes mass media debates (UPDATE Völker, 2024). Western Europe has also seen its highest levels of right-wing terrorism and violence since 1990 (UPDATE Ravndal et al., 2021), and Islamist attacks are highly prevalent and visible in the media. The topic is also well suited to our content analysis: it links to personal attitudes, which is useful for coding valence, and its salience and personal relevance elicit personal experiences, which is useful for coding controversiality.** Participants could use the website and write commments over the course of one week. **We chose one week to allow sustained use of the platform beyond a one-shot exposure, while limiting dropout and the risk that external events would change the discussion during the field phase.** Subsequently, participants received a follow-up question-naire in which the self-reported measures reported below were collected (*T2*).
+The online website was programmed based on the open-source software discourse (https://www.discourse.org/). To make sure the website was professional and authentic, several pretests with students from the local university were run. Nine hundred sixty partici-pants created a user account on the website (see below) and used the website actively. Overall, they spent 162 hours online, wrote 1,171 comments, and clicked on 560 popularity cues. All communication was checked, and there were no instances of people providing meaningless text or doubting the experiment. For a screenshot of the landing page and for examples of comments, see Figure 2.
 
 ```{r website, echo=FALSE, out.width="49%", fig.cap="Screenshot of the landing page and of communication taking place. Translated into English.", fig.show='hold', fig.align='center'}
-knitr::include_graphics(c("figures/website/website_translated.png","figures/website/comments_translated.png"))
+knitr::include_graphics("figures/website/website_comments_translated.png")
 ``` 
 
 The online website was programmed based on the open-source software _discourse_ (https://www.discourse.org/). 
@@ -295,7 +231,7 @@ Overall, they spent `r sum(d_raw$time_read, na.rm = TRUE) %>% "/"(3600) %>% roun
 All communication was checked, and there were no instances of people providing meaningless text or doubting the experiment.
 For a screenshot of the landing page and for examples of comments, see Figure \@ref(fig:website).
 
-## Participants
+## Power Analysis
 
 Sample size was determined using a priori power analyses.
 The power analyses were based on estimates from the literature.
@@ -303,10 +239,12 @@ When researching aspects of privacy online [e.g., @baruhOnlinePrivacyConcerns201
 Hence, the minimum effect size was set to be _r_ = `r r_sesoi %>% my_round("std")`. 
 The aim was to be able to detect this effect with a probability of at least 95% (i.e., power = 95%).
 Using the regular alpha level of 5%, power analyses suggested a minimum sample size of _N_ = `r n_desired %>% format(big.mark = ",")`. 
-In the end, I was able to include _N_ = `r n_final` in the analyses (see below), which was significantly lower than the original aim.
+In the end, we were able to include _N_ = `r n_final` in the analyses (see below), which was significantly lower than the original aim.
 With this sample size, the study had a power of `r power_achieved * 100`% to find an effect at least as large as _r_ = `r r_sesoi %>% my_round("std")`. 
 Sensitivity analyses showed that the current study could still make reliable results (i.e., with a power of 95%) for effects at least as large as _r_ = `r r_sensitive %>% my_round("std")`.
 In conclusion, although not as powerful as planned, the study is still adequately powered to find the small effects reported in the privacy literature [@baruhOnlinePrivacyConcerns2017].
+
+## Participants
 
 A quota sample that matched the German population in terms of age, gender, and federal state was collected. 
 In sum, `r n_t1 %>% format(big.mark = ",")` participants completed the survey at T1; 
@@ -316,7 +254,7 @@ For technical reasons, the data of several participants could not be matched (fo
 In the end, the data of `r n_matched` participants could be matched successfully.
 Considered unreasonably fast, `r n_speeding %>% english()` participants were excluded who finished the questionnaire at T2 in less than three minutes.
 To detect atypical data and response patterns, Cook's distance was calculated.
-I excluded `r english(n_resp_pattern)` participants with clear response patterns (i.e., straight-lining). 
+We excluded `r english(n_resp_pattern)` participants with clear response patterns (i.e., straight-lining). 
 The final sample included _N_ = `r n_final` participants.
 The sample characteristics at T1 and T2 were as follows.
 T1: age = `r round(age_t1_m, 0)` years, gender = `r round(male_t1_m, 2)*100`% male, college degree = `r round(college_t1_m, 2)*100`%.
@@ -378,34 +316,81 @@ _Specific trust_ was operationalized for the same three targets with three sub-d
 Example items were "The operators of the participation platform have done a good job" (ability), "The other users had good intentions" (benevolence/integrity), "The website worked well" (reliability). 
 Participants placed a lot of trust in the website, the providers and the other users (trust general: _m_ = `r facval_tab["Trust general", "m"]`; trust specific: _m_ = `r facval_tab["Trust specific", "m"]`).
 
-_Communication_ was calculated by counting the number of words each participant wrote in a comment.
+**DELETE?** _Communication_ was calculated by counting the number of words each participant wrote in a comment.
 Communication was zero-inflated and heavily skewed:
 While `r round(no_words_perc * 100, 0)` percent did not communicate at all, the maximum number of words communicated by a single user was `r d %$% words %>% max()` words.
 On average, participants wrote `r words_m %>% round(0)` words. 
 
-## Data Analysis
+**UPDATE** _Self-disclosure_ was operationalized following Omarzu (2000) as an index comprised of three dimensions: depth, breadth, and communication quantity. See Content Analysis, below, for the annotation procedure underlying depth and breadth.
 
-As preregistered, all hypotheses and research questions were initially tested using structural equation modeling with latent variables. 
-The influence of the three websites was analyzed using contrast coding.
-Because the assumption of multivariate normality was violated, I estimated the models using robust maximum likelihood [@klinePrinciplesPracticeStructural2016]. 
-As recommended by @klinePrinciplesPracticeStructural2016, to assess global fit I report the model's $\chi^2$, RMSEA (90% CI), CFI, and SRMR. 
-To exclude confounding influences, I controlled all variables for age, gender, and education, which have been shown to affect both privacy concerns and online communication [@masurUnderstandingEffectsConceptual2023; @tifferetGenderDifferencesPrivacy2019a].
-The preregistered hypotheses were tested with a one-sided significance level of 5%; the research questions were tested with a two-sided 5% significance level using family-wise Bonferroni-Holm correction. 
+**UPDATE** _Valence_ captures the commenter's evaluation of the anti-terrorism plan, coded into four categories: positive, negative, ambivalent, and indifferent. [X]% of comments were coded as positive, [X]% negative, [X]% ambivalent, and [X]% indifferent. See Content Analysis, be-low, for the annotation procedure.
 
-As became apparent when analyzing the data, the preregistered analyses had two major problems.
-First, communication was zero-inflated and gamma distributed. 
-Although it is possible to analyze non-normal data with structural equation modeling, it is recommended to use analyses that model the variables' distribution, which can be achieved with Bayesian hurdle models [@mcelreathStatisticalRethinkingBayesian2016].
-In conclusion, in the exploratory analyses I ran (unstandardized) Bayesian hurdle regression models, modeling the outcome as a zero-inflated gamma distribution using default (flat) priors [chains = 4, iterations = 2,000, warm-up = 1,000, @R-brms_a].
-Second, in the preregistered analyses several variables were combined that are theoretically and empirically closely related, leading to multicollinearity [@vanhoveCollinearityIsnDisease2021].
-As a remedy, I adopted a causal modeling perspective, controlling only for confounders---in this case, age, gender, and education---but not for mediators [@rohrerThinkingClearlyCorrelations2018]. 
-To assess the effects, I tested whether or not the 95% highest density intervals of the average marginal effects excluded zero.
-If they excluded zero, effects can be considered "significant" [@mcelreathStatisticalRethinkingBayesian2016]. 
-I also plotted the distribution of the effects.
-For more information on the fitted models, see [online companion website](https://XMtRa.github.io/like_dislike).
+**UPDATE** _Controversiality_ captures whether a comment is likely to provoke strong disagreement among other users. [X]% of comments were coded as controversial. See below _Content Analysis_, below, for the annotation procedure.
 
-The data were analyzed using `r r_citations`.
+## Content Analysis: Self-Disclosure, Valence, and Controversiality
+
+Following @omarzuDisclosureDecisionModel2000, we consider self-disclosure to consist of three dimensions: breadth, depth, and communication quantity. To operationalize communication quantity, we rely on the word count of a user comment. To identify the other two dimensions, a stratified random sample of 150 user comments, i.e., 50 per experimental condition (like and dislike, like, and control) were manually coded by two research assistants. Identifying depth, we classify each comment alongside three sub-dimensions: (1) Disclosure of a personal experi-ence; (2) Use of emotionally expressive language; (3) Statement of a political opinion or position. To establish the number of topics discussed in a comment, i.e., the (4) breadth thereof, we annotate each comment for the presence nine predefined topics. We further anno-tate (5) Valence and (6) Controversiality. A comprehensive codebook is provided on the **UPDATE** [companion website](https://xc6pswfyxh.github.io/like_dislike/appendix_codebook.html). 
+
+Our coding demonstrates high inter-coder reliability. Table 2 reports the agreement between the authors’ manual coding, as well as Cohen’s Kappa, and Krippendorff’s Alpha.
+
+**Mention in companion**
+**Cohens Kappa: .4 okay, .6 publishable, .8 perfect**
+
+
+
+```{r}
+#| label: tbl-icr
+#| tbl-cap: "Intercoder Reliability"
+#| include: true
+
+library(kableExtra)
+
+icr <- readxl::read_excel("data/comments/icr4.xlsx")
+
+icr <- icr |> 
+  dplyr::select(Variable, n_Categories, Agreement, Krippendorffs_Alpha, Cohens_Kappa) |> 
+  dplyr::mutate(dplyr::across(c(Agreement, Krippendorffs_Alpha, Cohens_Kappa), ~ round(.x, 2))) |> 
+  dplyr::mutate(Variable = dplyr::recode(Variable,
+    pers_exp = "Personal Experience",
+    emot_exp = "Emotional Expression",
+    pol_opin = "Political Opinion",
+    breadth  = "Breadth",
+    valence  = "Valence",
+    contr    = "Controversy")) |> 
+  dplyr::rename(Categories = n_Categories, `Krippendorff's $\\alpha$` = Krippendorffs_Alpha,
+                `Cohen's $\\kappa$` = Cohens_Kappa)
+
+icr |> 
+  kbl(booktabs = TRUE, align = c("l", "r", "r", "r", "r"), escape = FALSE) |>
+  kable_styling(latex_options = c("hold_position"),
+                bootstrap_options = c("condensed"),
+                font_size = 10, full_width = FALSE) |>
+  column_spec(1, width = "4.5cm") |>
+  column_spec(2, width = "2cm") |>
+  column_spec(3, width = "2cm") |> 
+  column_spec(4, width = "3cm") |> 
+  column_spec(5, width = "2.5cm")
+```
+
+**UPDATE** The remaining comments were labeled using **Qwen3-8B**, an open-source LLM from Alibaba with 8,2 billion parameters, run locally via Ollama. Prior to classification, we com-pared model performance for a pretrained **zero-shot** NLI classifier (MoritzLaurer/xlm-v-base-mnli-xnli; **Laurer et al., 2022 add to bib**), Qwen3-8B, and Llama3.1:8b against the human-coded sam-ple of 150 comments. The pretrained NLI classifier was imported using the Hugging Face pipeline from the transformers library. LLMs were prompted using a few-shot system prompt containing coding instructions as well as labeled examples. We provide the final system prompt in Appendix C. **Temperature was set to 0 to maximize output consistency across comments.** Across variables, we report the highest agreement **([X])**, Cohen’s Kappa **([X])**, and Krippendorff’s Alpha **([X])** between **Qwen3-8B** and our manual coding (see Appendix D for the full model comparison). We thus select it for classifying the remaining corpus. Manually coded comments retain their human-assigned labels in all analyses; **Qwen3-8B's** classifications are used only for the remaining, non-manually-coded comments. Thus, this paper further contributes by evaluating the few-shotting capabilities of transformer-based fine-tuned multi-lingual encoder models (e.g., MoritzLaurer/xlm-v-base-mnli-xnli; **Laurer et al., 2022**) as well as large language models **(e.g., Qwen3-8B, and Llama3.1:8b)** on an original dataset of forum-style German user comments. 
+
+**Classification of user comments was performed using Python (Version [X]) and the Python packages pandas (Version [X]; McKinney, 2010), transformers (Version [X]; Wolf et al., 2020), torch (Version [X]; Paszke et al., 2019), ollama (Version [X]), scikit-learn (Version [X]; Pedregosa et al., 2011), and krippendorff (Version [X]).**
+
+
+## Modeling strategy
+
+**UPDATED SECTON**
+
+To analyze the association between the privacy calculus variables and platform affordances on one hand, and how they affect user communication on the other hand, we use Bayesian hurdle modeling. For intuitive interpreation, logistic and OLS regressions are provided on the **UPDATE TO SEPARATE FILE**[companion website](https://xc6pswfyxh.github.io/like_dislike/05c_analyses_revision.html). Self-disclosure constitutes our dependent variables; measuring the quality of user communication. For the detailed operationalization strategy, see *Content Analysis* above. Here, self-disclosure is an index variable consisting of quantity, depth, and breadth [@omarzuDisclosureDecisionModel2000]. 
+
+**DELETE: To model communication quantity, we rely on the number of words a user wrote in their comments. Alternatively, we add the number of interactions they used (i.e., pressing the like or dislike button) to our measure. As a robustness check, we log transform both: the number of words variable as well as the interaction-extended variable. For ease of interpretation as well as robustness, a three-step modeling strategy is used. We start by modeling the relationship between whether a user communicated at all (why did we use for the cutoff again?) and the respective privacy calculus variable, controlling only for platform affordances. To this end, we separately regress the binary dependent variable (communicated) on the five privacy calculus variables (self-efficacy, privacy con-cerns, gratifications, privacy deliberations, and trust GENERAL/SPECFIC), using standard logistic regression. Second, we use OLS and Negative Binomial regressions to model the above-mentioned dependent variables. The log-transformed number of words as well as the log-transformed interaction-extended variable are regressed on the privacy calculus variables using linear OLS regressions. To ensure robustness, we remodel the relationships using Negative Binomial models on the pre-transformed variables. For each privacy calculus variable, and dependent variable, we model three specifications: (1) controlling only for platform affordances (presence of likes and dislike buttons); (2) including socio-demographic con-founders (age, gender, and education); and (3) including interaction effects between the cal-culus variable and platform affordances. Finally, we use a Bayesian hurdle model. The Bayesian hurdle model constitutes a two-step process, modeling a random variable. It is especially useful when a variable con-tains an excess of zeroes (i.e., it is zero-inflated and non-normal distributed). In a first step (the hurdle), the likelihood of the event happening at all (here: communication) is modelled using a logistic regression. Thereafter, a truncated count model estimates the effect size among the people who communicated.Whereas the first two steps in our modelling strategy contribute to an easier interpretation, the Bayesian hurdle model is the only modelling choice undertaken that takes the excess of zero values in the data into account. Because the number of words is present in both variables constructed (i.e., communication quantity and the self-disclosure index for communication quali-ty), we want to ensure self-disclosure is robust to an alternative operationalization. Thus, we reestimate the models using a self-disclosure variable that only contains two dimensions: breadth and depth. This ensures that the variation in the primary specification is not simply captured by communication quantity.**
+
+The data were analyzed and modeled using `r r_citations`.
+
 
 # Results
+
+In this section, we present our findings. First, we provide a descriptive analysis of the bivariate relationships of the variables under analysis. Second, we use regression analysis and Bayesian hurdle modelling to study the relationship between the privacy calculus varia-bles, as well as platform affordances (i.e., the availability of like and dislike buttons), and two dependent variables: (1) communication quantity and (2) communication quality.
 
 ## Descriptive Analyses
 
@@ -422,7 +407,7 @@ pridel_active <- select(d, starts_with("PD01")) %>%
 knitr::include_graphics("figures/results/cor_plot.png")
 ```
 
-I first plotted the bivariate relations of all variables (see Figure \@ref(fig:corrplot)). 
+We first plotted the bivariate relations of all variables (see Figure \@ref(fig:corrplot)). 
 All variables referring to the privacy calculus demonstrated the expected bivariate relationships with communication. 
 For example, people who were more concerned about their privacy disclosed less information (_r_ `#r parameterestimates(fit_baseline, standardized = TRUE) %>%  filter(op == "~~" & lhs == "pri_con" & rhs == "Words_log") %>% select(std.all) %>%  my_round("std_txt")`). 
 The mean of privacy deliberation was _m_ = `r des_pridel$m %>% round(2)`. 
@@ -430,45 +415,20 @@ Altogether, `r pridel_active %>% round(0)`% of participants reported having acti
 
 The bivariate results showed two large correlations: 
 specific trust and gratifications (_r_ = `# r d_fs %>% select("Trust\nspecific", "Gratifications") %>% cor %>% .[2, 1] %>% my_round("std")`), and
-privacy concerns and privacy deliberation (_r_ = `#r d_fs %>% select("Privacy\nconcerns", "Privacy\ndeliberation") %>% cor %>% .[2, 1] %>% my_round("std")`). 
-As all six variables were later analyzed within a single multiple regression, problems of multicollinearity might occur. 
+privacy concerns and privacy deliberation (_r_ = `#r d_fs %>% select("Privacy\nconcerns", "Privacy\ndeliberation") %>% cor %>% .[2, 1] %>% my_round("std")`).[^prereg]
 
-## Preregistered Analyses
+[^prereg]: In the preregistered analysis, all six variables were analyzed within a single multiple regres-sion. We report problems of occurring multicollinearity on the supplementary material on the [companion website](https://xc6pswfyxh.github.io/like_dislike/appendix_prereg_note.html).
 
-First, as preregistered I ran a structural equation model with multiple predictors. 
-The model fit the data okay, `#r fit_txt(fit_prereg, scaled = TRUE)`. 
-With regard to H1, privacy concerns did not significantly predict communication (`#r coeffs_txt(fit_prereg, "b1", one_sided=T)`; one-sided). 
-Regarding H2, results showed that gratifications did not predict communication (`#r coeffs_txt(fit_prereg, "a1", one_sided=T)`; one-sided). 
-RQ1 similarly revealed that privacy deliberation did not predict communication (`#r coeffs_txt(fit_prereg, "c1")`; two-sided). 
-Regarding H3, however, I found that experiencing self-efficacy predicted communication substantially (`#r coeffs_txt(fit_prereg, "d1", one_sided=T)`; one-sided). 
-Concerning H4, results showed that trust was not associated with communication (`#r coeffs_txt(fit_prereg, "e1", one_sided=T)`; one-sided).
 
-However, these results should be treated with caution.
-I found several signs of multicollinearity, evidenced by the large standard errors or "wrong" and reversed signs of predictors [@vanhoveCollinearityIsnDisease2021]. 
-For example, in the bivariate analysis trust had a positive relation with communication, whereas in the multiple regression the effect was negative---which should make us skeptical.
+## Bayesian Hurdle Model
 
-Next, I analyzed the effects of the popularity cues. 
-It was for example expected that websites with like buttons would lead to more communication, more gratifications, more privacy deliberation, and less privacy concerns.
-The results showed that the popularity cues had no effects on communication and on the privacy calculus variables.
-
-For an illustration, see Figure \@ref(fig:popularitycues). 
-For the detailed results of the specific inference tests using contrasts, see [companion website](https://XMtRa.github.io/like_dislike).
-
-```{r popularitycues, fig.cap="Distributions and means with 95\\% CIs of the model-predicted values for each variable, separated for the three websites. Control: Website without buttons. Like: Website with like buttons. Like \\& Dislike: Website with like and dislike buttons. Values from preregistered SEM.", out.width = "\\textwidth", fig.pos = "!h"}
-knitr::include_graphics("figures/results/violin_plot.png")
-```
-
-## Exploratory Analyses
-
-As explained above, the preregistered results were problematic.
-Communication was not normally distributed and the predictors were collinear.
-I hence updated the analyses, using Bayesian hurdle models controlling only for confounders but not mediators.
-In predicting communication, I opted for general trust over specific trust, as it exhibited lower levels of empirical and theoretical overlap with gratifications.
-The updated exploratory analyses showed different results.
+**UPDATE FOR SELF-DISCLOSURE**
+**Only show hurdle model for Self-Disc**
 
 ```{r slopes, fig.cap="Exploratory analyses. Plotted are the average marginal effects of the Bayesian hurdle models. The difference between the control and the like \\& disklike group is significant.", fig.height=8, fig.width=8, out.width=".9\\textwidth", fig.align='center', fig.pos = "!h", warning=F}
 knitr::include_graphics("figures/results/effects.png")
 ```
+
 
 Hypotheses 1, 2, 3, and 4 were all confirmed:
 If participants were more concerned about their privacy, they communicated less: 
@@ -506,15 +466,15 @@ apa_table(tab_slopes %>%
           )
 ```
 
-I then reanalyzed the effects of the popularity cues on communication.
+We then reanalyzed the effects of the popularity cues on communication.
 Compared to the control condition without popularity cues, implementing like buttons did not significantly affect communication, _b_ = `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Like vs. control") %>%  select(Estimate) %>% round(0)` (95% HDI: `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Like vs. control") %>%  select(LL) %>% round(0)`, `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Like vs. control") %>%  select(UL) %>% round(0)`).
 But note that the effect was very close to not including the zero.
 However, implementing both like and dislike buttons affected communication.
-Contrary to what I expected, implementing both popularity cues _decreased_ communication.
+Contrary to what we expected, implementing both popularity cues _decreased_ communication.
 If both popularity cues were present, participants on average wrote `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Like & dislike vs. control") %>%  select(Estimate) %>% round(0) %>% abs()` words less (95% HDI: `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Like & dislike vs. control") %>%  select(LL) %>% round(0)`, `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Like & dislike vs. control") %>%  select(UL) %>% round(0)`).
 The introduction of both cues hence led to a `r effect_lkdlk_prcnt %>% as.integer()`% decline in number of words that were written.
 
-Finally, I tested if the effect of the popularity cues on communication were potentially mediated by the privacy calculus variables. 
+Finally, we tested if the effect of the popularity cues on communication were potentially mediated by the privacy calculus variables. 
 Results showed that this was not the case. 
 The popularity cues only affected behavior but not the predictors of the privacy calculus model (see [online companion website](https://XMtRa.github.io/like_dislike)).
 The results suggest that the effect was either direct or mediated by other variables not included here [@coenenIndirectEffectOmitted2022].
@@ -534,7 +494,7 @@ The predictors were collinear, which makes their integration in one single model
 In addition, the main variable and outcome of the study, number of communicated words, was zero-inflated and gamma distributed, which requires a different type of analysis.
 The preregistered analyses using structural equation modeling with multiple predictors were hence problematic.
 
-To address these issues, I conducted Bayesian hurdle-gamma models (see section Data analysis).
+To address these issues, we conducted Bayesian hurdle-gamma models (see section Data analysis).
 This updated approach changed the results.
 People who were more concerned about their privacy wrote fewer words. 
 To illustrate, people who reported being very much concerned posted only `r wrds_pricon_7` words on average, whereas people who reported being not concerned posted `r wrds_pricon_1` words. 
@@ -559,7 +519,7 @@ The findings are therefore closely aligned with existing theory.
 For example, the technology acceptance model states that online behavior is most strongly determined by usefulness and ease of use [@venkateshUserAcceptanceInformation2003]---two variables closely related to gratifications and self-efficacy.
 
 The privacy calculus was criticized for not explicitly analyzing the process of weighing pros and cons before disclosing [@knijnenburgDeathPrivacyCalculus2017].
-In this study, I thus elaborated on the privacy deliberation process.
+In this study, we thus elaborated on the privacy deliberation process.
 The results showed that only one third of all participants agreed to have actively weighed the benefits and risks before communicating on the platform.
 This figure seems comparatively low.
 Even in new online contexts, the majority of users does not actively deliberate about their online communication, suggesting that online use is to large extents implicit [@acquistiSecretsLikesDrive2020]. 
@@ -623,3 +583,123 @@ But, similar to everyday offline contexts, they are also affected by the afforda
 \newpage
 
 # References
+
+::: {#refs}
+:::
+
+# Questionnaire Items {#apx-items}
+
+## Response format
+
+All items were measured on a 7-point scale with Likert-response format. Answers ranged between:
+
+ - &nbsp;-3   completely disagree
+ - &nbsp;-2   disagree
+ - &nbsp;-1   slightly disagree
+ - &nbsp;&nbsp;0   neutral
+ - +1   slightly agree
+ - +2   agree
+ - +3   strongly agree
+
+All items were translated from German.
+
+## Privacy concerns
+
+Using the participation platform I had ...
+
+ 1. ... concerns about what happens to my data.
+ 2. ... concerns about disclosing information about myself.
+ 3. ... no concerns.
+ 4. ... concerns that others could discover my real identity (i.e. my last and first name).
+ 5. ... concerns that information about myself could fall into wrong hands.
+ 6. ... concerns that others could discover what my political views are.
+ 7. ... concerns about my privacy.
+ 
+## Gratifications general
+
+Using the participation platform ...
+ 
+ 1.	... had many benefits for me.
+ 2.	... has paid off for me.
+ 3.	... was worthwhile.
+ 4.	... was fun.
+ 5.	... has brought me further regarding content.
+ 
+## Gratifications specific
+
+Using the participation platform it has been possible for me ...
+
+_Information_
+
+ 1.	... to learn things I would not otherwise have noticed.
+ 2.	... to hear the opinion of others.
+ 3.	... to learn how other people tick.
+
+_Relevance_
+
+ 4.	... to react to a subject that is very dear to me.
+ 5.	... to react to a subject that is important to me.
+ 6.	... to react to a subject that I am affected by.
+
+_Political participation_
+
+ 7.	... to engage politically.
+ 8.	... to discuss political issues.
+ 9.	... to pursue my political interest.
+
+_Idealism_
+
+ 10. ... to try to improve society.
+ 11. ... to advocate to something meaningful.
+ 12. ... to serve a good purpose.
+
+_Extrinsic benefits_
+
+ 13. ... to do the responsible persons a favor.
+ 14. ... to soothe my guilty consciences.
+ 15. ... to fulfil my civic duty.
+ 
+## Privacy deliberation
+
+Using the participation platform ...
+
+ 1. ... I have considered whether I could be disadvantaged by writing a comment.
+ 2. ... I have considered whether I could be advantaged by writing a comment.
+ 3. ... I have weighed up the advantages and disadvantages of writing a comment.
+ 4. ... I have thought about consequences of a possible comment.
+ 5. ... I have considered whether I should write a comment or not.
+ 
+## Trust general
+
+&nbsp;&nbsp;&nbsp;1. The other users seemed trustworthy.  
+&nbsp;&nbsp;&nbsp;5. The operators of the participation platform seemed trustworthy.  
+&nbsp;&nbsp;&nbsp;9. The website seemed trustworthy.  
+ 
+## Trust specific
+
+_Community_
+
+ 2.	The comments of other users were useful.
+ 3.	The other users had good intentions.
+ 4.	I could rely on the statements of other users.
+
+_Provider_
+
+ 6.	The operators of the participation platform have done a good job.
+ 7.	It was important to the operators that the users are satisfied with the participation platform.
+ 8.	I could rely on the statements of the operators of the participation platform.
+
+_Information System_
+
+ 10.	The website worked well.
+ 11.	I had the impression that my data was necessary for the use of the website.
+ 12.	I found the website useful.
+ 
+## Self-efficacy
+
+ 1. In principle, I felt able to write a comment.
+ 2. I felt technically competent enough to write a comment.
+ 3. In terms of the topic, I felt competent enough to express my opinion.
+ 4. I found the topic too difficult to express my opinion.
+ 5. I found it complicated to write a comment.
+ 6. I was overburdened to write a comment.
