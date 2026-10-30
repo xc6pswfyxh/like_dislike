@@ -6,7 +6,8 @@ bibliography:
 format:
   html:
     toc: true
-    toc-depth: 2
+    toc-depth: 3
+    toc-expand: 2
     code-fold: true
     code-summary: "Show code"
 ---
@@ -322,7 +323,7 @@ run_hurdles <-
 }
 ```
 
-## Data-Wrangling
+## Data Wrangling
 
 Let's next tidy up and prepare the data, so we can analyze them.
 
@@ -448,7 +449,8 @@ var_names <- c(
   "Self-efficacy", 
   "Trust general", 
   "Trust specific",
-  "Words log"
+  "Words log",
+  "Self-disclosure"
   )
 
 var_names_breaks <- c(
@@ -459,7 +461,8 @@ var_names_breaks <- c(
   "Self-\nefficacy", 
   "Trust\ngeneral", 
   "Trust\nspecific",
-  "Words (log)"
+  "Words (log)",
+  "Self-\ndisclosure"
   )
 
 # Extract sample characteristics and descriptives.
@@ -574,9 +577,11 @@ n_matched <- nrow(d)
 d_all <- d
 ```
 
-# Filter Participants
+## Sample
 
-I filtered participants who answered the questionnaire in less than three minutes, which I considered to be unreasonably fast.
+### Speeders
+
+We filtered participants who answered the questionnaire in less than three minutes, which we considered to be unreasonably fast.
 
 ```{r cache=F}
 # filter speeders
@@ -599,7 +604,9 @@ d <-
     )
 ```
 
-I inspected the data manually for cases with obvious response patterns. The following cases show extreme response patterns (alongside fast response times), and were hence removed.
+### Response Patterns
+
+We inspected the data manually for cases with obvious response patterns. The following cases show extreme response patterns (alongside fast response times), and were hence removed.
 
 ```{r cache=F}
 # identify response patterns
@@ -641,9 +648,65 @@ male_final_m <- mean(d$male, na.rm = TRUE)
 college_final_m <- table(d$edu)[[3]] / n_final
 ```
 
+## Self-Disclosure Index
+
+We construct the self-disclosure index here, after the final sample has been determined, because the standardization depends on the sample.
+Following @omarzuDisclosureDecisionModel2000, self-disclosure consists of three dimensions: quantity (number of words), breadth (average number of topics per comment, 0–3), and depth (average number of disclosure markers per comment: personal experience + emotional expression + political opinion, 0–3).
+Breadth and depth stem from the LLM coding of all comments (see `04c_final_classification.ipynb`).
+Participants who did not comment get 0 on all three dimensions.
+
+Each dimension is z-standardized and then linearly transformed so that its lowest value is 0.
+The index is the mean of the three transformed dimensions, which is again standardized and transformed so that its lowest value is 0.
+Participants who did not comment hence have a value of exactly 0 (which the hurdle models require), and all other values are expressed in standard deviations.
+
+```{r sd-indicators, cache=F}
+# LLM codes per comment, aggregated per person
+comments_coded <- read_csv("data/comments/final/comments_classified_final.csv")
+
+sd_components <-
+  comments_coded %>%
+  filter(!is.na(id)) %>%
+  group_by(id) %>%
+  summarise(
+    breadth_mean = mean(breadth, na.rm = TRUE),   # 0-3, mean topics per comment
+    depth_mean   = mean(depth, na.rm = TRUE)      # 0-3, mean of pers_exp + emot_exp + pol_opin
+    )
+
+# z-standardize, then shift so that the lowest value is 0
+z_min0 <- function(x) {
+  z <- as.numeric(scale(x))
+  z - min(z)
+  }
+
+d <-
+  d %>%
+  select(-any_of(c("breadth_mean", "depth_mean"))) %>%
+  left_join(sd_components, by = "id") %>%
+  mutate(
+    # non-commenters disclosed nothing
+    across(c(breadth_mean, depth_mean), ~ replace_na(.x, 0)),
+    sd_quantity = z_min0(words),
+    sd_breadth  = z_min0(breadth_mean),
+    sd_depth    = z_min0(depth_mean)
+    )
+```
+
+```{r sd-index, cache=F}
+d <-
+  d %>%
+  mutate(
+    self_disc = (sd_quantity + sd_breadth + sd_depth) / 3,
+    self_disc = (self_disc - min(self_disc)) / sd(self_disc)
+    )
+
+# checks: non-commenters exactly 0, all commenters above 0
+stopifnot(all(d$self_disc[d$words == 0] == 0))
+stopifnot(all(d$self_disc[d$words > 0] > 0))
+```
+
 # Measures
 
-Let's next inspect all measures. I list all items, their distributions and CFAs.
+Let's next inspect all measures. We list all items, their distributions and CFAs.
 
 ## Privacy concerns
 ### Items
@@ -1023,7 +1086,7 @@ get_desc(
 
 ### CFA
 
-Note that I constrained two loadings to be able to report model fit. I used operators and website, as these are theoretically closer.
+Note that we constrained two loadings to be able to report model fit. We used operators and website, as these are theoretically closer.
 
 ```{r}
 name <- "trustgen"
@@ -1069,7 +1132,7 @@ inspect(
   lambda
 ```
 
-Note that I constrained Items 5 and Item 9 to be equal. Explanation: First, they are theoretically related. Second, not constraining would yield to just-identified model, for which model fit cannot be interpreted meaningfully.
+Note that we constrained Items 5 and 9 to be equal. Explanation: First, they are theoretically related. Second, not constraining would yield to just-identified model, for which model fit cannot be interpreted meaningfully.
 
 ## Trust specific
 ### Items
@@ -1222,7 +1285,7 @@ inspect(
   lambda
 ```
 
-Shows significant misfit. I will delete inverted items, while allowing covariations between Items 1 and 2 (tech-oriented) and Items 3 and 4 (topic-oriented). 
+Shows significant misfit. We hence deleted the inverted items, while allowing covariations between Items 1 and 2 (tech-oriented) and Items 3 and 4 (topic-oriented). 
 
 ### CFA 2
 
@@ -1274,7 +1337,7 @@ inspect(
 Adapted version shows better and adequate fit.
 
 ## Communication
-### Density plot
+### Distribution
 
 ```{r fig.height = 3}
 ggplot(
@@ -1314,11 +1377,11 @@ words_m <-
     )
 ```
 
-`r no_words_perc` percent wrote a comment. The average number of communicated words was `r words_m`.
+`r round((1 - no_words_perc) * 100)` percent wrote a comment. The average number of communicated words was `r words_m`.
 
 Will hence be log-scaled for SEMs.
 
-## Communication Logged
+### Distribution (log-transformed)
 
 ```{r}
 ggplot(
@@ -1340,7 +1403,73 @@ ggplot(
   theme_bw()
 ```
 
-## Baseline model
+## Self-disclosure
+
+Self-disclosure was computed above (see Setup) as an index of three dimensions: quantity (number of words), breadth, and depth.
+Because the index consists of only three dimensions, a confirmatory factor analysis would be just identified and not informative; we hence report no CFA, but the dimensions, their correlations, and the distribution of the index.
+
+### Dimensions
+
+Distributions of the three dimensions among participants who commented.
+
+```{r sd-dist, fig.height = 3}
+d %>%
+  filter(words > 0) %>%
+  select(words, breadth_mean, depth_mean) %>%
+  pivot_longer(everything()) %>%
+  ggplot(aes(value)) +
+  geom_histogram(bins = 30) +
+  facet_wrap(~ name, scales = "free") +
+  theme_bw()
+```
+
+Correlations of the three dimensions among participants who commented.
+
+```{r sd-cor}
+d %>%
+  filter(words > 0) %>%
+  select(words, breadth_mean, depth_mean) %>%
+  cor() %>%
+  round(2)
+```
+
+### Descriptives
+
+```{r sd-desc}
+# descriptives for the table of factor validity (all participants)
+des_selfdisc <-
+  data.frame(
+    m  = mean(d$self_disc),
+    sd = sd(d$self_disc)
+    )
+
+# descriptives of the three dimensions and the index
+bind_rows(
+  d %>% mutate(group = "All participants"),
+  d %>% filter(words > 0) %>% mutate(group = "Commenters")
+  ) %>%
+  group_by(group) %>%
+  summarise(
+    n = n(),
+    across(
+      c(words, breadth_mean, depth_mean, self_disc),
+      list(m = mean, sd = sd, max = max)
+      )
+    ) %>%
+  pivot_longer(-c(group, n), names_to = c("variable", ".value"), names_pattern = "(.*)_(m|sd|max)$") %>%
+  kable(digits = 2) %>%
+  kable_styling("striped")
+
+# distribution of the index among commenters
+d %>%
+  filter(words > 0) %>%
+  ggplot(aes(self_disc)) +
+  geom_density() +
+  theme_bw() +
+  labs(x = "Self-disclosure (commenters only)", y = "Density")
+```
+
+## Baseline Model
 
 In what follows, please find the results of all variables combined in one model. This model will be used to extract factor scores.
 
@@ -1382,9 +1511,11 @@ summary(
   )
 ```
 
-# Descriptive analyses
+# Descriptive Analyses
 
-I first report the factor validity of all variables combined.
+## Factor Validity
+
+We first report the factor validity of all variables combined.
 
 ```{r cache=F}
 # extract model factor scores / predicted values for items & calc means
@@ -1402,7 +1533,8 @@ d_fs <-
     trust_gen_fs = rowMeans(select(., starts_with("TR02"))),
     trust_spec_fs = rowMeans(select(., starts_with("TR01"))),
     pri_del_fs = rowMeans(select(., starts_with("PD01"))),
-    self_eff_fs = rowMeans(select(., starts_with("SE01")))) %>%
+    self_eff_fs = rowMeans(select(., starts_with("SE01"))),
+    self_disc = d$self_disc) %>%
   select(
     version, 
     pri_con_fs, 
@@ -1412,7 +1544,8 @@ d_fs <-
     self_eff_fs, 
     trust_gen_fs, 
     trust_spec_fs, 
-    words_log
+    words_log,
+    self_disc
     )
 
 # combine d with d factor scores
@@ -1421,8 +1554,22 @@ d %<>%
     select(
       d_fs, 
       -version, 
-      -words_log
+      -words_log,
+      -self_disc
       )
+    )
+
+# standardized factor scores (mean 0, SD 1); used as predictors in the exploratory hurdle models,
+# so that effects can be interpreted per standard deviation (the original 1-7 scores are kept)
+d %<>% 
+  mutate(
+    pri_con_z    = as.numeric(scale(pri_con_fs)),
+    grats_gen_z  = as.numeric(scale(grats_gen_fs)),
+    grats_spec_z = as.numeric(scale(grats_spec_fs)),
+    pri_del_z    = as.numeric(scale(pri_del_fs)),
+    self_eff_z   = as.numeric(scale(self_eff_fs)),
+    trust_gen_z  = as.numeric(scale(trust_gen_fs)),
+    trust_spec_z = as.numeric(scale(trust_spec_fs))
     )
 
 # rename for plotting
@@ -1441,9 +1588,9 @@ des <-
     des_gratsgen,
     des_gratsspec,
     des_pridel,
+    des_selfeff,
     des_trustgen,
-    des_trustspec,
-    des_selfeff
+    des_trustspec
     )
 
 facval_tab <- 
@@ -1456,8 +1603,8 @@ facval_tab <-
     trustgen_facval,
     trustspec_facval
     ) %>%
-      cbind(des[-c(8), ], .) %>%
-      set_rownames(var_names[-c(7)])
+      cbind(des, .) %>%
+      set_rownames(var_names[1:7])
 
 facval_tab %>% 
   kable() %>% 
@@ -1465,38 +1612,43 @@ facval_tab %>%
   kableExtra::scroll_box(width = "100%")
 ```
 
-In what follows, I report zero-order correlations, distributions, and scatterplots of the variables' factor scores.
+## Correlations and Distributions
 
-```{r fig.height=9, fig.width=9}
-# corr_plot <- 
-#   ggpairs(
-#     select(d_fs, -version),
-#     upper = list(
-#       continuous = cor_plot
-#     ),
-#     lower = list(
-#       continuous = wrap(
-#         td::scat_plot, 
-#         coords = c(1, 7, 0, 7)
-#       )
-#     )
-#   ) + 
-#   theme_bw()
+In what follows, we report zero-order correlations, distributions, and scatterplots of the variables' factor scores.
 
-# print(corr_plot)
+```{r cor-plot, fig.height=10, fig.width=10}
+# upper panels: correlations; diagonal: densities; 
+# lower panels: scatter plots with linear (solid) and quadratic (dotted) regression lines
+panel_scatter <- function(data, mapping, ...) {
+  ggplot(data = data, mapping = mapping) +
+    geom_jitter(alpha = .15, size = .4, width = .05, height = .05) +
+    geom_smooth(method = "lm", formula = y ~ x, se = FALSE, colour = "black", linewidth = .5) +
+    geom_smooth(method = "lm", formula = y ~ poly(x, 2), se = FALSE, colour = "black", linewidth = .5, linetype = "dotted")
+  }
 
-# ggsave(
-#   "figures/results/cor_plot.png",
-#   plot = corr_plot,
-#   bg = "white",
-#   width = 8,
-#   height = 8
-# )
+fig_cor <- 
+  ggpairs(
+    select(d_fs, -version),
+    upper = list(continuous = wrap("cor", digits = 2, stars = FALSE)),
+    lower = list(continuous = panel_scatter),
+    diag  = list(continuous = wrap("densityDiag"))
+    ) + 
+  theme_bw()
+
+print(fig_cor)
+
+ggsave(
+  "figures/results/cor_plot.png",
+  plot = fig_cor,
+  bg = "white",
+  width = 10,
+  height = 10
+  )
 ```
 
-# Power analyses
+# Power Analyses
 
-In what follows, I report power analyses for our study. Please note that I conduct a rudimentary power-analysis, assuming bivariate correlations. (At the time I was not yet aware of the existence of power analyses for multivariate structural equation models.)
+In what follows, we report power analyses for our study. Please note that we conduct a rudimentary power analysis, assuming bivariate correlations. (At the time, we were not yet aware of the existence of power analyses for multivariate structural equation models.)
 
 ```{r include=F}
 # define pwr-criteria
@@ -1506,7 +1658,7 @@ power_desired <- .95
 r_sesoi <- .10
 ```
 
-I first estimate the sample size necessary to find small effects in 95% of all cases.
+We first estimate the sample size necessary to find small effects in 95% of all cases.
 
 ```{r}
 # estimate pwr-samplesize
@@ -1522,7 +1674,7 @@ pwr.r.test(
   n_desired
 ```
 
-I then compute the power we have achieved with our final sample size to detect small effects.
+We then compute the power we have achieved with our final sample size to detect small effects.
 
 ```{r}
 # compute pwr-achieved
@@ -1538,7 +1690,7 @@ pwr.r.test(
   power_achieved
 ```
 
-I finally compute what effect size we are likely to find in 95% of all cases given our final sample size.
+We finally compute what effect size we are likely to find in 95% of all cases given our final sample size.
 
 ```{r}
 # estimate pwr-sensitivity
@@ -1555,7 +1707,7 @@ pwr.r.test(
 ```
 
 # Assumptions
-## Multivariate normal distribution
+## Multivariate Normal Distribution
 
 ```{r}
 # create subset of data with all items that were used
@@ -1577,13 +1729,13 @@ mvn_result <- mvn(d_sub, mvn_test = "mardia")
 mvn_result$multivariateNormality
 ```
 
-Shows that multivariate normal distribution is violated. I hence use maximum likelihood estimation with robust standard errors and a Satorra-Bentler scaled test statistic.
+Shows that multivariate normal distribution is violated. We hence use maximum likelihood estimation with robust standard errors and a Satorra-Bentler scaled test statistic.
 
-## Influential cases
+## Influential Cases
 
-In what follows I test for influential cases in the baseline model, to detect potentially corrupt data (e.g., people who provided response patterns). Specifically, I compute Cook's distance.
+In what follows, we test for influential cases in the baseline model, to detect potentially corrupt data (e.g., people who provided response patterns). Specifically, we compute Cook's distance.
 
-[Note: The following lines stopped working after some time, potentially due to changes in package. I can hence not recreate them here, but refer to results obtained before.]
+[Note: The following lines stopped working after some time, potentially due to changes in package. We can hence not recreate them here, but refer to results obtained before.]
 
 ```{r eval=F}
 # cooks_dis <- 
@@ -1633,9 +1785,9 @@ Let's inspect these cases.
 
 These data do not reveal potential cases of response patterns. Indeed, answer times suggest that respondents were diligent.
 
-# Results
-## Preregistered
-### Privacy calculus
+# Preregistered Analyses
+
+## Privacy Calculus
 
 ```{r}
 model <- "
@@ -1684,8 +1836,9 @@ rsquare_fit_prereg <-
 
 Results show that there's only one significant predictor of Communication, being self-efficacy. The other predictors are in the direction as planned, albeit not significant. Trust, however, shows the inverse relation as effect, that is, more trust, less communication.
 
-### Effects of popularity cues
-#### Confidence intervals
+## Effects of Popularity Cues
+
+### Confidence Intervals
 
 The easiest way to assess the effect of the experimental manipulation on the variables is by visualizing their means. If 83% confidence intervals don't overlap, the variables differ significantly across the conditions. One can quickly see that there aren't any major effects.
 
@@ -1750,9 +1903,9 @@ ggsave(
 fig_fs_m
 ```
 
-#### SEM
+### SEM
 
-In what follows, I also report explicit statistical tests of the differences between the conditions using contrasts. 
+In what follows, we also report explicit statistical tests of the differences between the conditions using contrasts. 
 
 **Like & Like-Dislike vs. Control**
 
@@ -1830,85 +1983,31 @@ summary(
 
 No significant effects of popularity cues on privacy calculus.
 
-## Exploratory analyses
+# Exploratory Analyses
+
+## Rationale
 
 The bivariate relations showed several strong correlations. 
 People who trusted the providers more also experienced more gratifications (_r_ = .79).
-In multiple regression, we analze the potential effect of one variable on the outcome while holding all others constant. 
-In this case, I tested whether trust increases communication while holding constant gratifications, privacy concerns, privacy deliberations, and self-efficacy. 
-Given the close theoretical and empirical interrelations between the predictors, this creates an unlikely and artifical scenario. 
-If people say loose trust in a provider, they will likely experience more concerns and less benefits. 
+In multiple regression, we analyze the potential effect of one variable on the outcome while holding all others constant. 
+In this case, we tested whether trust increases communication while holding constant gratifications, privacy concerns, privacy deliberations, and self-efficacy. 
+Given the close theoretical and empirical interrelations between the predictors, this creates an unlikely and artificial scenario. 
+If people lose trust in a provider, they will likely experience more concerns and less benefits. 
 But it is not even necessary to control for these mediating factors. 
-When trying to analyze the causal effect, it is necessary to control for counfounding variables, but importantly not for mediators [@rohrerThinkingClearlyCorrelations2018].
-Confunding variables impact both the independent variable and the outcome. 
+When trying to analyze the causal effect, it is necessary to control for confounding variables, but importantly not for mediators [@rohrerThinkingClearlyCorrelations2018].
+Confounding variables impact both the independent variable and the outcome. 
 Sociodemographic variables are often ideal candidates for confounders.
 For example, men are generally less concerned about their privacy and post more online.
-Hence, controlling for gender hence helps isolate the actual causal effect. 
-As a result, I reran the analyses controlling for confounding variables that are not mediators.
+Hence, controlling for gender helps isolate the actual causal effect. 
+As a result, we reran the analyses controlling for confounding variables that are not mediators.
 
-### Experimental Factors
-#### Words
+## Popularity Cues and Privacy Calculus
 
-I first compare likes and likes plus dislikes to the control condition.
+We first analyze whether the popularity cues affected the privacy calculus variables.
 
-```{r words}
-run_hurdles(
-  object = d,
-  name = "wrds_ctrl",
-  outcome = "words", 
-  predictor = "version",
-  y_lab = "Words",
-  x_lab = "Experimental conditions"
-  )
-```
+### Privacy Concerns
 
-Let's find out by how much people in like and like plus dislike condition wrote fewer words.
-
-```{r}
-words_m_ctrl <- 
-  fig_wrds_ctrl$data %>% 
-  filter(effect1__ == "Control") %>% 
-  select(estimate__)
-
-words_m_lk <- 
-  fig_wrds_ctrl$data %>% 
-  filter(effect1__ == "Like") %>% 
-  select(estimate__)
-
-words_m_lkdslk <- 
-  fig_wrds_ctrl$data %>% 
-  filter(effect1__ == "Like & dislike") %>% 
-  select(estimate__)
-
-effect_lk_wrds <- words_m_ctrl - words_m_lk
-effect_lkdslk_wrds <- words_m_ctrl - words_m_lkdslk
-
-effect_lk_prcnt <- 
-  (effect_lk_wrds / words_m_ctrl) * 100 %>% 
-  round()
-effect_lkdlk_prcnt <- 
-  (effect_lkdslk_wrds / words_m_ctrl) * 100 %>% 
-  round()
-```
-
-Compared to the control condition, participants wrote `r effect_lkdlk_prcnt` percent fewer words on the platform with likes and dislikes.
-
-I then compare likes and likes plus dislikes to the control condition.
-
-```{r words-lkdslk}
-run_hurdles(
-  object = d, 
-  name = "wrds_lkdslk",
-  outcome = "words", 
-  predictor = "version_lkdslk",
-  y_lab = "Words",
-  x_lab = "Experimental conditions"
-  )
-```
-
-#### Privacy Concerns
-
-I first compare likes and likes plus dislikes to the control condition.
+We first compare likes and likes plus dislikes to the control condition.
 
 ```{r pricon-ctrl}
 run_hurdles(
@@ -1921,9 +2020,9 @@ run_hurdles(
   )
 ```
 
-I then compare the likes and control conditions to the likes plus dislikes condition.
+We then compare the likes and control conditions to the likes plus dislikes condition.
 
-```{r}
+```{r pricon-lkdslk}
 run_hurdles(
   object = d, 
   name = "pricon_lkdslk",
@@ -1934,11 +2033,11 @@ run_hurdles(
   )
 ```
 
-#### Gratifications General
+### Gratifications General
 
-I first compare likes and likes plus dislikes to the control condition.
+We first compare likes and likes plus dislikes to the control condition.
 
-```{r}
+```{r grats-ctrl}
 run_hurdles(
   object = d,
   name = "grats_ctrl",
@@ -1949,9 +2048,9 @@ run_hurdles(
   )
 ```
 
-I then compare the likes and control conditions to the likes plus dislikes condition.
+We then compare the likes and control conditions to the likes plus dislikes condition.
 
-```{r}
+```{r grats-lkdslk}
 run_hurdles(
   object = d, 
   name = "grats_lkdslk",
@@ -1962,11 +2061,11 @@ run_hurdles(
   )
 ```
 
-#### Privacy Deliberation
+### Privacy Deliberation
 
-I first compare likes and likes plus dislikes to the control condition.
+We first compare likes and likes plus dislikes to the control condition.
 
-```{r}
+```{r pridel-ctrl}
 run_hurdles(
   object = d,
   name = "pridel_ctrl",
@@ -1977,9 +2076,9 @@ run_hurdles(
   )
 ```
 
-I then compare the likes and control conditions to the likes plus dislikes condition.
+We then compare the likes and control conditions to the likes plus dislikes condition.
 
-```{r}
+```{r pridel-lkdslk}
 run_hurdles(
   object = d, 
   name = "pridel_lkdslk",
@@ -1990,11 +2089,11 @@ run_hurdles(
   )
 ```
 
-#### Trust general
+### Trust General
 
-I first compare likes and likes plus dislikes to the control condition.
+We first compare likes and likes plus dislikes to the control condition.
 
-```{r}
+```{r trust-ctrl}
 run_hurdles(
   object = d,
   name = "trust_ctrl",
@@ -2005,9 +2104,9 @@ run_hurdles(
   )
 ```
 
-I then compare the likes and control conditions to the likes plus dislikes condition.
+We then compare the likes and control conditions to the likes plus dislikes condition.
 
-```{r}
+```{r trust-lkdslk}
 run_hurdles(
   object = d, 
   name = "trust_lkdslk",
@@ -2018,11 +2117,11 @@ run_hurdles(
   )
 ```
 
-#### Self-Efficacy
+### Self-Efficacy
 
-I first compare likes and likes plus dislikes to the control condition.
+We first compare likes and likes plus dislikes to the control condition.
 
-```{r}
+```{r selfeff-ctrl}
 run_hurdles(
   object = d,
   name = "selfeff_ctrl",
@@ -2033,9 +2132,9 @@ run_hurdles(
   )
 ```
 
-I then compare the likes and control conditions to the likes plus dislikes condition.
+We then compare the likes and control conditions to the likes plus dislikes condition.
 
-```{r}
+```{r selfeff-lkdslk}
 run_hurdles(
   object = d, 
   name = "selfeff_lkdslk",
@@ -2046,287 +2145,507 @@ run_hurdles(
   )
 ```
 
-### Words
-#### Privacy Concerns
+## Communication
 
-```{r}
+In what follows, we analyze the preregistered outcome, communication, measured as the number of words a participant wrote.
+All privacy calculus variables are standardized (_z_-scores), so that effects refer to an increase of one standard deviation.
+
+### Experimental Factors
+
+We first compare likes and likes plus dislikes to the control condition.
+
+```{r wrds-ctrl}
 run_hurdles(
-  object = d, 
+  object = d,
+  name = "wrds_ctrl",
+  outcome = "words",
+  predictor = "version",
+  y_lab = "Words",
+  x_lab = "Experimental conditions"
+  )
+```
+
+Let's find out by how much people in the like and like plus dislike conditions wrote fewer words.
+
+```{r wrds-ctrl-effects}
+words_m_ctrl   <- fig_wrds_ctrl$data %>% filter(effect1__ == "Control") %>% pull(estimate__)
+words_m_lk     <- fig_wrds_ctrl$data %>% filter(effect1__ == "Like") %>% pull(estimate__)
+words_m_lkdslk <- fig_wrds_ctrl$data %>% filter(effect1__ == "Like & dislike") %>% pull(estimate__)
+
+effect_lk_prcnt    <- round((words_m_ctrl - words_m_lk) / words_m_ctrl * 100)
+effect_lkdlk_prcnt <- round((words_m_ctrl - words_m_lkdslk) / words_m_ctrl * 100)
+```
+
+Compared to the control condition, participants wrote `r effect_lkdlk_prcnt` percent fewer words on the platform with likes and dislikes, and `r effect_lk_prcnt` percent fewer words on the platform with likes only.
+
+We then compare the likes and control conditions to the likes plus dislikes condition.
+
+```{r wrds-lkdslk}
+run_hurdles(
+  object = d,
+  name = "wrds_lkdslk",
+  outcome = "words",
+  predictor = "version_lkdslk",
+  y_lab = "Words",
+  x_lab = "Experimental conditions"
+  )
+```
+
+### Privacy Concerns
+
+```{r wrds-pricon}
+run_hurdles(
+  object = d,
   name = "wrds_pricon",
-  outcome = "words", 
-  predictor = "pri_con_fs",
+  outcome = "words",
+  predictor = "pri_con_z",
   y_lab = "Words",
-  x_lab = "Privacy concerns"
+  x_lab = "Privacy concerns (z)"
   )
 ```
 
-Let's explore how number of communicated words differ for people very much concerned versus not concerned at all.
+Let's explore how the number of communicated words differs between people with the lowest and the highest privacy concerns in our sample.
 
-```{r}
-# let's extract effects for 1
-wrds_pricon_1 <- 
-  fig_wrds_pricon$data %>% 
-  filter(pri_con_fs == min(pri_con_fs)) %>% 
-  pull(estimate__) %>% 
-  round(0)
-
-# let's extract effects for 7
-wrds_pricon_7 <- 
-  fig_wrds_pricon$data %>% 
-  filter(pri_con_fs == max(pri_con_fs)) %>% 
-  pull(estimate__) %>% 
-  round(0)
+```{r wrds-pricon-effects}
+wrds_pricon_1 <- fig_wrds_pricon$data %>% filter(pri_con_z == min(pri_con_z)) %>% pull(estimate__) %>% round(0)
+wrds_pricon_7 <- fig_wrds_pricon$data %>% filter(pri_con_z == max(pri_con_z)) %>% pull(estimate__) %>% round(0)
 ```
 
-People who were not concerned at all communicated on average `r wrds_pricon_1 %>% round(0) %>% abs()` words, whereas people strongly concerned communicated on average `r wrds_pricon_7 %>% round(0)` words.
+People with the lowest privacy concerns communicated on average `r wrds_pricon_1` words, whereas people with the highest privacy concerns communicated on average `r wrds_pricon_7` words.
 
-#### Gratifications General
+### Gratifications General
 
-```{r}
+```{r wrds-grats}
 run_hurdles(
-  object = d, 
+  object = d,
   name = "wrds_grats",
-  outcome = "words", 
-  predictor = "grats_gen_fs",
+  outcome = "words",
+  predictor = "grats_gen_z",
   y_lab = "Words",
-  x_lab = "Gratifications general"
+  x_lab = "Gratifications general (z)"
   )
 ```
 
-#### Privacy Deliberation
+### Privacy Deliberation
 
-```{r}
+```{r wrds-pridel}
 run_hurdles(
-  object = d, 
+  object = d,
   name = "wrds_pridel",
-  outcome = "words", 
-  predictor = "pri_del_fs",
+  outcome = "words",
+  predictor = "pri_del_z",
   y_lab = "Words",
-  x_lab = "Privacy deliberation"
+  x_lab = "Privacy deliberation (z)"
   )
 ```
 
-#### Trust General
+### Trust General
 
-```{r}
+```{r wrds-trust}
 run_hurdles(
-  object = d, 
+  object = d,
   name = "wrds_trust",
-  outcome = "words", 
-  predictor = "trust_gen_fs",
+  outcome = "words",
+  predictor = "trust_gen_z",
   y_lab = "Words",
-  x_lab = "Trust general"
+  x_lab = "Trust general (z)"
   )
 ```
 
-#### Self-Efficacy
+### Self-Efficacy
 
-```{r}
+```{r wrds-selfeff}
 run_hurdles(
-  object = d, 
+  object = d,
   name = "wrds_selfeff",
-  outcome = "words", 
-  predictor = "self_eff_fs",
+  outcome = "words",
+  predictor = "self_eff_z",
   y_lab = "Words",
-  x_lab = "Self-efficacy"
+  x_lab = "Self-efficacy (z)"
   )
 ```
 
-The effects is markedly exponential. Let's inspect the changes across values in self-efficacy.
+The relation is markedly exponential. Let's inspect how the number of words changes with a one-SD increase in self-efficacy, once starting from the lowest level of self-efficacy in our sample, and once ending at the highest level.
 
-```{r}
-effects_wrds_selfeff <- 
-  slopes(
-    fit_wrds_selfeff, 
-    newdata = datagrid(
-      self_eff_fs = c(1, 6, 7)
-      ), 
-   grid_type = "counterfactual"
+```{r wrds-selfeff-effects}
+self_eff_lo <- min(d$self_eff_z)       # lowest observed self-efficacy
+self_eff_hi <- max(d$self_eff_z) - 1   # one SD below the highest observed self-efficacy
+
+# average change in the expected number of words for a one-SD increase,
+# evaluated for all participants at the given level of self-efficacy (counterfactual grid)
+effects_wrds_selfeff_12 <-
+  avg_comparisons(
+    fit_wrds_selfeff,
+    variables = list(self_eff_z = 1),
+    newdata = datagrid(self_eff_z = self_eff_lo, grid_type = "counterfactual")
     ) %>%
-  filter(
-    term == "self_eff_fs"
+  pull(estimate) %>%
+  round(0)
+
+effects_wrds_selfeff_67 <-
+  avg_comparisons(
+    fit_wrds_selfeff,
+    variables = list(self_eff_z = 1),
+    newdata = datagrid(self_eff_z = self_eff_hi, grid_type = "counterfactual")
+    ) %>%
+  pull(estimate) %>%
+  round(0)
+```
+
+Starting from the lowest level of self-efficacy, an increase of one standard deviation was associated with `r effects_wrds_selfeff_12` more words; ending at the highest level, the same increase was associated with `r effects_wrds_selfeff_67` more words.
+
+Let's explore how the number of communicated words differs between people with the lowest and the highest self-efficacy in our sample.
+
+```{r wrds-selfeff-minmax}
+wrds_selfeff_1 <- fig_wrds_selfeff$data %>% filter(self_eff_z == min(self_eff_z)) %>% pull(estimate__) %>% round(0)
+wrds_selfeff_7 <- fig_wrds_selfeff$data %>% filter(self_eff_z == max(self_eff_z)) %>% pull(estimate__) %>% round(0)
+```
+
+People with the lowest self-efficacy communicated on average `r wrds_selfeff_1` words, whereas people with the highest self-efficacy communicated on average `r wrds_selfeff_7` words.
+
+### Visualization
+
+```{r wrds-fig}
+fig_results <-
+  plot_grid(
+    fig_wrds_pricon,
+    fig_wrds_grats,
+    fig_wrds_pridel,
+    fig_wrds_trust,
+    fig_wrds_selfeff,
+    fig_wrds_ctrl
     ) %T>%
   print()
 
-# let's extract effects for 1
-effects_wrds_selfeff_12 <- 
-  effects_wrds_selfeff %>% 
-  filter(
-    self_eff_fs == 1 &
-      term == "self_eff_fs") %>% 
-  select(estimate)
-
-# let's extract effects for 7
-effects_wrds_selfeff_67 <- 
-  effects_wrds_selfeff %>% 
-  filter(
-    self_eff_fs == 6 &
-      term == "self_eff_fs") %>% 
-  select(estimate)
-
+ggsave("figures/results/effects.pdf", fig_results, width = 8, height = 8)
+ggsave("figures/results/effects.png", fig_results, width = 8, height = 8)
 ```
 
-Whereas a change in self-efficacy from 1 to 2 led to an increase of `r effects_wrds_selfeff_12 %>% round(0)` words, a change from 6 to 7 led to an increase of `r effects_wrds_selfeff_67 %>% round(0)` words.
+### Table
 
-Let's explore  how number of communicated words differ for people very much self-efficacious versus not self-efficacious at all.
+Table of the average marginal effects (words: rounded to whole words).
 
-```{r}
-# let's extract effects for 1
-wrds_selfeff_1 <- 
-  fig_wrds_selfeff$data %>% 
-  filter(self_eff_fs == min(self_eff_fs)) %>% 
-  pull(estimate__) %>% 
-  round(0)
+```{r wrds-tab}
+# helper: turn the slopes of several hurdle models into one table
+label_slopes <- function(slopes_list) {
 
-# let's extract effects for 7
-wrds_selfeff_7 <- 
-  fig_wrds_selfeff$data %>% 
-  filter(self_eff_fs == max(self_eff_fs)) %>% 
-  pull(estimate__) %>% 
-  round(0)
+  predictors <- c(
+    "pri_con_z"    = "Privacy concerns",
+    "pri_del_z"    = "Privacy deliberation",
+    "grats_gen_z"  = "Expected gratifications",
+    "trust_gen_z"  = "Trust",
+    "self_eff_z"   = "Self-efficacy",
+    "Like - Control"           = "Like vs. control",
+    "Like & dislike - Control" = "Like & dislike vs. control",
+    "Like - Like & dislike"    = "Like vs. like & dislike"
+    )
+
+  outcomes <- c(
+    "pri_con_fs"   = "Privacy concerns",
+    "pri_del_fs"   = "Privacy deliberation",
+    "grats_gen_fs" = "Expected gratifications",
+    "trust_gen_fs" = "Trust",
+    "self_eff_fs"  = "Self-efficacy"
+    )
+
+  slopes_list %>%
+    map(as.data.frame) %>%
+    bind_rows() %>%
+    mutate(
+      # for the experimental factors, the contrast identifies the comparison
+      term = if_else(
+        contrast %in% c("Like - Control", "Like & dislike - Control", "Like - Like & dislike"),
+        contrast,
+        term
+        )
+      ) %>%
+    filter(term %in% names(predictors)) %>%   # drops the covariates and the duplicated contrast
+    mutate(
+      Predictor = factor(
+        predictors[term], 
+        levels = c("Self-efficacy", "Trust", "Privacy deliberation", "Expected gratifications", 
+                   "Privacy concerns", "Like vs. like & dislike", "Like & dislike vs. control", 
+                   "Like vs. control")
+        ),
+      Outcome   = recode(Outcome, !!!outcomes),
+      Estimate  = if_else(Outcome == "words", round(estimate), estimate),
+      LL        = if_else(Outcome == "words", round(conf.low), conf.low),
+      UL        = if_else(Outcome == "words", round(conf.high), conf.high)
+      ) %>%
+    select(Outcome, Predictor, Estimate, LL, UL)
+}
+
+tab_slopes <-
+  label_slopes(
+    list(
+      slopes_wrds_pricon,
+      slopes_wrds_grats,
+      slopes_wrds_pridel,
+      slopes_wrds_trust,
+      slopes_wrds_selfeff,
+      slopes_wrds_ctrl,
+      slopes_wrds_lkdslk,
+      slopes_pricon_ctrl,
+      slopes_pricon_lkdslk,
+      slopes_grats_ctrl,
+      slopes_grats_lkdslk,
+      slopes_pridel_ctrl,
+      slopes_pridel_lkdslk,
+      slopes_trust_ctrl,
+      slopes_trust_lkdslk,
+      slopes_selfeff_ctrl,
+      slopes_selfeff_lkdslk
+      )
+    )
+
+tab_slopes %>%
+  kable(digits = 2) %>%
+  kable_styling("striped") %>%
+  scroll_box(width = "100%")
 ```
 
-People who reported no self-efficacy at all communicated on average `r wrds_selfeff_1 %>% round(0) %>% abs()` words, whereas people with very high self-efficacy communicated on average `r wrds_selfeff_7 %>% round(0)` words.
+## Self-Disclosure
 
-## Visualization words
+How do the results change if we look at self-disclosure instead of communication only?
+Self-disclosure is the standardized index described above (see Measures): 0 means that someone did not disclose anything (did not comment), and all other values are expressed in standard deviations.
+Predictors are again standardized, so effects can be read as the change in self-disclosure (in SD) for a one-SD increase in the predictor.
 
-```{r}
-fig_results <- 
+### Experimental Factors
+
+We first compare likes and likes plus dislikes to the control condition.
+
+```{r sd-ctrl}
+run_hurdles(
+  object = d,
+  name = "self_disc_ctrl",
+  outcome = "self_disc",
+  predictor = "version",
+  y_lab = "Self-disclosure",
+  x_lab = "Experimental conditions"
+  )
+```
+
+```{r sd-ctrl-effects}
+sd_m_ctrl   <- fig_self_disc_ctrl$data %>% filter(effect1__ == "Control") %>% pull(estimate__)
+sd_m_lk     <- fig_self_disc_ctrl$data %>% filter(effect1__ == "Like") %>% pull(estimate__)
+sd_m_lkdslk <- fig_self_disc_ctrl$data %>% filter(effect1__ == "Like & dislike") %>% pull(estimate__)
+
+effect_lk_prcnt_sd    <- round((sd_m_ctrl - sd_m_lk) / sd_m_ctrl * 100)
+effect_lkdlk_prcnt_sd <- round((sd_m_ctrl - sd_m_lkdslk) / sd_m_ctrl * 100)
+```
+
+Compared to the control condition, self-disclosure was `r effect_lkdlk_prcnt_sd` percent lower on the platform with likes and dislikes, and `r effect_lk_prcnt_sd` percent lower on the platform with likes only.
+
+We then compare the likes and control conditions to the likes plus dislikes condition.
+
+```{r sd-lkdslk}
+run_hurdles(
+  object = d,
+  name = "self_disc_lkdslk",
+  outcome = "self_disc",
+  predictor = "version_lkdslk",
+  y_lab = "Self-disclosure",
+  x_lab = "Experimental conditions"
+  )
+```
+
+### Privacy Concerns
+
+```{r sd-pricon}
+run_hurdles(
+  object = d,
+  name = "self_disc_pricon",
+  outcome = "self_disc",
+  predictor = "pri_con_z",
+  y_lab = "Self-disclosure",
+  x_lab = "Privacy concerns (z)"
+  )
+```
+
+Let's explore how self-disclosure differs between people with the lowest and the highest privacy concerns in our sample.
+
+```{r sd-pricon-effects}
+self_disc_pricon_1 <- fig_self_disc_pricon$data %>% filter(pri_con_z == min(pri_con_z)) %>% pull(estimate__) %>% round(2)
+self_disc_pricon_7 <- fig_self_disc_pricon$data %>% filter(pri_con_z == max(pri_con_z)) %>% pull(estimate__) %>% round(2)
+```
+
+People with the lowest privacy concerns had a predicted self-disclosure of `r self_disc_pricon_1` SD, whereas people with the highest privacy concerns had `r self_disc_pricon_7` SD.
+
+### Gratifications General
+
+```{r sd-grats}
+run_hurdles(
+  object = d,
+  name = "self_disc_grats",
+  outcome = "self_disc",
+  predictor = "grats_gen_z",
+  y_lab = "Self-disclosure",
+  x_lab = "Gratifications general (z)"
+  )
+```
+
+### Privacy Deliberation
+
+```{r sd-pridel}
+run_hurdles(
+  object = d,
+  name = "self_disc_pridel",
+  outcome = "self_disc",
+  predictor = "pri_del_z",
+  y_lab = "Self-disclosure",
+  x_lab = "Privacy deliberation (z)"
+  )
+```
+
+### Trust General
+
+```{r sd-trust}
+run_hurdles(
+  object = d,
+  name = "self_disc_trust",
+  outcome = "self_disc",
+  predictor = "trust_gen_z",
+  y_lab = "Self-disclosure",
+  x_lab = "Trust general (z)"
+  )
+```
+
+### Self-Efficacy
+
+```{r sd-selfeff}
+run_hurdles(
+  object = d,
+  name = "self_disc_selfeff",
+  outcome = "self_disc",
+  predictor = "self_eff_z",
+  y_lab = "Self-disclosure",
+  x_lab = "Self-efficacy (z)"
+  )
+```
+
+Let's inspect how self-disclosure changes with a one-SD increase in self-efficacy, once starting from the lowest level of self-efficacy in our sample, and once ending at the highest level.
+
+```{r sd-selfeff-effects}
+effects_self_disc_selfeff_12 <-
+  avg_comparisons(
+    fit_self_disc_selfeff,
+    variables = list(self_eff_z = 1),
+    newdata = datagrid(self_eff_z = self_eff_lo, grid_type = "counterfactual")
+    ) %>%
+  pull(estimate) %>%
+  round(2)
+
+effects_self_disc_selfeff_67 <-
+  avg_comparisons(
+    fit_self_disc_selfeff,
+    variables = list(self_eff_z = 1),
+    newdata = datagrid(self_eff_z = self_eff_hi, grid_type = "counterfactual")
+    ) %>%
+  pull(estimate) %>%
+  round(2)
+```
+
+Starting from the lowest level of self-efficacy, an increase of one standard deviation was associated with an increase in self-disclosure of `r effects_self_disc_selfeff_12` SD; ending at the highest level, the same increase was associated with an increase of `r effects_self_disc_selfeff_67` SD.
+
+Let's explore how self-disclosure differs between people with the lowest and the highest self-efficacy in our sample.
+
+```{r sd-selfeff-minmax}
+self_disc_selfeff_1 <- fig_self_disc_selfeff$data %>% filter(self_eff_z == min(self_eff_z)) %>% pull(estimate__) %>% round(2)
+self_disc_selfeff_7 <- fig_self_disc_selfeff$data %>% filter(self_eff_z == max(self_eff_z)) %>% pull(estimate__) %>% round(2)
+```
+
+People with the lowest self-efficacy had a predicted self-disclosure of `r self_disc_selfeff_1` SD, whereas people with the highest self-efficacy had `r self_disc_selfeff_7` SD.
+
+### Visualization
+
+```{r sd-fig}
+fig_results_self_disc <-
   plot_grid(
-    fig_wrds_pricon, 
-    fig_wrds_grats, 
-    fig_wrds_pridel, 
-    fig_wrds_trust, 
-    fig_wrds_selfeff,
-    fig_wrds_ctrl
-    ) %T>% 
+    fig_self_disc_pricon,
+    fig_self_disc_grats,
+    fig_self_disc_pridel,
+    fig_self_disc_trust,
+    fig_self_disc_selfeff,
+    fig_self_disc_ctrl
+    ) %T>%
   print()
 
-# Save visualizations
-ggsave("figures/results/effects.pdf")
-ggsave("figures/results/effects.png")
+ggsave("figures/results/self_disc/effects.pdf", fig_results_self_disc, width = 8, height = 8)
+ggsave("figures/results/self_disc/effects.png", fig_results_self_disc, width = 8, height = 8)
 ```
 
-## Table words
+### Table
 
-Make table of slopes
-
-```{r}
-tab_slopes <- 
-  rbind(
-    slopes_wrds_pricon,
-    slopes_wrds_grats,
-    slopes_wrds_pridel,
-    slopes_wrds_trust,
-    slopes_wrds_selfeff,
-    slopes_wrds_ctrl,
-    slopes_wrds_lkdslk,
-    slopes_pricon_ctrl,
-    slopes_pricon_lkdslk,
-    slopes_grats_ctrl,
-    slopes_grats_lkdslk,
-    slopes_pridel_ctrl,
-    slopes_pridel_lkdslk,
-    slopes_trust_ctrl,
-    slopes_trust_lkdslk,
-    slopes_selfeff_ctrl,
-    slopes_selfeff_lkdslk
-    ) %>% 
-  as.data.frame() %>% 
-  mutate(
-    term = ifelse(
-      .$contrast == "Like - Control", 
-      "Like - Control",
-      ifelse(
-        .$contrast == "Like & dislike - Control", 
-        "Like & dislike - Control",
-        ifelse(
-          .$contrast == "Like - Like & dislike", 
-          "Like - Like & dislike", 
-          .$term
-          )
-        )
-      ),
-    Predictor = recode(
-      term, 
-      "Like - Control" = "Like vs. control",
-      "Like & dislike - Control" = "Like & dislike vs. control",
-      "Like - Like & dislike" = "Like vs. like & dislike",
-      "pri_con_fs" = "Privacy concerns",
-      "pri_del_fs" = "Privacy deliberation",
-      "grats_gen_fs" = "Expected gratifications",
-      "trust_gen_fs" = "Trust",
-      "self_eff_fs" = "Self-efficacy"
-    ),
-    Outcome = recode(
-      Outcome,
-      "pri_con_fs" = "Privacy concerns",
-      "pri_del_fs" = "Privacy deliberation",
-      "grats_gen_fs" = "Expected gratifications",
-      "trust_gen_fs" = "Trust",
-      "self_eff_fs" = "Self-efficacy"
-    )
-  ) %>% 
-  filter(
-    Predictor %in% c(
-      "Like vs. control",
-      "Like & dislike vs. control",
-      "Like vs. like & dislike",
-      "Privacy concerns",
-      "Privacy deliberation",
-      "Expected gratifications",
-      "Trust",
-      "Self-efficacy")
-  ) %>% 
-  mutate(
-    Predictor = factor(Predictor, levels = c(
-      "Self-efficacy",
-      "Trust",
-      "Privacy deliberation",
-      "Expected gratifications",
-      "Privacy concerns",
-      "Like vs. like & dislike",
-      "Like & dislike vs. control",
-      "Like vs. control"
+```{r sd-tab}
+tab_slopes_self_disc <-
+  label_slopes(
+    list(
+      slopes_self_disc_pricon,
+      slopes_self_disc_grats,
+      slopes_self_disc_pridel,
+      slopes_self_disc_trust,
+      slopes_self_disc_selfeff,
+      slopes_self_disc_ctrl,
+      slopes_self_disc_lkdslk
       )
-    ),
-    Estimate = 
-      ifelse(
-        Outcome == "words",
-        round(estimate),
-        estimate
-      ),
-    LL = 
-      ifelse(
-        Outcome == "words",
-        round(conf.low),
-        conf.low
-      ),
-    UL = 
-      ifelse(
-        Outcome == "words",
-        round(conf.high),
-        conf.high
-      ),
-  ) %>% 
-  select(
-    Outcome,
-    Predictor, 
-    Estimate,
-    LL, 
-    UL
-    ) 
+    )
 
-tab_slopes %>% 
-  kable() %>% 
+tab_slopes_self_disc %>%
+  kable(digits = 2) %>%
+  kable_styling("striped") %>%
+  scroll_box(width = "100%")
+```
+
+## Communication vs. Self-Disclosure
+
+The average marginal effects for both outcomes side by side: communication (number of words) and self-disclosure (in SD).
+
+```{r tab-wide}
+tab_slopes_wide <- 
+  bind_rows(
+    tab_slopes %>% filter(Outcome == "words"),
+    tab_slopes_self_disc %>% filter(Outcome == "self_disc")
+    ) %>% 
+  pivot_wider(
+    names_from = Outcome, 
+    values_from = c(Estimate, LL, UL), 
+    names_glue = "{Outcome}_{.value}"
+    ) %>% 
+  select(
+    Predictor, 
+    words_Estimate, words_LL, words_UL, 
+    self_disc_Estimate, self_disc_LL, self_disc_UL
+    ) %>% 
+  arrange(desc(Predictor))
+
+tab_slopes_wide %>% 
+  kable(
+    digits = 2,
+    col.names = c("Predictor", "Estimate", "LL", "UL", "Estimate", "LL", "UL")
+    ) %>% 
+  add_header_above(c(" " = 1, "Communication (words)" = 3, "Self-disclosure (SD)" = 3)) %>% 
+  kable_styling("striped") %>% 
+  scroll_box(width = "100%")
+```
+
+All average marginal effects in one long table, including the effects of the popularity cues on the privacy calculus variables.
+
+```{r tab-all}
+tab_slopes_all <- 
+  bind_rows(tab_slopes, tab_slopes_self_disc) %>% 
+  mutate(Outcome = factor(Outcome, levels = unique(c("words", "self_disc", Outcome)))) %>% 
+  arrange(Outcome, desc(Predictor))
+
+tab_slopes_all %>% 
+  kable(digits = 2) %>% 
   kable_styling("striped") %>% 
   scroll_box(width = "100%")
 ```
 
 ```{r SaveData, include=F, cache=F}
 write.csv(
-  d, 
-  file = "data/data.csv", 
+  d,
+  file = "data/data.csv",
   row.names = FALSE
   )
 
@@ -2337,8 +2656,9 @@ save.image(
 save(
   d_raw, d_all, d_fs, d
   , fit_baseline, fit_prereg
-  , des_pridel
+  , des_pridel, des_selfdisc
   , facval_tab
+  , fig_cor
   , n_comments, n_desired, n_posts, n_speeding, n_time, n_words
   , n_users, n_final
   , resp_pattern, n_resp_pattern
@@ -2347,583 +2667,11 @@ save(
   , n_matched, n_final, age_final_m, male_final_m, college_final_m, words_m
   , r_sesoi, r_sensitive, power_achieved
   , no_words_perc
-  , effects_wrds_selfeff_12, effects_wrds_selfeff_67, effect_lkdlk_prcnt
+  , effects_wrds_selfeff_12, effects_wrds_selfeff_67, effect_lkdlk_prcnt, effect_lk_prcnt
   , wrds_pricon_7, wrds_pricon_1, wrds_selfeff_1, wrds_selfeff_7
-  , tab_slopes
-  , file = "data/workspace.RData"
-)
-```
-
-### Self Disclosure
-
-#### Self Disclosure Variable
-```{r}
-# self-disclosure index: quantity (log words), breadth and depth, z-standardized and averaged
-# LLM codes per comment from 07a, aggregated per person
-comments_coded <- read_csv("data/comments/final/comments_classified_final.csv")
-
-sd_components <- 
-  comments_coded %>% 
-  filter(!is.na(id)) %>% 
-  group_by(id) %>% 
-  summarise(
-    breadth_mean = mean(breadth, na.rm = TRUE),   # 0-3, mean topics per comment
-    depth_mean   = mean(depth, na.rm = TRUE)      # 0-3, mean of pers_exp + emot_exp + pol_opin
-    )
-
-d <- 
-  d %>% 
-  select(-any_of(c("breadth_mean", "depth_mean"))) %>% 
-  left_join(sd_components, by = "id") %>% 
-  mutate(
-    # non-commenters disclosed nothing
-    across(c(breadth_mean, depth_mean), ~ replace_na(.x, 0)),
-    z_quantity = as.numeric(scale(words_log)),
-    z_breadth  = as.numeric(scale(breadth_mean)),
-    z_depth    = as.numeric(scale(depth_mean)),
-    self_disc_raw = (z_quantity + z_breadth + z_depth) / 3,
-    # shift so that "no disclosure" is exactly 0 (needed for the hurdle model)
-    self_disc = self_disc_raw - self_disc_raw[words == 0][1],
-    self_disc = if_else(words == 0, 0, self_disc)
-    )
-
-# checks everything
-stopifnot(all(d$self_disc[d$words > 0] > 0))
-table(d$self_disc == 0, d$words == 0)
-summary(d$self_disc[d$words > 0])
-cor(d %>% filter(words > 0) %>% select(words_log, breadth_mean, depth_mean))
-```
-
-```{r}
-   run_hurdles(object = d, name = "self_disc_ctrl", outcome = "self_disc",
-               predictor = "version", y_lab = "Self Disclosure", x_lab = "Experimental conditions")
-   run_hurdles(object = d, name = "self_disc_lkdslk", outcome = "self_disc",
-               predictor = "version_lkdslk", y_lab = "Self Disclosure", x_lab = "Experimental conditions")
-```
-
-#### Privacy Concerns
-
-```{r}
-run_hurdles(
-  object = d, 
-  name = "self_disc_pricon",
-  outcome = "self_disc", 
-  predictor = "pri_con_fs",
-  y_lab = "Self Disclosure",
-  x_lab = "Privacy concerns"
-  )
-```
-
-Let's explore how self-disclosure differs for people very much concerned versus not concerned at all.
-
-```{r}
-self_disc_pricon_1 <- fig_self_disc_pricon$data %>% filter(pri_con_fs == min(pri_con_fs)) %>% pull(estimate__) %>% round(2)
-self_disc_pricon_7 <- fig_self_disc_pricon$data %>% filter(pri_con_fs == max(pri_con_fs)) %>% pull(estimate__) %>% round(2)
-```
-
-People who were not concerned at all had a predicted self-disclosure index of `r self_disc_pricon_1`, whereas people strongly concerned had `r self_disc_pricon_7`.
-
-#### Gratifications General
-
-```{r}
-run_hurdles(
-  object = d, 
-  name = "self_disc_grats",
-  outcome = "self_disc", 
-  predictor = "grats_gen_fs",
-  y_lab = "Self Disclosure",
-  x_lab = "Gratifications general"
-  )
-```
-
-#### Privacy Deliberation
-
-```{r}
-run_hurdles(
-  object = d, 
-  name = "self_disc_pridel",
-  outcome = "self_disc", 
-  predictor = "pri_del_fs",
-  y_lab = "Self Disclosure",
-  x_lab = "Privacy deliberation"
-  )
-```
-
-#### Trust General
-
-```{r}
-run_hurdles(
-  object = d, 
-  name = "self_disc_trust",
-  outcome = "self_disc", 
-  predictor = "trust_gen_fs",
-  y_lab = "Self Disclosure",
-  x_lab = "Trust general"
-  )
-```
-
-#### Self-Efficacy
-
-```{r}
-run_hurdles(
-  object = d, 
-  name = "self_disc_selfeff",
-  outcome = "self_disc", 
-  predictor = "self_eff_fs",
-  y_lab = "Self Disclosure",
-  x_lab = "Self-efficacy"
-  )
-```
-
-The effects is markedly exponential. Let's inspect the changes across values in self-efficacy.
-
-```{r}
-effects_self_disc_selfeff <- 
-  slopes(
-    fit_self_disc_selfeff, 
-    newdata = datagrid(
-      self_eff_fs = c(1, 6, 7)
-      ), 
-   grid_type = "counterfactual"
-    ) %>%
-  filter(
-    term == "self_eff_fs"
-    ) %T>%
-  print()
-
-# let's extract effects for 1 -> 2
-effects_self_disc_selfeff_12 <- effects_self_disc_selfeff %>% filter(self_eff_fs == 1) %>% pull(estimate) %>% mean() %>% round(2)
-
-# let's extract effects for 6 -> 7
-effects_self_disc_selfeff_67 <- effects_self_disc_selfeff %>% filter(self_eff_fs == 6) %>% pull(estimate) %>% mean() %>% round(2)
-
-```
-
-Whereas a change in self-efficacy from 1 to 2 increased the self-disclosure index by `r effects_self_disc_selfeff_12` points, a change from 6 to 7 increased it by `r effects_self_disc_selfeff_67` points.
-
-Let's explore how self-disclosure differs for people very much self-efficacious versus not self-efficacious at all.
-
-```{r}
-# let's extract effects for 1
-self_disc_selfeff_1 <- 
-  fig_self_disc_selfeff$data %>% 
-  filter(self_eff_fs == min(self_eff_fs)) %>% 
-  pull(estimate__) %>% 
-  round(2)
-
-# let's extract effects for 7
-self_disc_selfeff_7 <- 
-  fig_self_disc_selfeff$data %>% 
-  filter(self_eff_fs == max(self_eff_fs)) %>% 
-  pull(estimate__) %>% 
-  round(2)
-```
-
-People who reported no self-efficacy at all had a predicted self-disclosure index of `r self_disc_selfeff_1`, whereas people with very high self-efficacy had `r self_disc_selfeff_7`.
-
-## Visualization Self-Disclosure
-
-```{r}
-fig_results <- 
-  plot_grid(
-    fig_self_disc_pricon, 
-    fig_self_disc_grats, 
-    fig_self_disc_pridel, 
-    fig_self_disc_trust, 
-    fig_self_disc_selfeff,
-    fig_self_disc_ctrl
-    ) %T>% 
-  print()
-
-# Save visualizations
-ggsave("figures/results/self_disc/effects.pdf")
-ggsave("figures/results/self_disc/effects.png")
-```
-
-## Table Self-Disclosure
-
-Make table of slopes
-
-```{r}
-tab_slopes_self_disc <- 
-  rbind(
-    slopes_self_disc_pricon,
-    slopes_self_disc_grats,
-    slopes_self_disc_pridel,
-    slopes_self_disc_trust,
-    slopes_self_disc_selfeff,
-    slopes_self_disc_ctrl,
-    slopes_self_disc_lkdslk,
-    slopes_pricon_ctrl,
-    slopes_pricon_lkdslk,
-    slopes_grats_ctrl,
-    slopes_grats_lkdslk,
-    slopes_pridel_ctrl,
-    slopes_pridel_lkdslk,
-    slopes_trust_ctrl,
-    slopes_trust_lkdslk,
-    slopes_selfeff_ctrl,
-    slopes_selfeff_lkdslk
-    ) %>% 
-  as.data.frame() %>% 
-  mutate(
-    term = ifelse(
-      .$contrast == "Like - Control", 
-      "Like - Control",
-      ifelse(
-        .$contrast == "Like & dislike - Control", 
-        "Like & dislike - Control",
-        ifelse(
-          .$contrast == "Like - Like & dislike", 
-          "Like - Like & dislike", 
-          .$term
-          )
-        )
-      ),
-    Predictor = recode(
-      term, 
-      "Like - Control" = "Like vs. control",
-      "Like & dislike - Control" = "Like & dislike vs. control",
-      "Like - Like & dislike" = "Like vs. like & dislike",
-      "pri_con_fs" = "Privacy concerns",
-      "pri_del_fs" = "Privacy deliberation",
-      "grats_gen_fs" = "Expected gratifications",
-      "trust_gen_fs" = "Trust",
-      "self_eff_fs" = "Self-efficacy"
-    ),
-    Outcome = recode(
-      Outcome,
-      "pri_con_fs" = "Privacy concerns",
-      "pri_del_fs" = "Privacy deliberation",
-      "grats_gen_fs" = "Expected gratifications",
-      "trust_gen_fs" = "Trust",
-      "self_eff_fs" = "Self-efficacy"
-    )
-  ) %>% 
-  filter(
-    Predictor %in% c(
-      "Like vs. control",
-      "Like & dislike vs. control",
-      "Like vs. like & dislike",
-      "Privacy concerns",
-      "Privacy deliberation",
-      "Expected gratifications",
-      "Trust",
-      "Self-efficacy")
-  ) %>% 
-  mutate(
-    Predictor = factor(Predictor, levels = c(
-      "Self-efficacy",
-      "Trust",
-      "Privacy deliberation",
-      "Expected gratifications",
-      "Privacy concerns",
-      "Like vs. like & dislike",
-      "Like & dislike vs. control",
-      "Like vs. control"
-      )
-    ),
-    Estimate = 
-      ifelse(
-        Outcome == "words",
-        round(estimate),
-        estimate
-      ),
-    LL = 
-      ifelse(
-        Outcome == "words",
-        round(conf.low),
-        conf.low
-      ),
-    UL = 
-      ifelse(
-        Outcome == "words",
-        round(conf.high),
-        conf.high
-      ),
-  ) %>% 
-  select(
-    Outcome,
-    Predictor, 
-    Estimate,
-    LL, 
-    UL
-    ) 
-
-tab_slopes_self_disc %>% 
-  kable() %>% 
-  kable_styling("striped") %>% 
-  scroll_box(width = "100%")
-```
-
-#### Self Disclosure without quantity
-
-```{r}
-# self-disclosure without quantity: breadth + depth only (both 0-3, so no standardization needed)
-d <- d %>% 
-  mutate(self_disc2 = breadth_mean + depth_mean)   # 0-6, non-commenters = 0
-
-# check: commenters whose comments contain no topic and no disclosure also get 0
-d %>% 
-  summarise(
-    non_commenters        = sum(words == 0),
-    commenters            = sum(words > 0),
-    commenters_with_zero  = sum(words > 0 & self_disc2 == 0)
-  )
-summary(d$self_disc2[d$self_disc2 > 0])
-```
-
-
-```{r}
-# hurdle models for self_disc2, same specification as above
-predictors_sd2 <- c(
-  pricon  = "pri_con_fs",
-  grats   = "grats_gen_fs",
-  pridel  = "pri_del_fs",
-  trust   = "trust_gen_fs",
-  selfeff = "self_eff_fs",
-  ctrl    = "version",
-  lkdslk  = "version_lkdslk"
-)
-x_labs_sd2 <- c(
-  pricon = "Privacy concerns", grats = "Gratifications general", pridel = "Privacy deliberation",
-  trust = "Trust general", selfeff = "Self-efficacy",
-  ctrl = "Experimental conditions", lkdslk = "Experimental conditions"
-)
-
-for (k in names(predictors_sd2)) {
-  run_hurdles(
-    object    = d,
-    name      = paste0("self_disc2_", k),
-    outcome   = "self_disc2",
-    predictor = predictors_sd2[[k]],
-    y_lab     = "Self-disclosure (breadth + depth)",
-    x_lab     = x_labs_sd2[[k]]
-  )
-}
-```
-
-
-```{r}
-model_labels <- c(
-  pricon = "Privacy concerns", grats = "Expected gratifications", pridel = "Privacy deliberation",
-  trust = "Trust", selfeff = "Self-efficacy", ctrl = "Conditions", lkdslk = "Conditions"
-)
-
-tab_slopes_self_disc2 <- 
-  map_dfr(names(predictors_sd2), function(k) {
-    get(paste0("slopes_self_disc2_", k)) %>% 
-      as_tibble() %>% 
-      filter(term == predictors_sd2[[k]]) %>%                       # only the predictor, no controls
-      mutate(Predictor = if_else(contrast == "dY/dX", model_labels[[k]], contrast))
-  }) %>% 
-  distinct(Predictor, .keep_all = TRUE) %>% 
-  mutate(sig = if_else(conf.low > 0 | conf.high < 0, "*", "")) %>% 
-  select(Predictor, Estimate = estimate, LL = conf.low, UL = conf.high, sig)
-
-tab_slopes_self_disc2 %>% 
-  filter(Predictor != "Control - Like & dislike") %>%   # duplicate of "Like & dislike - Control"
-  kable(digits = 2) %>% 
-  kable_styling("striped")
-```
-
-
-```{r}
-# decompose the effects: hurdle part vs. conditional (gamma) part
-get_parts <- function(k) {
-  fit  <- get(paste0("fit_self_disc2_", k))
-  pred <- predictors_sd2[[k]]
-  part <- function(dpar, label) {
-    avg_slopes(fit, variables = pred, dpar = dpar) %>%
-      as_tibble() %>%
-      mutate(part = label,
-             Predictor = if_else(contrast == "dY/dX", model_labels[[k]], contrast))
-  }
-  bind_rows(
-    avg_slopes(fit, variables = pred) %>% as_tibble() %>%
-      mutate(part = "Combined",
-             Predictor = if_else(contrast == "dY/dX", model_labels[[k]], contrast)),
-    part("hu", "Hurdle") %>%                                   # hu = P(zero) -> flip to P(disclosing)
-      mutate(across(c(estimate, conf.low, conf.high), ~ -.x)) %>%
-      rename(conf.low = conf.high, conf.high = conf.low),
-    part("mu", "Conditional")
-  )
-}
-
-tab_parts_sd2 <- 
-  map_dfr(c("pricon", "grats", "pridel", "trust", "selfeff", "ctrl", "lkdslk"), get_parts) %>%
-  filter(Predictor != "Control - Like & dislike") %>%          # duplicate of Like & dislike - Control
-  distinct(Predictor, part, .keep_all = TRUE) %>%
-  mutate(
-    sig  = if_else(conf.low > 0 | conf.high < 0, "*", ""),
-    cell = sprintf("%.2f [%.2f, %.2f]%s", estimate, conf.low, conf.high, sig)
-  ) %>%
-  select(Predictor, part, cell) %>%
-  pivot_wider(names_from = part, values_from = cell) %>%
-  select(Predictor, Combined, Hurdle, Conditional)
-
-tab_parts_sd2 %>%
-  kable(caption = "Average marginal effects on self-disclosure (breadth + depth). Hurdle = change in probability of disclosing anything; Conditional = change in self-disclosure among those who disclose. * = 95% interval excludes zero.") %>%
-  kable_styling("striped")
-```
-
-
-```{r}
-#| fig-height: 5
-#| fig-width: 10
-
-# numeric version of the decomposition for plotting
-parts_num_sd2 <- 
-  map_dfr(c("pricon", "grats", "pridel", "trust", "selfeff", "ctrl", "lkdslk"), get_parts) %>%
-  filter(Predictor != "Control - Like & dislike") %>%
-  distinct(Predictor, part, .keep_all = TRUE) %>%
-  mutate(
-    part      = factor(part, levels = c("Combined", "Hurdle", "Conditional"),
-                       labels = c("Combined", "Hurdle\n(probability of disclosing)", 
-                                  "Conditional\n(among those who disclose)")),
-    Predictor = factor(Predictor, levels = rev(c(
-      "Privacy concerns", "Expected gratifications", "Privacy deliberation", "Trust", 
-      "Self-efficacy", "Like - Control", "Like & dislike - Control", "Like - Like & dislike"))),
-    sig       = conf.low > 0 | conf.high < 0
-  )
-
-fig_parts_sd2 <- 
-  ggplot(parts_num_sd2, aes(x = estimate, y = Predictor)) +
-  geom_vline(xintercept = 0, linetype = "dashed", colour = "grey50") +
-  geom_pointrange(aes(xmin = conf.low, xmax = conf.high, shape = sig), size = .4) +
-  scale_shape_manual(values = c(`TRUE` = 16, `FALSE` = 1), guide = "none") +
-  facet_wrap(~ part, scales = "free_x") +
-  theme_bw() +
-  labs(x = "Average marginal effect (95% credible interval)", y = NULL,
-       caption = "Filled points: interval excludes zero. Outcome: self-disclosure (breadth + depth, 0-6).")
-
-print(fig_parts_sd2)
-ggsave("figures/results/self_disc/effects_sd2_parts.png", fig_parts_sd2, width = 10, height = 5)
-```
-
-
-#### Descriptives
-
-Correlations of the self-disclosure components among commenters.
-
-```{r}
-d %>% 
-  filter(words > 0) %>% 
-  select(words_log, breadth_mean, depth_mean, self_disc2) %>% 
-  cor() %>% 
-  round(2)
-```
-
-#### Experimental Factors
-
-```{r}
-sd2_m_ctrl   <- fig_self_disc2_ctrl$data %>% filter(effect1__ == "Control")        %>% pull(estimate__)
-sd2_m_lk     <- fig_self_disc2_ctrl$data %>% filter(effect1__ == "Like")           %>% pull(estimate__)
-sd2_m_lkdslk <- fig_self_disc2_ctrl$data %>% filter(effect1__ == "Like & dislike") %>% pull(estimate__)
-
-effect_lk_prcnt_sd2    <- round((sd2_m_ctrl - sd2_m_lk)     / sd2_m_ctrl * 100)
-effect_lkdlk_prcnt_sd2 <- round((sd2_m_ctrl - sd2_m_lkdslk) / sd2_m_ctrl * 100)
-```
-
-Compared to the control condition, self-disclosure (breadth + depth) was `r effect_lkdlk_prcnt_sd2` percent lower on the platform with likes and dislikes and `r effect_lk_prcnt_sd2` percent lower on the platform with likes only.
-
-#### Privacy Concerns
-
-```{r}
-sd2_pricon_1 <- fig_self_disc2_pricon$data %>% filter(pri_con_fs == min(pri_con_fs)) %>% pull(estimate__) %>% round(2)
-sd2_pricon_7 <- fig_self_disc2_pricon$data %>% filter(pri_con_fs == max(pri_con_fs)) %>% pull(estimate__) %>% round(2)
-```
-
-People who were not concerned at all had a predicted self-disclosure (breadth + depth) of `r sd2_pricon_1`, whereas people strongly concerned had `r sd2_pricon_7`.
-
-#### Self-Efficacy
-
-```{r}
-effects_sd2_selfeff <- 
-  slopes(
-    fit_self_disc2_selfeff,
-    newdata   = datagrid(self_eff_fs = c(1, 6, 7)),
-    grid_type = "counterfactual"
-  ) %>% 
-  filter(term == "self_eff_fs") %T>% 
-  print()
-
-effects_sd2_selfeff_12 <- effects_sd2_selfeff %>% filter(self_eff_fs == 1) %>% pull(estimate) %>% mean() %>% round(2)
-effects_sd2_selfeff_67 <- effects_sd2_selfeff %>% filter(self_eff_fs == 6) %>% pull(estimate) %>% mean() %>% round(2)
-
-sd2_selfeff_1 <- fig_self_disc2_selfeff$data %>% filter(self_eff_fs == min(self_eff_fs)) %>% pull(estimate__) %>% round(2)
-sd2_selfeff_7 <- fig_self_disc2_selfeff$data %>% filter(self_eff_fs == max(self_eff_fs)) %>% pull(estimate__) %>% round(2)
-```
-
-Whereas a change in self-efficacy from 1 to 2 increased self-disclosure (breadth + depth) by `r effects_sd2_selfeff_12` points, a change from 6 to 7 increased it by `r effects_sd2_selfeff_67` points. People who reported no self-efficacy at all had a predicted self-disclosure of `r sd2_selfeff_1`, whereas people with very high self-efficacy had `r sd2_selfeff_7`.
-
-## Visualization Self-Disclosure 2
-
-```{r}
-fig_results_sd2 <- 
-  plot_grid(
-    fig_self_disc2_pricon, fig_self_disc2_grats, fig_self_disc2_pridel,
-    fig_self_disc2_trust,  fig_self_disc2_selfeff, fig_self_disc2_ctrl
-  ) %T>% 
-  print()
-
-ggsave("figures/results/self_disc/effects_sd2.pdf", fig_results_sd2, width = 8, height = 8)
-ggsave("figures/results/self_disc/effects_sd2.png", fig_results_sd2, width = 8, height = 8)
-```
-
-## Table Self-Disclosure 2
-
-```{r}
-tab_slopes_self_disc2_long <- 
-  tab_slopes_self_disc2 %>% 
-  filter(Predictor != "Control - Like & dislike") %>% 
-  mutate(
-    Outcome   = "self_disc2",
-    Predictor = recode(Predictor,
-      "Like & dislike - Control" = "Like & dislike vs. control",
-      "Like - Control"           = "Like vs. control",
-      "Like - Like & dislike"    = "Like vs. like & dislike")
-  ) %>% 
-  select(Outcome, Predictor, Estimate, LL, UL)
-
-tab_slopes_self_disc2_long %>% 
-  kable(digits = 2) %>% 
-  kable_styling("striped") %>% 
-  scroll_box(width = "100%")
-```
-
-```{r SaveData2, include=F, cache=F}
-write.csv(
-  d, 
-  file = "data/data.csv", 
-  row.names = FALSE
-  )
-
-save.image(
-  file = "data/workspace_full.RData"
-)
-
-save(
-  d_raw, d_all, d_fs, d
-  , fit_baseline, fit_prereg
-  , des_pridel
-  , facval_tab
-  , n_comments, n_desired, n_posts, n_speeding, n_time, n_words
-  , n_users, n_final
-  , resp_pattern, n_resp_pattern
-  , n_t1, age_t1_m, male_t1_m, college_t1_m
-  , n_t2, age_t2_m, male_t2_m, college_t2_m
-  , n_matched, n_final, age_final_m, male_final_m, college_final_m, words_m
-  , r_sesoi, r_sensitive, power_achieved
-  , no_words_perc
-  , effects_wrds_selfeff_12, effects_wrds_selfeff_67, effect_lkdlk_prcnt
-  , wrds_pricon_7, wrds_pricon_1, wrds_selfeff_1, wrds_selfeff_7
-  , tab_slopes
-  , tab_slopes_self_disc
-  , tab_slopes_self_disc2, tab_slopes_self_disc2_long, tab_parts_sd2
-  , effect_lkdlk_prcnt_sd2, effect_lk_prcnt_sd2
-  , sd2_pricon_1, sd2_pricon_7, sd2_selfeff_1, sd2_selfeff_7
-  , effects_sd2_selfeff_12, effects_sd2_selfeff_67
+  , effects_self_disc_selfeff_12, effects_self_disc_selfeff_67, effect_lkdlk_prcnt_sd, effect_lk_prcnt_sd
+  , self_disc_pricon_1, self_disc_pricon_7, self_disc_selfeff_1, self_disc_selfeff_7
+  , tab_slopes, tab_slopes_self_disc, tab_slopes_all, tab_slopes_wide
   , file = "data/workspace.RData"
 )
 ```

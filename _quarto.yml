@@ -59,20 +59,28 @@ website:
         - href: 01b_manuscript_rev.qmd
           text: "Likes or Dislikes, Gratifications or Concerns?"
         - text: "---"
-        - section: "Supplementary Material"
+        - section: "Items"
           contents:
             - 02_items.rmd
+        - section: "Analysis"
+          contents:
+            - 05a_analyses.qmd
+        - section: "Content Analysis"
+          contents:
+            - appendix_codebook.qmd
             - 03_coding_manual_icr.qmd
             - 04a_pretrained_classification.ipynb
             - 04b_llm_classification.ipynb
+            - appendix_model_comparison.qmd
+            - appendix_system_prompt.qmd
             - 04c_final_classification.ipynb
-            - 05a_analyses.qmd
+        - section: "Additional Analysis"
+          contents:
             - 05b_analyses_additional.qmd
             - 05c_analyses_revision.qmd
+        - section: "Open Science"
+          contents:
             - appendix_prereg_note.qmd
-            - appendix_codebook.qmd
-            - appendix_system_prompt.qmd
-            - appendix_model_comparison.qmd
 
     - title: "First Submission"
       style: "floating"

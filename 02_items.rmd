@@ -20,7 +20,7 @@ All items were measured on a 7-point scale with Likert-response format. Answers 
  - +2   agree
  - +3   strongly agree
 
-All items were translated from German.
+All items were translated from German. Items marked as reversed were recoded before the analyses.
 
 # Privacy concerns
 
@@ -28,7 +28,7 @@ Using the participation platform I had ...
 
  1. ... concerns about what happens to my data.
  2. ... concerns about disclosing information about myself.
- 3. ... no concerns.
+ 3. ... no concerns. (reversed)
  4. ... concerns that others could discover my real identity (i.e. my last and first name).
  5. ... concerns that information about myself could fall into wrong hands.
  6. ... concerns that others could discover what my political views are.
@@ -120,5 +120,5 @@ _Information System_
  2. I felt technically competent enough to write a comment.
  3. In terms of the topic, I felt competent enough to express my opinion.
  4. I found the topic too difficult to express my opinion.
- 5. I found it complicated to write a comment.
- 6. I was overburdened to write a comment.
+ 5. I found it complicated to write a comment. (reversed)
+ 6. I was overburdened to write a comment. (reversed)

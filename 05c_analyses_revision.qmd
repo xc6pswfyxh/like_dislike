@@ -1,5 +1,5 @@
 ---
-title: "Moderation Analyses"
+title: "Robustness and Moderation Analyses"
 
 format:
   html:
@@ -13,6 +13,13 @@ execute:
   message: false
   echo: true
 ---
+
+In what follows, we report frequentist robustness checks of the main analyses (see [Analyses](05a_analyses.html)), which are easier to interpret than the Bayesian hurdle models: logistic regressions for whether participants communicated at all, and OLS (log-transformed outcome) and negative binomial regressions (raw outcome) for how much they communicated, each also testing whether the effects are moderated by the popularity cues.
+Two outcomes are analyzed: communication (number of words) and communication including reactions (number of words + 2 × number of likes/dislikes given).
+Note that the latter is not the self-disclosure index reported in the main analyses.
+
+# Setup
+
 ```{r}
 #| label: load and install pkgs
 
@@ -43,7 +50,7 @@ data <- readr::read_csv("data/data.csv")
 ```
 
 ```{r}
-#| label: self-eff index
+#| label: construct means
 data <- data |> 
     rowwise() |> 
     mutate(
@@ -64,7 +71,7 @@ data <- data |>
 ```
 
 
-# Engagement in Communication (Logistic Regression Models)
+# Whether Participants Communicated (Logistic Regressions)
 
 ```{r}
 #| label: lr models communicated
@@ -158,7 +165,7 @@ htmlreg(
 ```
 
 
-# Amount of Communication (OLS/NegBin Regression Models)
+# How Much Participants Communicated (OLS and Negative Binomial Regressions)
 
 ## Self-Efficacy
 
@@ -209,7 +216,7 @@ words_nb3_se <- glm.nb(words ~
 
 ```{r}
 #| label: tbl-selfeffmodels
-#| tbl-cap: "Effect of Self-Efficacy on Communication Conditional on Affordandces"
+#| tbl-cap: "Effect of Self-Efficacy on Communication Conditional on Affordances"
 #| tbl-cap-location: bottom
 #| results: asis
 #| output: true
@@ -232,7 +239,7 @@ htmlreg(
     "Model 6"
     ),
   custom.header = list(
-  "DV: Words Log" = 1:3, "DV: Words" = 4:6
+  "DV: Words (log)" = 1:3, "DV: Words" = 4:6
   ),
   custom.coef.map = list(
     "self_eff" = "Self-Efficacy",
@@ -309,7 +316,7 @@ sd_nb3_se <- glm.nb(self_dis ~
 
 ```{r}
 #| label: tbl-selfdisc-models-se
-#| tbl-cap: "Effect of Self-Efficacy on Communication (incl. Reactions) Conditional on Affordandces"
+#| tbl-cap: "Effect of Self-Efficacy on Communication (incl. Reactions) Conditional on Affordances"
 #| tbl-cap-location: bottom
 #| results: asis
 #| output: true
@@ -332,7 +339,7 @@ htmlreg(
     "Model 12"
     ),
   custom.header = list(
-  "DV: Self-Disclosure Log" = 1:3, "DV: Self-Disclosure" = 4:6
+  "DV: Words + Reactions (log)" = 1:3, "DV: Words + Reactions" = 4:6
   ),
   custom.coef.map = list(
     "self_eff" = "Self-Efficacy",
@@ -406,7 +413,7 @@ marg_A <- plot_slopes(
   labs(
     x = "Affordance",
     y = "Marginal Effect of Self-Efficacy",
-    caption = "Model 3"
+    caption = "Model 3 (words, log)"
   )
 
 # Model B: marginal effect of self-eff conditional on affordance, dv self-disclosure log
@@ -431,7 +438,7 @@ marg_B <- plot_slopes(
   labs(
     x = "Affordance",
     y = "Marginal Effect of Self-Efficacy",
-    caption = "Model 9"
+    caption = "Model 9 (words + reactions, log)"
   )
 
 
@@ -448,7 +455,7 @@ marg_all
 ```{r}
 #| label: fig-predplot
 #| include: true
-#| fig-cap: "Predicted Probabilities for Words Log (Model 3)"
+#| fig-cap: "Predicted Values for Words (log), Model 3"
 #| fig-cap-location: bottom
 
 data_pred <- model.frame(words_log_ols3_se)
@@ -472,7 +479,7 @@ pred |>
   theme(
     legend.position = "bottom",
   ) +
-  labs(x = "Self-Efficacy", y = "Predicted Words Log",
+  labs(x = "Self-Efficacy", y = "Predicted Words (log)",
     color = "Affordance")
 ```
 
@@ -523,7 +530,7 @@ words_nb3_pc <- glm.nb(words ~
 
 ```{r}
 #| label: tbl-privconmodels
-#| tbl-cap: "Effect of Privacy Concerns on Communication Conditional on Affordandces"
+#| tbl-cap: "Effect of Privacy Concerns on Communication Conditional on Affordances"
 #| tbl-cap-location: bottom
 #| results: asis
 #| output: true
@@ -546,7 +553,7 @@ htmlreg(
     "Model 18"
     ),
   custom.header = list(
-  "DV: Words Log" = 1:3, "DV: Words" = 4:6
+  "DV: Words (log)" = 1:3, "DV: Words" = 4:6
   ),
   custom.coef.map = list(
     "pri_con" = "Privacy Concerns",
@@ -622,7 +629,7 @@ sd_nb3_pc <- glm.nb(self_dis ~
 
 ```{r}
 #| label: tbl-selfdisc-models-pc
-#| tbl-cap: "Effect of Privacy Concerns on Communication (incl. Reactions) Conditional on Affordandces"
+#| tbl-cap: "Effect of Privacy Concerns on Communication (incl. Reactions) Conditional on Affordances"
 #| tbl-cap-location: bottom
 #| results: asis
 #| output: true
@@ -645,7 +652,7 @@ htmlreg(
     "Model 24"
     ),
   custom.header = list(
-  "DV: Self-Disclosure Log" = 1:3, "DV: Self-Disclosure" = 4:6
+  "DV: Words + Reactions (log)" = 1:3, "DV: Words + Reactions" = 4:6
   ),
   custom.coef.map = list(
     "pri_con" = "Privacy Concerns",
@@ -723,7 +730,7 @@ words_nb3_gg <- glm.nb(words ~
 
 ```{r}
 #| label: tbl-gratsgenmodels
-#| tbl-cap: "Effect of Gratifications on Communication Conditional on Affordandces"
+#| tbl-cap: "Effect of Gratifications on Communication Conditional on Affordances"
 #| tbl-cap-location: bottom
 #| results: asis
 #| output: true
@@ -746,7 +753,7 @@ htmlreg(
     "Model 30"
     ),
   custom.header = list(
-  "DV: Words Log" = 1:3, "DV: Words" = 4:6
+  "DV: Words (log)" = 1:3, "DV: Words" = 4:6
   ),
   custom.coef.map = list(
     "grats_gen" = "Gratifications",
@@ -822,7 +829,7 @@ sd_nb3_gg <- glm.nb(self_dis ~
 
 ```{r}
 #| label: tbl-selfdisc-models-gg
-#| tbl-cap: "Effect of Gratifications on Communication (incl. Reactions) Conditional on Affordandces"
+#| tbl-cap: "Effect of Gratifications on Communication (incl. Reactions) Conditional on Affordances"
 #| tbl-cap-location: bottom
 #| results: asis
 #| output: true
@@ -845,7 +852,7 @@ htmlreg(
     "Model 36"
     ),
   custom.header = list(
-  "DV: Self-Disclosure Log" = 1:3, "DV: Self-Disclosure" = 4:6
+  "DV: Words + Reactions (log)" = 1:3, "DV: Words + Reactions" = 4:6
   ),
   custom.coef.map = list(
     "grats_gen" = "Gratifications",
@@ -877,7 +884,7 @@ htmlreg(
 
 
 
-## Privacy Deliberations
+## Privacy Deliberation
 
 ```{r}
 #| label: pri_delib models (dv words)
@@ -925,7 +932,7 @@ words_nb3_pd <- glm.nb(words ~
 
 ```{r}
 #| label: tbl-privdelibmodels
-#| tbl-cap: "Effect of Privacy Deliberations on Communication Conditional on Affordandces"
+#| tbl-cap: "Effect of Privacy Deliberations on Communication Conditional on Affordances"
 #| tbl-cap-location: bottom
 #| results: asis
 #| output: true
@@ -948,7 +955,7 @@ htmlreg(
     "Model 42"
     ),
   custom.header = list(
-  "DV: Words Log" = 1:3, "DV: Words" = 4:6
+  "DV: Words (log)" = 1:3, "DV: Words" = 4:6
   ),
   custom.coef.map = list(
     "pri_delib" = "Privacy Deliberations",
@@ -1025,7 +1032,7 @@ sd_nb3_pd <- glm.nb(self_dis ~
 
 ```{r}
 #| label: tbl-selfdisc-models-pd
-#| tbl-cap: "Effect of Privacy Deliberations on Communication (incl. Reactions) Conditional on Affordandces"
+#| tbl-cap: "Effect of Privacy Deliberations on Communication (incl. Reactions) Conditional on Affordances"
 #| tbl-cap-location: bottom
 #| results: asis
 #| output: true
@@ -1048,7 +1055,7 @@ htmlreg(
     "Model 48"
     ),
   custom.header = list(
-  "DV: Self-Disclosure Log" = 1:3, "DV: Self-Disclosure" = 4:6
+  "DV: Words + Reactions (log)" = 1:3, "DV: Words + Reactions" = 4:6
   ),
   custom.coef.map = list(
     "pri_delib" = "Privacy Deliberations",
@@ -1128,7 +1135,7 @@ words_nb3_ts <- glm.nb(words ~
 
 ```{r}
 #| label: tbl-trustspecbmodels
-#| tbl-cap: "Effect of Trust on Communication Conditional on Affordandces"
+#| tbl-cap: "Effect of Trust on Communication Conditional on Affordances"
 #| tbl-cap-location: bottom
 #| results: asis
 #| output: true
@@ -1151,7 +1158,7 @@ htmlreg(
     "Model 54"
     ),
   custom.header = list(
-  "DV: Words Log" = 1:3, "DV: Words" = 4:6
+  "DV: Words (log)" = 1:3, "DV: Words" = 4:6
   ),
   custom.coef.map = list(
     "trust_spec" = "Trust",
@@ -1229,7 +1236,7 @@ sd_nb3_ts <- glm.nb(self_dis ~
 
 ```{r}
 #| label: tbl-selfdisc-models-ts
-#| tbl-cap: "Effect of Trust on Communication (incl. Reactions) Conditional on Affordandces"
+#| tbl-cap: "Effect of Trust on Communication (incl. Reactions) Conditional on Affordances"
 #| tbl-cap-location: bottom
 #| results: asis
 #| output: true
@@ -1252,7 +1259,7 @@ htmlreg(
     "Model 60"
     ),
   custom.header = list(
-  "DV: Self-Disclosure Log" = 1:3, "DV: Self-Disclosure" = 4:6
+  "DV: Words + Reactions (log)" = 1:3, "DV: Words + Reactions" = 4:6
   ),
   custom.coef.map = list(
     "trust_spec" = "Trust",
@@ -1282,7 +1289,7 @@ htmlreg(
 )
 ```
 
-## Full Specifications
+## All Predictors Combined
 
 ```{r}
 #| label: models all constructs dv words
@@ -1356,7 +1363,7 @@ words_nb3_comp <- glm.nb(words ~
 
 ```{r}
 #| label: tbl-words-models-complete
-#| tbl-cap: "Effect of Privacy Calculus on Communication Conditional on Affordandces"
+#| tbl-cap: "Effect of Privacy Calculus on Communication Conditional on Affordances"
 #| tbl-cap-location: bottom
 #| results: asis
 #| output: true
@@ -1379,7 +1386,7 @@ htmlreg(
     "Model 66"
     ),
   custom.header = list(
-  "DV: Words Log" = 1:3, "DV: Words" = 4:6
+  "DV: Words (log)" = 1:3, "DV: Words" = 4:6
   ),
   custom.coef.map = list(
     "versionLike" = "Like Button",
@@ -1486,7 +1493,7 @@ sd_nb3_comp <- glm.nb(self_dis ~
 
 ```{r}
 #| label: tbl-selfdisc-models-complete
-#| tbl-cap: "Effect of Privacy Calculus on Communication (incl. Reactions) Conditional on Affordandces"
+#| tbl-cap: "Effect of Privacy Calculus on Communication (incl. Reactions) Conditional on Affordances"
 #| tbl-cap-location: bottom
 #| results: asis
 #| output: true
@@ -1509,7 +1516,7 @@ htmlreg(
     "Model 72"
     ),
   custom.header = list(
-  "DV: Self-Disclosure Log" = 1:3, "DV: Self-Disclosure" = 4:6
+  "DV: Words + Reactions (log)" = 1:3, "DV: Words + Reactions" = 4:6
   ),
   custom.coef.map = list(
     "versionLike" = "Like Button",

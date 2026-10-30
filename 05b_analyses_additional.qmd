@@ -28,9 +28,9 @@ options(
   )
 ```
 
-In what follows, please find the results of additional analyses. These include models, results without covariates, results with all participants (hence, including those removed due to speeding).
+In what follows, please find the results of additional analyses: variance inflation factors, the originally preregistered model, results without covariates, and results with all participants (hence, including those removed due to speeding or response patterns). For the main analyses, see [Analyses](05a_analyses.html).
 
-# Set-up
+# Setup
 
 Load packages.
 
@@ -68,10 +68,10 @@ Load data.
 
 ```{r Data-Wrangling, cache=F}
 # load workspace
-load("data/workspace.rdata")
+load("data/workspace.RData")
 ```
 
-# VIF
+# Variance Inflation Factors
 
 In what follows, you can find estimations of variance inflation factors, which help gauge multicollinearity. Generally, values above 5 or even 10 are considered problematic. However, these are only rules of thumb, and multicollinearity can occur with lower values. Indeed, although the values reported below are not above 5, they are increased, suggesting that multicollinearity might be at play here, which the preregistered analyses also confirm.
 
@@ -188,9 +188,9 @@ tibble("Gratifications" = vif_grats_gen, "Trust Specific" = vif_trust_spec, "Pri
   kable_styling("striped")
 ```
 
-# Preregistered model
+# Originally Preregistered Model
 
-I first analyze the model how it was initially preregistered.
+We first analyze the model as it was initially preregistered.
 
 ```{r}
 model <- "
@@ -215,11 +215,11 @@ summary(fit_prereg, fit = TRUE, std = TRUE)
 rsquare_fit_prereg <- inspect(fit_prereg, what = "rsquare")["self_dis_log"]
 ```
 
-First, first is not optimal but still okaish, `r td::fit_txt(fit_prereg)`. The result show the same problems of multicollinearity, namely that trust reduces online communication (despite a positive and more "plausible" postive bivariate relation).
+Model fit is not optimal but still acceptable, `r td::fit_txt(fit_prereg)`. The results show the same problems of multicollinearity, namely that trust reduces online communication (despite a positive and more plausible bivariate relation).
 
-# Results without covariates
+# Results Without Covariates
 
-As stated in our preregistration, we also provide the results without controlling for covariates. Note were here now using the updated preregistered model as reported in the paper.
+As stated in our preregistration, we also provide the results without controlling for covariates. Note that we are now using the updated preregistered model as reported in the paper.
 
 ```{r}
 model <- "
@@ -238,12 +238,12 @@ words_log ~ a1*pri_con + b1*grats_gen + c1*pri_delib + d1*self_eff + e1*trust_sp
 "
 fit_prereg <- sem(model, data = d, estimator = "MLR", missing = "ML")
 summary(fit_prereg, fit = TRUE, std = TRUE)
-rsquare_fit_prereg <- inspect(fit_prereg, what = "rsquare")["comm"]
+rsquare_fit_prereg <- inspect(fit_prereg, what = "rsquare")["words_log"]
 ```
 
-The results remain virtually the same (see page [analyses](analyses.html)).
+The results remain virtually the same (see [Analyses](05a_analyses.html)).
 
-# Results including removed participants
+# Results Including Removed Participants
 
 As stated in the preregistration, we also report the analyses including the deleted participants.
 
@@ -322,4 +322,4 @@ fit_prereg <- sem(model, data = d_all, estimator = "MLR", missing = "ML")
 summary(fit_prereg, fit = TRUE, std = TRUE)
 ```
 
-First, we can see that the analyses now include the data of 590 participants. However, when comparing the analyses, we see that results don't differ in any meaningful way.
+The analyses now include the data of `r nrow(d_all)` participants. When comparing the analyses, the results do not differ in any meaningful way.
