@@ -47,3 +47,4 @@ _site/*.RDataTmp
 
 /.luarc.json
 
+assets/cache/
