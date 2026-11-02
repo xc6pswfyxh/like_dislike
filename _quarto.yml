@@ -54,6 +54,7 @@ website:
 
     - title: "Manuscript Revised"
       style: "floating"
+      collapse-level: 1
       search: true
       contents:
         - href: 01b_manuscript_rev.qmd

@@ -389,7 +389,35 @@ The data were analyzed and modeled using `r r_citations`.
 
 # Results
 
-In this section, we present our findings. First, we provide a descriptive analysis of the bivariate relationships of the variables under analysis. Second, we use regression analysis and Bayesian hurdle modelling to study the relationship between the privacy calculus varia-bles, as well as platform affordances (i.e., the availability of like and dislike buttons), and two dependent variables: (1) communication quantity and (2) communication quality.
+In this section, we present our findings. First, we describe the bivariate relations between all variables. Second, we use Bayesian hurdle models to analyze how the privacy calculus variables and the popularity cues (i.e., the availability of like and dislike buttons) are related to two outcomes: (1) communication, measured as the number of words participants wrote (preregistered), and (2) self-disclosure, an index of the quantity, breadth, and depth of what participants disclosed (exploratory).
+
+```{r helpers}
+# estimate / LL / UL from the combined results table (tab_slopes_all, created in 05a)
+est <- function(outcome, pred, col = "Estimate", digits = 2) {
+  tab_slopes_all %>% 
+    filter(Outcome == outcome, Predictor == pred) %>% 
+    pull(col) %>% 
+    round(digits)
+}
+
+# "95% HDI [LL, UL]"
+hdi <- function(outcome, pred, digits = 2) {
+  paste0(
+    "95% HDI [", est(outcome, pred, "LL", digits), 
+    ", ", est(outcome, pred, "UL", digits), "]"
+  )
+}
+
+# "_b_ = -0.13, 95% HDI [-0.25, -0.02]"
+report <- function(outcome, pred, digits = 2) {
+  paste0("_b_ = ", est(outcome, pred, "Estimate", digits), ", ", hdi(outcome, pred, digits))
+}
+
+# zero-order correlation between two variables of d_fs
+r_fs <- function(x, y) {
+  cor(d_fs[[x]], d_fs[[y]], use = "pairwise.complete.obs") %>% round(2)
+}
+```
 
 ## Descriptive Analyses
 
@@ -408,75 +436,95 @@ knitr::include_graphics("figures/results/cor_plot.png")
 
 We first plotted the bivariate relations of all variables (see Figure \@ref(fig:corrplot)). 
 All variables referring to the privacy calculus demonstrated the expected bivariate relationships with communication. 
-For example, people who were more concerned about their privacy disclosed less information (_r_ `#r parameterestimates(fit_baseline, standardized = TRUE) %>%  filter(op == "~~" & lhs == "pri_con" & rhs == "Words_log") %>% select(std.all) %>%  my_round("std_txt")`). 
+For example, people who were more concerned about their privacy communicated less (_r_ = `r r_fs("Privacy\nconcerns", "Words (log)")`). 
+Self-disclosure was strongly related to communication (_r_ = `r r_fs("Words (log)", "Self-\ndisclosure")`) and showed similar bivariate relations with the privacy calculus variables.
 The mean of privacy deliberation was _m_ = `r des_pridel$m %>% round(2)`. 
 Altogether, `r pridel_active %>% round(0)`% of participants reported having actively deliberated about their privacy. 
 
 The bivariate results showed two large correlations: 
-specific trust and gratifications (_r_ = `# r d_fs %>% select("Trust\nspecific", "Gratifications") %>% cor %>% .[2, 1] %>% my_round("std")`), and
-privacy concerns and privacy deliberation (_r_ = `#r d_fs %>% select("Privacy\nconcerns", "Privacy\ndeliberation") %>% cor %>% .[2, 1] %>% my_round("std")`).[^prereg]
+specific trust and general gratifications (_r_ = `r r_fs("Trust\nspecific", "Gratifications\ngeneral")`), and
+privacy concerns and privacy deliberation (_r_ = `r r_fs("Privacy\nconcerns", "Privacy\ndeliberation")`).[^prereg]
 
-[^prereg]: In the preregistered analysis, all six variables were analyzed within a single multiple regres-sion. We report problems of occurring multicollinearity on the supplementary material on the [companion website](https://xc6pswfyxh.github.io/like_dislike/appendix_prereg_note.html).
+[^prereg]: In the preregistered analysis, all six variables were analyzed within a single multiple regression. We report problems of occurring multicollinearity on the supplementary material on the [companion website](https://xc6pswfyxh.github.io/like_dislike/appendix_prereg_note.html).
 
+## Communication
 
-## Bayesian Hurdle Model
-
-**UPDATE FOR SELF-DISCLOSURE**
-**Only show hurdle model for Self-Disc**
-
-```{r slopes, fig.cap="Exploratory analyses. Plotted are the average marginal effects of the Bayesian hurdle models. The difference between the control and the like \\& disklike group is significant.", fig.height=8, fig.width=8, out.width=".9\\textwidth", fig.align='center', fig.pos = "!h", warning=F}
+```{r slopes, fig.cap="Bayesian hurdle models for communication (number of words). Plotted are the predicted values across the range of each predictor (privacy calculus variables standardized). The difference between the control and the like \\& dislike group is significant.", fig.height=8, fig.width=8, out.width=".9\\textwidth", fig.align='center', fig.pos = "!h", warning=F}
 knitr::include_graphics("figures/results/effects.png")
 ```
 
+### Privacy Calculus
 
-Hypotheses 1, 2, 3, and 4 were all confirmed:
-If participants were more concerned about their privacy, they communicated less: 
-With each one-point increase in privacy concerns, on average they wrote `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Privacy concerns") %>%  select(Estimate) %>% round(0) %>% abs()` words less (95% HDI: `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Privacy concerns") %>%  select(LL) %>% round(0)`, `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Privacy concerns") %>%  select(UL) %>% round(0)`).
-If participants expected more gratifications from participation, they communicated more actively: 
-If their expected gratifications increased by one point, on average they also wrote `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Expected gratifications") %>%  select(Estimate) %>% round(0)` words more (95% HDI: `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Expected gratifications") %>%  select(LL) %>% round(0)`, `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Expected gratifications") %>%  select(UL) %>% round(0)`). 
-If participants felt more self-efficacious, they communicated much more:
-If their self-efficacy increased by one point, on average they wrote `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Self-efficacy") %>%  select(Estimate) %>% round(0)` words more (95% HDI: `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Self-efficacy") %>%  select(LL) %>% round(0)`, `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Self-efficacy") %>%  select(UL) %>% round(0)`).
+Hypotheses 1, 2, 3, and 4 were all supported.
+Participants who were more concerned about their privacy communicated less: 
+With each one-SD increase in privacy concerns, participants wrote on average `r est("words", "Privacy concerns", digits = 0) %>% abs()` fewer words (`r hdi("words", "Privacy concerns", digits = 0)`).
+Participants who expected more gratifications from participation communicated more: 
+With each one-SD increase in expected gratifications, they wrote on average `r est("words", "Expected gratifications", digits = 0)` more words (`r hdi("words", "Expected gratifications", digits = 0)`). 
+Participants who felt more self-efficacious communicated much more:
+With each one-SD increase in self-efficacy, they wrote on average `r est("words", "Self-efficacy", digits = 0)` more words (`r hdi("words", "Self-efficacy", digits = 0)`).
 The relationship was curvilinear, almost exponential: 
-Whereas a change in self-efficacy from 1 to 2 only led to an "increase" of `r effects_wrds_selfeff_12 %>% round(0) %>% as.integer() %>% english()` words, a change from 6 to 7 led to an increase of `r effects_wrds_selfeff_67 %>% as.integer() %>%  round(0)` words.
-Next, if participants experienced more trust in the website, provider, and other users, they also communicated much more:
-If their trust increased by one point, on average they wrote `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Trust") %>%  select(Estimate) %>% as.integer() %>% round(0)` words more (95% HDI: `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Trust") %>%  select(LL) %>% round(0)`, `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Trust") %>%  select(UL) %>% round(0)`).
-The first research question asked how privacy deliberation would affect communication.
-The results revealed a negative effect. 
+Starting from the lowest level of self-efficacy, an increase of one SD was associated with only `r effects_wrds_selfeff_12 %>% round(0) %>% as.integer() %>% english()` more words, whereas ending at the highest level, the same increase was associated with `r effects_wrds_selfeff_67 %>% round(0) %>% as.integer()` more words.
+Participants who placed more trust in the website, the provider, and the other users also communicated more:
+With each one-SD increase in trust, they wrote on average `r est("words", "Trust", digits = 0)` more words (`r hdi("words", "Trust", digits = 0)`).
+The first research question asked how privacy deliberation would be related to communication.
+The results revealed a negative relation: 
 The more people deliberated about their privacy, the less they communicated.
-If privacy deliberation increased by one point, on average they wrote `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Privacy deliberation") %>%  select(Estimate) %>% round(0) %>% abs()` words less (95% HDI: `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Privacy deliberation") %>%  select(LL) %>% round(0)`, `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Privacy deliberation") %>%  select(UL) %>% round(0)`).
+With each one-SD increase in privacy deliberation, participants wrote on average `r est("words", "Privacy deliberation", digits = 0) %>% abs()` fewer words (`r hdi("words", "Privacy deliberation", digits = 0)`).
 
-```{r results, include=T}
-apa_table(tab_slopes %>% 
-            filter(Outcome == "words") %>% 
-            select(-Outcome)
-          , stub_indents = list(
-            "Privacy calculus" = c(1:5),
-            "Experimental conditions" = c(6:8)
-          ) 
-          , col_spanners = list(
-            "95\\% HDI" = c(3, 4)
-          )
-          , font_size = "footnotesize"
-          , caption = "Unstandardized average marginal effects of the privacy calculus variables and the popularity cues on communication. Credibility intervals excluding zero are considered significant."
-          , note = "HDI = highest density interval, LL = lower level; UL = upper level. Reported are average marginal effects."
-          #, align = c("m{10cm}", rep("r", 3)) # use this for compiling pdfs
-          , align = c("l", rep("r", 3)) # use this for compiling htmls
-          , digits = 0
-          )
-```
+### Popularity Cues
 
 We then reanalyzed the effects of the popularity cues on communication.
-Compared to the control condition without popularity cues, implementing like buttons did not significantly affect communication, _b_ = `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Like vs. control") %>%  select(Estimate) %>% round(0)` (95% HDI: `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Like vs. control") %>%  select(LL) %>% round(0)`, `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Like vs. control") %>%  select(UL) %>% round(0)`).
-But note that the effect was very close to not including the zero.
+Compared to the control condition without popularity cues, implementing like buttons did not significantly affect communication (`r report("words", "Like vs. control", digits = 0)`), although the interval only narrowly included zero.
 However, implementing both like and dislike buttons affected communication.
 Contrary to what we expected, implementing both popularity cues _decreased_ communication.
-If both popularity cues were present, participants on average wrote `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Like & dislike vs. control") %>%  select(Estimate) %>% round(0) %>% abs()` words less (95% HDI: `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Like & dislike vs. control") %>%  select(LL) %>% round(0)`, `r tab_slopes %>% filter(Outcome == "words" & Predictor == "Like & dislike vs. control") %>%  select(UL) %>% round(0)`).
-The introduction of both cues hence led to a `r effect_lkdlk_prcnt %>% as.integer()`% decline in number of words that were written.
+If both popularity cues were present, participants wrote on average `r est("words", "Like & dislike vs. control", digits = 0) %>% abs()` fewer words (`r hdi("words", "Like & dislike vs. control", digits = 0)`).
+The introduction of both cues hence led to a `r effect_lkdlk_prcnt %>% as.integer()`% decline in the number of words that were written.
 
-Finally, we tested if the effect of the popularity cues on communication were potentially mediated by the privacy calculus variables. 
+Finally, we tested if the effect of the popularity cues on communication was potentially mediated by the privacy calculus variables. 
 Results showed that this was not the case. 
-The popularity cues only affected behavior but not the predictors of the privacy calculus model (see [online companion website](https://XMtRa.github.io/like_dislike)).
+The popularity cues only affected behavior but not the predictors of the privacy calculus model (see [online companion website](https://xc6pswfyxh.github.io/like_dislike/05a_analyses.html)).
 The results suggest that the effect was either direct or mediated by other variables not included here [@coenenIndirectEffectOmitted2022].
+
+## Self-Disclosure
+
+In an exploratory step, we analyzed how the results change if we look not only at how much participants communicated, but at how much they disclosed about themselves.
+Self-disclosure combines the quantity (number of words), breadth (number of topics), and depth (personal experiences, emotional expression, and political opinions) of participants' comments [@omarzuDisclosureDecisionModel2000].
+Participants who did not comment have a value of zero; all other values are expressed in standard deviations.
+
+```{r slopes-sd, fig.cap="Bayesian hurdle models for self-disclosure. Plotted are the predicted values across the range of each predictor (privacy calculus variables standardized).", fig.height=8, fig.width=8, out.width=".9\\textwidth", fig.align='center', fig.pos = "!h", warning=F}
+knitr::include_graphics("figures/results/self_disc/effects.png")
+```
+
+### Privacy Calculus
+
+The results for self-disclosure largely mirrored those for communication.
+Participants who were more concerned about their privacy disclosed less (`r report("self_disc", "Privacy concerns")`).
+In contrast to communication, expected gratifications were not significantly related to self-disclosure (`r report("self_disc", "Expected gratifications")`).
+Participants who felt more self-efficacious disclosed more (`r report("self_disc", "Self-efficacy")`).
+Again, this relation was curvilinear: 
+Starting from the lowest level of self-efficacy, an increase of one SD was associated with `r effects_self_disc_selfeff_12` SD more self-disclosure, whereas ending at the highest level, the same increase was associated with `r effects_self_disc_selfeff_67` SD more self-disclosure.
+Participants who placed more trust in the website, the provider, and the other users disclosed more (`r report("self_disc", "Trust")`), and participants who deliberated more about their privacy disclosed less (`r report("self_disc", "Privacy deliberation")`).
+
+### Popularity Cues
+
+Compared to the control condition, implementing like buttons was not related to self-disclosure (`r report("self_disc", "Like vs. control")`).
+In contrast to communication, implementing both like and dislike buttons did not significantly reduce self-disclosure either (`r report("self_disc", "Like & dislike vs. control")`), although self-disclosure was descriptively `r effect_lkdlk_prcnt_sd %>% as.integer()`% lower than in the control condition.
+
+Taken together, the privacy calculus variables were related to self-disclosure in much the same way as to communication, with the exception of expected gratifications.
+The like and dislike buttons, however, primarily reduced how much participants wrote, and less so the breadth and depth of what they disclosed about themselves (see Table \@ref(tab:results-all)).
+
+```{r results-all, include=T}
+apa_table(
+  tab_slopes_wide
+  , col.names = c("Predictor", "Estimate", "LL", "UL", "Estimate", "LL", "UL")
+  , col_spanners = list("Communication (words)" = c(2, 4), "Self-disclosure (SD)" = c(5, 7))
+  , stub_indents = list("Experimental conditions" = 1:3, "Privacy calculus" = 4:8)
+  , font_size = "footnotesize"
+  , caption = "Average marginal effects of the privacy calculus variables (standardized) and the popularity cues on communication and self-disclosure."
+  , note = "HDI = highest density interval; LL = lower limit of the 95\\% HDI; UL = upper limit. Intervals excluding zero are considered significant."
+  , digits = 2
+  )
+```
 
 # Discussion
 
