@@ -6,7 +6,6 @@ shorttitle: "Popularity cues & privacy calculus"
 subtitle: A One-Week Field Experiment Analyzing the Effects of Popularity Cues on the Privacy Calculus in Online Communication
 
 date: today
-wordcount: "XXX"
 
 author:
   - name: "Anonymous Submission"
