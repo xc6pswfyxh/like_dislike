@@ -438,7 +438,7 @@ pridel_active <- select(d, starts_with("PD01")) %>%
 ```
 
 ```{r corrplot, fig.cap="Above diagonal: zero-order correlation matrix; diagonal: density plots for each variable; below diagonal: bivariate scatter plots for zero-order correlations. Solid regression lines represent linear regressions, dotted regression lines represent quadratic regressions. Calculated with the model predicted values for each variable (baseline model).", fig.height=8, fig.width=8, out.width=".9\\textwidth", fig.align='center', fig.pos = "!h", warning=F}
-knitr::include_graphics("figures/results/cor_plot.png")
+knitr::include_graphics("figures/results/cor_plot_first_submission.png")
 ```
 
 I first plotted the bivariate relations of all variables (see Figure \@ref(fig:corrplot)). 
