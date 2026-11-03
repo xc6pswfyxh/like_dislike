@@ -8,7 +8,7 @@ This repository contains the replication materials for the paper "Likes or Disli
 
 > **Design:** Preregistered one-week field experiment (*N* = 590). Participants discussed a political topic on an online platform with like buttons, like and dislike buttons, or no buttons.
 
-All analyses are written as Quarto/R Markdown documents and are also rendered as a website (`docs/`). The data are included in `data/`. The preregistration is on OSF (link in the manuscript).
+All analyses are written as Quarto/R Markdown documents and are also rendered as a website (`docs/`). The data are included in `data/`. The preregistration is on [OSF](https://osf.io/a6tzc/?view_only=5d0ef9fe5e1745878cd1b19273cdf859).
 
 ## Reproduce
 
@@ -26,6 +26,7 @@ install.packages(c("brms", "english", "kableExtra", "knitr", "lavaan",
                    "readr", "readxl", "remotes", "tidycomm", "tidyverse",
                    "writexl"))
 remotes::install_github("crsh/papaja")
+remotes::install_github("tdienlin/td")
 ```
 
 ```bash
