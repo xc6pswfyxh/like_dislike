@@ -22,7 +22,10 @@ pip install -r requirements.txt
 
 ```r
 # R packages
-install.packages(c("..."))  # TODO: fill in
+install.packages(c("brms", "english", "kableExtra", "knitr", "lavaan",
+                   "readr", "readxl", "remotes", "tidycomm", "tidyverse",
+                   "writexl"))
+remotes::install_github("crsh/papaja")
 ```
 
 ```bash
