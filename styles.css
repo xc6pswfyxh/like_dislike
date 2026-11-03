@@ -23,3 +23,18 @@
 .navbar-brand {
   font-size: 1.2rem;
 }
+
+/* Button hover */
+.btn { transition: transform 0.15s ease; }
+.btn:hover { transform: translateY(-2px); }
+
+/* Buttons on the landing page: smaller, one row */
+.btn-row .btn {
+  font-size: 0.78rem;
+  padding: 0.3rem 0.65rem;
+  white-space: nowrap;
+}
+
+/* Button hover */
+.btn { transition: transform 0.15s ease; }
+.btn:hover { transform: translateY(-2px); }

@@ -1,0 +1,11 @@
+---
+title: "The Participation Platform"
+---
+
+## Main page
+
+![Screenshot of the website's landing page (translated into English).](figures/website/website_translated.png)
+
+## Example comments
+
+![Screenshot of example user comments on the website (translated into English).](figures/website/comments_translated.png)

@@ -50,8 +50,7 @@ website:
       contents:
         - href: index.qmd
           text: "Overview"
-        - href: 00_website.rmd
-          text: "Website"
+  
 
     - title: "Manuscript Revised"
       style: "floating"
@@ -83,6 +82,9 @@ website:
         - section: "Open Science"
           contents:
             - appendix_prereg_note.qmd
+        - section: Website Interface
+          contents: 
+            - appendix_website.rmd
 
     - title: "First Submission"
       style: "floating"

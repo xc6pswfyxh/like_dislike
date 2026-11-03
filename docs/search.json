@@ -234,8 +234,9 @@
     "section": "",
     "text": "Main page\n\n\n\nExample comments\n\n\n\n\n\n Back to top",
     "crumbs": [
-      "Home",
-      "Website"
+      "Manuscript Revised",
+      "Website & Example Comments",
+      "Example Interface"
     ]
   },
   {
@@ -987,7 +988,7 @@
     "href": "index.html",
     "title": "Privacy Calculus Experiment",
     "section": "",
-    "text": "On this website, you can find the companion material for the paper Likes or Dislikes, Gratifications or Concerns? A One-Week Field Experiment Analyzing the Effects of Popularity Cues on the Privacy Calculus in Online Communication.\nYou can either read the paper in your browser or download it as pdf. You can also find the detailed code and summaries of the analyses reported in the paper, as well as additional analyses not reported in the paper.\nThis website is produced directly from the project’s github repository. You can download the material and the data, file an issue, or submit a pull request.\n\n\n\n\n Back to top",
+    "text": "This website provides the companion material for the paper Likes or Dislikes, Gratifications or Concerns? A One-Week Field Experiment Analyzing the Effects of Popularity Cues on the Privacy Calculus in Online Communication.\n\n\n\n\n\n\nNote\n\n\n\nPreregistered one-week field experiment (\\(N\\) = 590) with like and dislike buttons on a discussion website.\n\n\n\n   Read online\n   Download PDF\n   Analyses\n   Additional analyses\n   GitHub\n\nThe analyses pages contain the detailed code and summaries of the analyses reported in the paper, as well as additional analyses not reported in the paper. This website is produced directly from the project’s github repository. You can download the material and the data, file an issue, or submit a pull request.\n\n\n\nLanding page of the participation platform (translated into English).\n\n\n\n\n\n Back to top",
     "crumbs": [
       "Home",
       "Overview"
@@ -1086,7 +1087,7 @@
     "href": "01a_manuscript_original.html#data-analysis",
     "title": "Likes or Dislikes, Gratifications or Concerns?",
     "section": "Data Analysis",
-    "text": "Data Analysis\nAs preregistered, all hypotheses and research questions were initially tested using structural equation modeling with latent variables. The influence of the three websites was analyzed using contrast coding. Because the assumption of multivariate normality was violated, I estimated the models using robust maximum likelihood (Kline, 2016). As recommended by Kline (2016), to assess global fit I report the model’s \\(\\chi^2\\), RMSEA (90% CI), CFI, and SRMR. To exclude confounding influences, I controlled all variables for age, gender, and education, which have been shown to affect both privacy concerns and online communication (Masur, 2023; Tifferet, 2019). The preregistered hypotheses were tested with a one-sided significance level of 5%; the research questions were tested with a two-sided 5% significance level using family-wise Bonferroni-Holm correction.\nAs became apparent when analyzing the data, the preregistered analyses had two major problems. First, communication was zero-inflated and gamma distributed. Although it is possible to analyze non-normal data with structural equation modeling, it is recommended to use analyses that model the variables’ distribution, which can be achieved with Bayesian hurdle models (McElreath, 2016). In conclusion, in the exploratory analyses I ran (unstandardized) Bayesian hurdle regression models, modeling the outcome as a zero-inflated gamma distribution using default (flat) priors (chains = 4, iterations = 2,000, warm-up = 1,000, Bürkner, 2017). Second, in the preregistered analyses several variables were combined that are theoretically and empirically closely related, leading to multicollinearity (Vanhove, 2021). As a remedy, I adopted a causal modeling perspective, controlling only for confounders—in this case, age, gender, and education—but not for mediators (Rohrer, 2018). To assess the effects, I tested whether or not the 95% highest density intervals of the average marginal effects excluded zero. If they excluded zero, effects can be considered “significant” (McElreath, 2016). I also plotted the distribution of the effects. For more information on the fitted models, see online companion website.\nThe data were analyzed using R (Version 4.5.2; R Core Team, 2018) and the R-packages brms (Version 2.23.0; Bürkner, 2017, 2018), lavaan (Version 0.6.20; Rosseel, 2012), marginaleffects (Version 0.32.0; Arel-Bundock, 2023), papaja (Version 0.1.5; Aust & Barth, 2018), pwr (Version 1.3.0; Champely, 2018), quanteda (Version 4.5.0; Benoit, 2018), semTools (Version 0.5.7; Jorgensen et al., 2018), and tidyverse (Version 2.0.0; Wickham, 2017).",
+    "text": "Data Analysis\nAs preregistered, all hypotheses and research questions were initially tested using structural equation modeling with latent variables. The influence of the three websites was analyzed using contrast coding. Because the assumption of multivariate normality was violated, I estimated the models using robust maximum likelihood (Kline, 2016). As recommended by Kline (2016), to assess global fit I report the model’s \\(\\chi^2\\), RMSEA (90% CI), CFI, and SRMR. To exclude confounding influences, I controlled all variables for age, gender, and education, which have been shown to affect both privacy concerns and online communication (Masur, 2023; Tifferet, 2019). The preregistered hypotheses were tested with a one-sided significance level of 5%; the research questions were tested with a two-sided 5% significance level using family-wise Bonferroni-Holm correction.\nAs became apparent when analyzing the data, the preregistered analyses had two major problems. First, communication was zero-inflated and gamma distributed. Although it is possible to analyze non-normal data with structural equation modeling, it is recommended to use analyses that model the variables’ distribution, which can be achieved with Bayesian hurdle models (McElreath, 2016). In conclusion, in the exploratory analyses I ran (unstandardized) Bayesian hurdle regression models, modeling the outcome as a zero-inflated gamma distribution using default (flat) priors (chains = 4, iterations = 2,000, warm-up = 1,000, Bürkner, 2017). Second, in the preregistered analyses several variables were combined that are theoretically and empirically closely related, leading to multicollinearity (Vanhove, 2021). As a remedy, I adopted a causal modeling perspective, controlling only for confounders—in this case, age, gender, and education—but not for mediators (Rohrer, 2018). To assess the effects, I tested whether or not the 95% highest density intervals of the average marginal effects excluded zero. If they excluded zero, effects can be considered “significant” (McElreath, 2016). I also plotted the distribution of the effects. For more information on the fitted models, see online companion website.\nThe data were analyzed using R (Version 4.6.1; R Core Team, 2018) and the R-packages brms (Version 2.23.0; Bürkner, 2017, 2018), lavaan (Version 0.7.2; Rosseel, 2012), marginaleffects (Version 0.32.0; Arel-Bundock, 2023), papaja (Version 0.1.5; Aust & Barth, 2018), pwr (Version 1.3.0; Champely, 2018), quanteda (Version 4.5.0; Benoit, 2018), semTools (Version 0.5.9; Jorgensen et al., 2018), and tidyverse (Version 2.0.0; Wickham, 2017).",
     "crumbs": [
       "First Submission",
       "Main Text"
@@ -1108,7 +1109,7 @@
     "href": "01a_manuscript_original.html#preregistered-analyses",
     "title": "Likes or Dislikes, Gratifications or Concerns?",
     "section": "Preregistered Analyses",
-    "text": "Preregistered Analyses\nFirst, as preregistered I ran a structural equation model with multiple predictors. The model fit the data okay, \\(\\chi^2\\)(387) = 934.98, p &lt; .001, CFI = .94, RMSEA = .05, 90% CI [.05, .05], SRMR = .05. With regard to H1, privacy concerns did not significantly predict communication (\\(\\beta\\) &gt; -.01, = -0.01, 95% CI [-0.30, 0.28], = -0.07, = .473; one-sided). Regarding H2, results showed that gratifications did not predict communication (\\(\\beta\\) = -.02, = -0.04, 95% CI [-0.19, 0.12], = -0.45, = .327; one-sided). RQ1 similarly revealed that privacy deliberation did not predict communication (\\(\\beta\\) = -.10, = -0.16, 95% CI [-0.35, 0.02], = -1.76, = .078; two-sided). Regarding H3, however, I found that experiencing self-efficacy predicted communication substantially (\\(\\beta\\) = .37, = 0.77, 95% CI [0.49, 1.05], = 5.42, &lt; .001; one-sided). Concerning H4, results showed that trust was not associated with communication (\\(\\beta\\) = -.03, = -0.09, 95% CI [-0.56, 0.38], = -0.36, = .358; one-sided).\nHowever, these results should be treated with caution. I found several signs of multicollinearity, evidenced by the large standard errors or “wrong” and reversed signs of predictors (Vanhove, 2021). For example, in the bivariate analysis trust had a positive relation with communication, whereas in the multiple regression the effect was negative—which should make us skeptical.\nNext, I analyzed the effects of the popularity cues. It was for example expected that websites with like buttons would lead to more communication, more gratifications, more privacy deliberation, and less privacy concerns. The results showed that the popularity cues had no effects on communication and on the privacy calculus variables.\nFor an illustration, see Figure @ref(fig:popularitycues). For the detailed results of the specific inference tests using contrasts, see companion website.\n\n\n\n\n\nDistributions and means with 95% CIs of the model-predicted values for each variable, separated for the three websites. Control: Website without buttons. Like: Website with like buttons. Like & Dislike: Website with like and dislike buttons. Values from preregistered SEM.",
+    "text": "Preregistered Analyses\nFirst, as preregistered I ran a structural equation model with multiple predictors. The model fit the data okay, \\(\\chi^2\\)(387) = 934.98, &lt; .001, cfi = .94, rmsea = .05, 90% CI [.05, .05], srmr = .05. With regard to H1, privacy concerns did not significantly predict communication (\\(\\beta\\) &gt; -.01, = -0.01, 95% CI [-0.30, 0.28], = -0.07, = .473; one-sided). Regarding H2, results showed that gratifications did not predict communication (\\(\\beta\\) = -.02, = -0.04, 95% CI [-0.19, 0.12], = -0.45, = .327; one-sided). RQ1 similarly revealed that privacy deliberation did not predict communication (\\(\\beta\\) = -.10, = -0.16, 95% CI [-0.35, 0.02], = -1.76, = .078; two-sided). Regarding H3, however, I found that experiencing self-efficacy predicted communication substantially (\\(\\beta\\) = .37, = 0.77, 95% CI [0.49, 1.05], = 5.42, &lt; .001; one-sided). Concerning H4, results showed that trust was not associated with communication (\\(\\beta\\) = -.03, = -0.09, 95% CI [-0.56, 0.38], = -0.36, = .358; one-sided).\nHowever, these results should be treated with caution. I found several signs of multicollinearity, evidenced by the large standard errors or “wrong” and reversed signs of predictors (Vanhove, 2021). For example, in the bivariate analysis trust had a positive relation with communication, whereas in the multiple regression the effect was negative—which should make us skeptical.\nNext, I analyzed the effects of the popularity cues. It was for example expected that websites with like buttons would lead to more communication, more gratifications, more privacy deliberation, and less privacy concerns. The results showed that the popularity cues had no effects on communication and on the privacy calculus variables.\nFor an illustration, see Figure @ref(fig:popularitycues). For the detailed results of the specific inference tests using contrasts, see companion website.\n\n\n\n\n\nDistributions and means with 95% CIs of the model-predicted values for each variable, separated for the three websites. Control: Website without buttons. Like: Website with like buttons. Like & Dislike: Website with like and dislike buttons. Values from preregistered SEM.",
     "crumbs": [
       "First Submission",
       "Main Text"
@@ -1377,6 +1378,42 @@
       "Manuscript Revised",
       "Content Analysis",
       "System Prompt"
+    ]
+  },
+  {
+    "objectID": "appendix_website.html",
+    "href": "appendix_website.html",
+    "title": "The Participation Platform",
+    "section": "",
+    "text": "Screenshot of the website’s landing page (translated into English).",
+    "crumbs": [
+      "Manuscript Revised",
+      "Website Interface",
+      "The Participation Platform"
+    ]
+  },
+  {
+    "objectID": "appendix_website.html#example-comments",
+    "href": "appendix_website.html#example-comments",
+    "title": "The Participation Platform",
+    "section": "Example comments",
+    "text": "Example comments\n\n\n\nScreenshot of example user comments on the website (translated into English).",
+    "crumbs": [
+      "Manuscript Revised",
+      "Website Interface",
+      "The Participation Platform"
+    ]
+  },
+  {
+    "objectID": "appendix_website.html#main-page",
+    "href": "appendix_website.html#main-page",
+    "title": "The Participation Platform",
+    "section": "",
+    "text": "Screenshot of the website’s landing page (translated into English).",
+    "crumbs": [
+      "Manuscript Revised",
+      "Website Interface",
+      "The Participation Platform"
     ]
   }
 ]

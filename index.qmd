@@ -1,10 +1,28 @@
 ---
-title: "Privacy Calculus Experiment"            
+title: "Privacy Calculus Experiment"
+subtitle: "Companion Website"
+title-block-banner: true
+format:
+  html:
+    lightbox: true
 ---
-On this website, you can find the companion material for the paper _Likes or Dislikes, Gratifications or Concerns? A One-Week Field Experiment Analyzing the Effects of Popularity Cues on the Privacy Calculus in Online Communication_. 
 
-You can either read the paper [in your browser](01b_manuscript_rev.qmd) or download it as [pdf](01b_manuscript_rev.pdf). You can also find the detailed code and summaries of the [analyses](05a_analyses.qmd) reported in the paper, as well as [additional analyses](05b_analyses_additional.qmd) not reported in the paper. 
-    
-This website is produced directly from the project's [github repository](https://github.com/XMtRa/like_dislike/tree/main). You can download the material and the data, file an issue, or submit a pull request.
+This website provides the companion material for the paper *Likes or Dislikes, Gratifications or Concerns? A One-Week Field Experiment Analyzing the Effects of Popularity Cues on the Privacy Calculus in Online Communication*.
 
-![](figures/website/website_translated.png)
+::: {.callout-note icon="false"}
+Preregistered one-week field experiment ($N$ = 590) with like and dislike buttons on a discussion website.
+:::
+
+```{=html}
+<div style="display:flex; flex-wrap:nowrap; justify-content:center; gap:6px; margin-bottom:1.5rem;">
+  <a class="btn btn-primary btn-sm rounded-pill shadow-sm" style="font-size:0.78rem; padding:0.3rem 0.65rem; white-space:nowrap;" href="01b_manuscript_rev.html"><i class="bi bi-file-earmark-text"></i> Read online</a>
+  <a class="btn btn-danger btn-sm rounded-pill shadow-sm" style="font-size:0.78rem; padding:0.3rem 0.65rem; white-space:nowrap;" href="01b_manuscript_rev.pdf"><i class="bi bi-file-earmark-pdf"></i> Download PDF</a>
+  <a class="btn btn-secondary btn-sm rounded-pill shadow-sm" style="font-size:0.78rem; padding:0.3rem 0.65rem; white-space:nowrap;" href="05a_analyses.html"><i class="bi bi-bar-chart-line"></i> Analyses</a>
+  <a class="btn btn-secondary btn-sm rounded-pill shadow-sm" style="font-size:0.78rem; padding:0.3rem 0.65rem; white-space:nowrap;" href="05b_analyses_additional.html"><i class="bi bi-plus-circle"></i> Additional analyses</a>
+  <a class="btn btn-dark btn-sm rounded-pill shadow-sm" style="font-size:0.78rem; padding:0.3rem 0.65rem; white-space:nowrap;" href="https://github.com/XMtRa/like_dislike/tree/main"><i class="bi bi-github"></i> GitHub</a>
+</div>
+```
+
+The analyses pages contain the detailed code and summaries of the analyses reported in the paper, as well as additional analyses not reported in the paper. This website is produced directly from the project's [github repository](https://github.com/XMtRa/like_dislike/tree/main). You can download the material and the data, file an issue, or submit a pull request.
+
+![Landing page of the participation platform (translated into English).](figures/website/website_translated.png)
