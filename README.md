@@ -1,17 +1,58 @@
-On this repository, you can find the data, analysis script, and a reproducible manuscript of the paper _How Do Like and Dislike Buttons Affect Communication? A Privacy Calculus Approach to Understanding Self-Disclosure Online in a One-Week Field Experiment_. 
+![R](https://img.shields.io/badge/R-4.x-276DC3?style=flat&logo=r&logoColor=white)
+![Python](https://img.shields.io/badge/python-3.10+-blue)
+![Quarto](https://img.shields.io/badge/Quarto-1.9-39729E?style=flat)
 
-To view the results / additional analyses, you can either
- - browse this repository's [website](https://github.com/xc6pswfyxh/like_dislike)
- - or download all materials and open the file "analyses/analyses.html" in your browser
- 
-To rerun the analyses, please do the following steps:
+# Replication materials: *"Likes or Dislikes, Gratifications or Concerns?"*
 
- - download all materials
- - open the RStudio project (file "privacy_calc_exp.Rproj") or the project folder in VS Code or Positron
- - run the file "02_analyses.qmd"
- - please make sure that all packages are installed using their current version
- 
-To reproduce the paper, please do the following steps **in addition**
+This repository contains the replication materials for the paper "Likes or Dislikes, Gratifications or Concerns? A One-Week Field Experiment Analyzing the Effects of Popularity Cues on the Privacy Calculus in Online Communication".
 
- - knit file "manuscript/manuscript.pdf"
- - make sure that a current version of latex is installed
+> **Design:** Preregistered one-week field experiment (*N* = 590). Participants discussed a political topic on an online platform with like buttons, like and dislike buttons, or no buttons.
+
+All analyses are written as Quarto/R Markdown documents and are also rendered as a website (`docs/`). The data are included in `data/`. The preregistration is on OSF (link in the manuscript).
+
+## Reproduce
+
+Install [R](https://www.r-project.org/), [Quarto](https://quarto.org/), and Python 3.10+. Then:
+
+```bash
+# Python (only for the 04*.ipynb notebooks)
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+```r
+# R packages
+install.packages(c("..."))  # TODO: fill in
+```
+
+```bash
+quarto render                                              # whole site
+quarto render 01b_manuscript_rev.qmd --to apaquarto-pdf    # manuscript PDF (run alone, last)
+```
+
+The LLM classification (`04b`, `04c`) used a local model via [Ollama](https://ollama.com/); saved outputs are in the notebooks, so re-running is optional.
+
+## Workflow
+
+```
+03_coding_manual_icr.qmd      ──►  manual coding + intercoder reliability
+04a – 04c (notebooks)         ──►  classification of comments
+05a – 05c (analyses)          ──►  results reported in the paper, additional, revision
+01b_manuscript_rev.qmd        ──►  manuscript (HTML + APA PDF)
+```
+
+## Structure
+
+| File or folder | Content |
+|---|---|
+| `01a_manuscript_original.rmd`, `01b_manuscript_rev.qmd` | Manuscript (first submission, revision) |
+| `02_items.rmd` | Questionnaire items |
+| `03_coding_manual_icr.qmd` | Comment coding and intercoder reliability |
+| `04a`–`04c_*.ipynb` | Comment classification (pretrained, LLM, final) |
+| `05a`–`05c_*.qmd` | Analyses |
+| `08_preregistration_changes.rmd` | Deviations from the preregistration |
+| `appendix_*.qmd` | Appendices (codebook, model comparison, preregistration note, system prompt, website) |
+| `data/` | Data and coded comments |
+| `figures/`, `images/`, `codebook/`, `bibliography/` | Figures, study materials, codebook PDF, references |
+| `docs/` | Rendered website |
+| `_quarto.yml`, `styles.css`, `_extensions/` | Site configuration and APA template |
