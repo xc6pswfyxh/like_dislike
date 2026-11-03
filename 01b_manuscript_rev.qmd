@@ -27,9 +27,10 @@ abstract: |
 bibliography:
   - bibliography/r-references.bib
   - bibliography/references.bib
-
+  
 format:
-  html: default
+  html:
+    csl: _extensions/wjschne/apaquarto/apa.csl
   apaquarto-pdf:
     documentmode: man
     floatsintext: true
@@ -77,6 +78,9 @@ invisible(
   )
 
 # create bib with r-packages
+cache_path <- knitr::opts_chunk$get("cache.path")
+dir.create(cache_path, recursive = TRUE, showWarnings = FALSE)
+writeLines(pcks, paste0(cache_path, "__packages"))
 r_refs(file = "bibliography/r-references.bib")
 
 # load bib

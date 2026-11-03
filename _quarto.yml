@@ -5,8 +5,9 @@ project:
     - "*.qmd"
     - "*.rmd"
     - "*.ipynb"
-    - "*.pdf"
     #- "!05a_analyses.qmd"
+  resources:
+    - codebook/*.pdf
 
 lang: en
 
