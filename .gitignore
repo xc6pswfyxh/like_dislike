@@ -49,3 +49,12 @@ _site/*.RDataTmp
 
 assets/cache/
 assets/figures/
+
+*.fff
+*.ttt
+*.rmarkdown
+*_files/
+/site_libs/
+/*.html
+/*.pdf
+.quarto/

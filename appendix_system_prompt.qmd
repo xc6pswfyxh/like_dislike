@@ -922,3 +922,5 @@ Schlüsseln (die Feldnamen bleiben auf Englisch, da der Code sie so erwartet), o
 Erklärung, ohne Markdown-Codeblock:
 {"pers_exp": 0, "emot_exp": 0, "pol_opin": 0, "breadth": 0, "valence": 1, "contr": 0}
 ~~~~~
+
+:::
