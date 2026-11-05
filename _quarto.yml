@@ -60,9 +60,6 @@ website:
         - href: 01b_manuscript_rev.qmd
           text: "Likes or Dislikes, Gratifications or Concerns?"
         - text: "---"
-        - section: "Items"
-          contents:
-            - 02_items.rmd
         - section: "Analysis"
           contents:
             - 05a_analyses.qmd
