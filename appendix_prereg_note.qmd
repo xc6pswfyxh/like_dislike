@@ -1,5 +1,5 @@
 ---
-title: "Open Science and Preregistration"
+title: "A Note on Preregistration"
 
 bibliography:
   - bibliography/references.bib
