@@ -38,3 +38,16 @@
 /* Button hover */
 .btn { transition: transform 0.15s ease; }
 .btn:hover { transform: translateY(-2px); }
+
+/* Table cap position */
+caption {
+  caption-side: top;
+}
+
+/* Text justification and hyphenation */
+#quarto-document-content p,
+#quarto-document-content li {
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}

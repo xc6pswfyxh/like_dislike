@@ -68,6 +68,7 @@ website:
             - 05a_analyses.qmd
         - section: "Content Analysis"
           contents:
+            - appendix_classification_procedure.qmd
             - appendix_codebook.qmd
             - 03_coding_manual_icr.qmd
             - 04a_pretrained_classification.ipynb

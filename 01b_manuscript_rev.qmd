@@ -238,50 +238,35 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-_Privacy concerns_ were measured with seven items based on @buchananDevelopmentMeasuresOnline2007.
+*Privacy concerns* were measured with seven items based on @buchananDevelopmentMeasuresOnline2007.
 One example item was "When using the participation platform, I had concerns about my privacy". 
 One item was deleted due to poor psychometric properties.
-The mean was _m_ = `r facval_tab["Privacy concerns", "m"]`. This value is below the scale's midpoint of 4, showing that on average people were not strongly concerned about their privacy.
+The mean was $m$ = `r facval_tab["Privacy concerns", "m"]`. This value is below the scale's midpoint of 4, showing that on average people were not strongly concerned about their privacy.
 
-_General gratifications_ were measured with five items based on @sunLocationInformationDisclosure2015.
+*General gratifications* were measured with five items based on @sunLocationInformationDisclosure2015.
 One example item was "Using the participation platform has paid off for me". 
-The mean was _m_ = `r facval_tab["Gratifications", "m"]`, which was above the scale's midpoint.
+The mean was $m$ = `r facval_tab["Gratifications", "m"]`, which was above the scale's midpoint.
 This shows that on average people considered the website to be beneficial.
 For exploratory analyses, we also collected a scale measuring specific gratifications, not included here.
 
-_Privacy deliberation_ was measured with five self-designed items. 
+*Privacy deliberation* was measured with five self-designed items. 
 One example item was "While using the participation platform I have weighed the advantages and disadvantages of writing a comment."
-The mean lay on the scale's neutral midpoint (_m_ = `r facval_tab["Privacy deliberation", "m"]`). 
+The mean lay on the scale's neutral midpoint ($m$ = `r facval_tab["Privacy deliberation", "m"]`). 
 (For an interpretation, see below.)
 
-_Self-efficacy_ was captured with six self-designed items, which measured whether participants felt that they had sufficient self-efficacy to write a comment on the website. 
+*Self-efficacy* was captured with six self-designed items, which measured whether participants felt that they had sufficient self-efficacy to write a comment on the website. 
 For example, "I felt technically competent enough to write a comment." 
 Two inverted items were deleted due to poor psychometric properties.
-People felt self-efficacious to use the website (_m_ = `r facval_tab["Self-efficacy", "m"]`).
+People felt self-efficacious to use the website ($m$ = `r facval_tab["Self-efficacy", "m"]`).
 
-Two types of trust were measured.
-_General trust_ was operationalized based on @sollnerWhyDifferentTrust2016, addressing three targets (i.e., provider, website, and other users), measured with one item each. 
-One example item was "The operators of the participation platform seemed trustworthy."
-_Specific trust_ was operationalized for the same three targets with three sub-dimensions each (i.e., ability, benevolence/integrity, and reliability), measured with one item each. 
-Example items were "The operators of the participation platform have done a good job" (ability), "The other users had good intentions" (benevolence/integrity), "The website worked well" (reliability). 
-Participants placed a lot of trust in the website, the providers and the other users (trust general: _m_ = `r facval_tab["Trust general", "m"]`; trust specific: _m_ = `r facval_tab["Trust specific", "m"]`).
+Two types of trust were measured. *General trust* was operationalized based on @sollnerWhyDifferentTrust2016, addressing three targets (i.e., provider, website, and other users), measured with one item each. One example item was "The operators of the participation platform seemed trustworthy." *Specific trust* was operationalized for the same three targets with three sub-dimensions each (i.e., ability, benevolence/integrity, and reliability), measured with one item each. Example items were "The operators of the participation platform have done a good job" (ability), "The other users had good intentions" (benevolence/integrity), "The website worked well" (reliability). Participants placed a lot of trust in the website, the providers and the other users (trust general: _m_ = `r facval_tab["Trust general", "m"]`; trust specific: _m_ = `r facval_tab["Trust specific", "m"]`).
 
-**DELETE?** _Communication_ was calculated by counting the number of words each participant wrote in a comment.
-Communication was zero-inflated and heavily skewed:
-While `r round(no_words_perc * 100, 0)` percent did not communicate at all, the maximum number of words communicated by a single user was `r d %$% words %>% max()` words.
-On average, participants wrote `r words_m %>% round(0)` words. 
+*Communication* was calculated by counting the number of words each participant wrote in a comment. Communication was zero-inflated and heavily skewed: While `r round(no_words_perc * 100, 0)` percent did not communicate at all, the maximum number of words communicated by a single user was `r d %$% words %>% max()` words. On average, participants wrote `r words_m %>% round(0)` words. 
 
-**UPDATE** _Self-disclosure_ was operationalized following Omarzu (2000) as an index comprised of three dimensions: depth, breadth, and communication quantity. See Content Analysis, below, for the annotation procedure underlying depth and breadth.
 
-**UPDATE** _Valence_ captures the commenter's evaluation of the anti-terrorism plan, coded into four categories: positive, negative, ambivalent, and indifferent. [X]% of comments were coded as positive, [X]% negative, [X]% ambivalent, and [X]% indifferent. See Content Analysis, be-low, for the annotation procedure.
+**begin new**
 
-**UPDATE** _Controversiality_ captures whether a comment is likely to provoke strong disagreement among other users. [X]% of comments were coded as controversial. See below _Content Analysis_, below, for the annotation procedure.
-
-## Content Analysis: Self-Disclosure, Valence, and Controversiality
-
-Following @omarzuDisclosureDecisionModel2000, we consider self-disclosure to consist of three dimensions: breadth, depth, and communication quantity. To operationalize communication quantity, we rely on the word count of a user comment. To identify the other two dimensions, a stratified random sample of 150 user comments, i.e., 50 per experimental condition (like and dislike, like, and control) were manually coded by two research assistants. Identifying depth, we classify each comment alongside three sub-dimensions: (1) Disclosure of a personal experi-ence; (2) Use of emotionally expressive language; (3) Statement of a political opinion or position. To establish the number of topics discussed in a comment, i.e., the (4) breadth thereof, we annotate each comment for the presence nine predefined topics. We further anno-tate (5) Valence and (6) Controversiality. A comprehensive codebook is provided on the **UPDATE** [companion website](https://xc6pswfyxh.github.io/like_dislike/appendix_codebook.html). 
-
-Our coding demonstrates high inter-coder reliability. Table 2 reports the agreement between the authors’ manual coding, as well as Cohen’s Kappa, and Krippendorff’s Alpha.
+To operationalize self-disclosure, we follow @omarzuDisclosureDecisionModel2000 and distinguish breadth, depth, and communication quantity. Communication quantity was measured as the word count of each comment. Two research assistants manually coded a stratified random sample of 150 comments (50 per condition) for depth (personal experience, emotional expression, and political opinion), breadth (nine predefined topics), valence, and controversiality. We report high intercoder reliability (see [Table 2](#tab-icr)).
 
 `<a id="tab-icr"></a>`{=html}`\hypertarget{tab-icr}{}`{=latex}
 ```{r}
@@ -321,21 +306,25 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-**UPDATE** The remaining comments were labeled using **Qwen3-8B**, an open-source LLM from Alibaba with 8,2 billion parameters, run locally via Ollama. Prior to classification, we com-pared model performance for a pretrained **zero-shot** NLI classifier (MoritzLaurer/xlm-v-base-mnli-xnli; **Laurer et al., 2022 add to bib**), Qwen3-8B, and Llama3.1:8b against the human-coded sam-ple of 150 comments. The pretrained NLI classifier was imported using the Hugging Face pipeline from the transformers library. LLMs were prompted using a few-shot system prompt containing coding instructions as well as labeled examples. We provide the final system prompt in Appendix C. **Temperature was set to 0 to maximize output consistency across comments.** Across variables, we report the highest agreement **([X])**, Cohen’s Kappa **([X])**, and Krippendorff’s Alpha **([X])** between **Qwen3-8B** and our manual coding (see Appendix D for the full model comparison). We thus select it for classifying the remaining corpus. Manually coded comments retain their human-assigned labels in all analyses; **Qwen3-8B's** classifications are used only for the remaining, non-manually-coded comments. Thus, this paper further contributes by evaluating the few-shotting capabilities of transformer-based fine-tuned multi-lingual encoder models (e.g., MoritzLaurer/xlm-v-base-mnli-xnli; **Laurer et al., 2022**) as well as large language models **(e.g., Qwen3-8B, and Llama3.1:8b)** on an original dataset of forum-style German user comments. 
+The remaining comments were classified with qwen3.8:27b-q4_K_M, an open-source large language model run locally via Ollama with a few-shot system prompt and a temperature of 0. We choose it after comparing it with a pretrained zero-shot NLI classifier and other LLM few-shot classifiers (see [Model Comparison](appendix_model_comparison.qmd)) against the manually coded sample. Qwen3.8:27b-q4_K_M shows the highest agreement with the human coders (Cohen's $\kappa$ = .66–.81, Krippendorff's $\alpha$ = .66–.90 across variables). Manually coded comments keep their human labels in all analyses. For the prompt and the full model comparison, see [System Prompt](appendix_system_prompt.qmd) and [Model Comparison](appendix_model_comparison.qmd). Classification of user comments was performed using Python (Version 3.10+). All Python packages and their exact versions are listed in the file `requirements.txt` in the [Github repository](https://github.com/XMtRa/like_dislike).
 
-**Classification of user comments was performed using Python (Version [X]) and the Python packages pandas (Version [X]; McKinney, 2010), transformers (Version [X]; Wolf et al., 2020), torch (Version [X]; Paszke et al., 2019), ollama (Version [X]), scikit-learn (Version [X]; Pedregosa et al., 2011), and krippendorff (Version [X]).**
+**end new**
 
 
-## Modeling strategy
+## Data Analysis 
+**begin new**
 
-**UPDATED SECTON**
+In this section, we present out modeling strategy. A more detailed versions of how we conducted this can be found on the companion website, see [Analyses](05a_analyses.qmd).
 
-To analyze the association between the privacy calculus variables and platform affordances on one hand, and how they affect user communication on the other hand, we use Bayesian hurdle modeling. For intuitive interpreation, logistic and OLS regressions are provided on the **UPDATE TO SEPARATE FILE**[companion website](https://xc6pswfyxh.github.io/like_dislike/05c_analyses_revision.html). Self-disclosure constitutes our dependent variables; measuring the quality of user communication. For the detailed operationalization strategy, see *Content Analysis* above. Here, self-disclosure is an index variable consisting of quantity, depth, and breadth [@omarzuDisclosureDecisionModel2000]. 
+To analyze the association between the privacy calculus variables and platform affordances on one hand, and how they affect user communication on the other hand, we use Bayesian hurdle modeling. For ease of interpreation, logistic, OLS, and negative binomial regressions are provided on the [companion website](05c_analyses_revision.qmd). We study two dependent variables: communication quantity and self-disclosure. For the detailed operationalization strategy, see [Content Analysis Procedure](appendix_classification_procedure) on the companion website. 
 
-**DELETE: To model communication quantity, we rely on the number of words a user wrote in their comments. Alternatively, we add the number of interactions they used (i.e., pressing the like or dislike button) to our measure. As a robustness check, we log transform both: the number of words variable as well as the interaction-extended variable. For ease of interpretation as well as robustness, a three-step modeling strategy is used. We start by modeling the relationship between whether a user communicated at all (why did we use for the cutoff again?) and the respective privacy calculus variable, controlling only for platform affordances. To this end, we separately regress the binary dependent variable (communicated) on the five privacy calculus variables (self-efficacy, privacy con-cerns, gratifications, privacy deliberations, and trust GENERAL/SPECFIC), using standard logistic regression. Second, we use OLS and Negative Binomial regressions to model the above-mentioned dependent variables. The log-transformed number of words as well as the log-transformed interaction-extended variable are regressed on the privacy calculus variables using linear OLS regressions. To ensure robustness, we remodel the relationships using Negative Binomial models on the pre-transformed variables. For each privacy calculus variable, and dependent variable, we model three specifications: (1) controlling only for platform affordances (presence of likes and dislike buttons); (2) including socio-demographic con-founders (age, gender, and education); and (3) including interaction effects between the cal-culus variable and platform affordances. Finally, we use a Bayesian hurdle model. The Bayesian hurdle model constitutes a two-step process, modeling a random variable. It is especially useful when a variable con-tains an excess of zeroes (i.e., it is zero-inflated and non-normal distributed). In a first step (the hurdle), the likelihood of the event happening at all (here: communication) is modelled using a logistic regression. Thereafter, a truncated count model estimates the effect size among the people who communicated.Whereas the first two steps in our modelling strategy contribute to an easier interpretation, the Bayesian hurdle model is the only modelling choice undertaken that takes the excess of zero values in the data into account. Because the number of words is present in both variables constructed (i.e., communication quantity and the self-disclosure index for communication quali-ty), we want to ensure self-disclosure is robust to an alternative operationalization. Thus, we reestimate the models using a self-disclosure variable that only contains two dimensions: breadth and depth. This ensures that the variation in the primary specification is not simply captured by communication quantity.**
+To model *communication quantity*, we rely on the number of words a user wrote in their comments. Alternatively, we add the number of interactions they used (i.e., pressing the like or dislike button) to our measure. As a robustness check, we log transform both: the number of words variable as well as the interaction-extended variable. *Self-disclosure* is an index variable consisting of quantity, depth, and breadth [@omarzuDisclosureDecisionModel2000].
 
-The data were analyzed and modeled using `r r_citations`.
+To test our hypotheses, we use Bayesian hurdle models. The Bayesian hurdle model constitutes a two-step process, modeling a random variable. It is especially useful when a variable contains an excess of zeroes (i.e., it is zero-inflated and non-normal distributed). In a first step (the hurdle), the likelihood of the event happening at all (here: communication) is modeled using a logistic regression. Thereafter, a truncated count model estimates the effect size among the people who communicated. Whereas regular linear and logistic regression are easier to interpret, the Bayesian hurdle model is the modeling choice undertaken here because it takes the excess of zero values in the data into account. For more information on the fitted models, see online [companion website](05a_analyses.qmd).
 
+The data were analyzed using `r r_citations`. 
+
+**end new**
 
 # Results
 
@@ -380,6 +369,8 @@ pridel_active <- select(d, starts_with("PD01")) %>%
   nrow(filter(., m > 4)) / n_final * 100
 ```
 
+We first plotted the bivariate relations of all variables (see @fig-corrplot). All variables referring to the privacy calculus demonstrated the expected bivariate relationships with communication. For example, people who were more concerned about their privacy communicated less ($r$ = `r r_fs("Privacy\nconcerns", "Words (log)")`). Self-disclosure was strongly related to communication ($r$ = `r r_fs("Words (log)", "Self-\ndisclosure")`) and showed similar bivariate relations with the privacy calculus variables. The mean of privacy deliberation was $m$ = `r des_pridel$m %>% round(2)`. Altogether, `r pridel_active %>% round(0)`% of participants reported having actively deliberated about their privacy. 
+
 ```{r}
 #| label: fig-corrplot
 #| echo: false
@@ -392,198 +383,128 @@ pridel_active <- select(d, starts_with("PD01")) %>%
 knitr::include_graphics("figures/results/cor_plot.png")
 ```
 
-We first plotted the bivariate relations of all variables (see @fig-corrplot). 
-All variables referring to the privacy calculus demonstrated the expected bivariate relationships with communication. 
-For example, people who were more concerned about their privacy communicated less (_r_ = `r r_fs("Privacy\nconcerns", "Words (log)")`). 
-Self-disclosure was strongly related to communication (_r_ = `r r_fs("Words (log)", "Self-\ndisclosure")`) and showed similar bivariate relations with the privacy calculus variables.
-The mean of privacy deliberation was _m_ = `r des_pridel$m %>% round(2)`. 
-Altogether, `r pridel_active %>% round(0)`% of participants reported having actively deliberated about their privacy. 
+The bivariate results showed two large correlations: specific trust and general gratifications ($r$ = `r r_fs("Trust\nspecific", "Gratifications\ngeneral")`), and privacy concerns and privacy deliberation ($r$ = `r r_fs("Privacy\nconcerns", "Privacy\ndeliberation")`).[^prereg]
 
-The bivariate results showed two large correlations: 
-specific trust and general gratifications (_r_ = `r r_fs("Trust\nspecific", "Gratifications\ngeneral")`), and
-privacy concerns and privacy deliberation (_r_ = `r r_fs("Privacy\nconcerns", "Privacy\ndeliberation")`).[^prereg]
+[^prereg]: In the preregistered analysis, all six variables were analyzed within a single multiple regression. We report problems of occurring multicollinearity on the supplementary material on the [companion website](appendix_prereg_note.qmd).
 
-[^prereg]: In the preregistered analysis, all six variables were analyzed within a single multiple regression. We report problems of occurring multicollinearity on the supplementary material on the [companion website](https://xc6pswfyxh.github.io/like_dislike/appendix_prereg_note.html).
-
-## Communication
-
-```{r slopes, fig.cap="Bayesian hurdle models for communication (number of words). Plotted are the predicted values across the range of each predictor (privacy calculus variables standardized). The difference between the control and the like \\& dislike group is significant.", fig.height=8, fig.width=8, out.width=".9\\textwidth", fig.align='center', fig.pos = "!h", warning=F}
-knitr::include_graphics("figures/results/effects.png")
-```
+## Bayesian Hurdle Model: Communication
 
 ### Privacy Calculus
 
-Hypotheses 1, 2, 3, and 4 were all supported.
-Participants who were more concerned about their privacy communicated less: 
-With each one-SD increase in privacy concerns, participants wrote on average `r est("words", "Privacy concerns", digits = 0) %>% abs()` fewer words (`r hdi("words", "Privacy concerns", digits = 0)`).
-Participants who expected more gratifications from participation communicated more: 
-With each one-SD increase in expected gratifications, they wrote on average `r est("words", "Expected gratifications", digits = 0)` more words (`r hdi("words", "Expected gratifications", digits = 0)`). 
-Participants who felt more self-efficacious communicated much more:
-With each one-SD increase in self-efficacy, they wrote on average `r est("words", "Self-efficacy", digits = 0)` more words (`r hdi("words", "Self-efficacy", digits = 0)`).
-The relationship was curvilinear, almost exponential: 
-Starting from the lowest level of self-efficacy, an increase of one SD was associated with only `r effects_wrds_selfeff_12 %>% round(0) %>% as.integer() %>% english()` more words, whereas ending at the highest level, the same increase was associated with `r effects_wrds_selfeff_67 %>% round(0) %>% as.integer()` more words.
-Participants who placed more trust in the website, the provider, and the other users also communicated more:
-With each one-SD increase in trust, they wrote on average `r est("words", "Trust", digits = 0)` more words (`r hdi("words", "Trust", digits = 0)`).
-The first research question asked how privacy deliberation would be related to communication.
-The results revealed a negative relation: 
-The more people deliberated about their privacy, the less they communicated.
-With each one-SD increase in privacy deliberation, participants wrote on average `r est("words", "Privacy deliberation", digits = 0) %>% abs()` fewer words (`r hdi("words", "Privacy deliberation", digits = 0)`).
+Hypotheses 1, 2, 3, and 4 were all supported. Participants who were more concerned about their privacy communicated less: With each one-SD increase in privacy concerns, participants wrote on average `r est("words", "Privacy concerns", digits = 0) %>% abs()` fewer words (`r hdi("words", "Privacy concerns", digits = 0)`). Participants who expected more gratifications from participation communicated more: With each one-SD increase in expected gratifications, they wrote on average `r est("words", "Expected gratifications", digits = 0)` more words (`r hdi("words", "Expected gratifications", digits = 0)`). Participants who felt more self-efficacious communicated much more: With each one-SD increase in self-efficacy, they wrote on average `r est("words", "Self-efficacy", digits = 0)` more words (`r hdi("words", "Self-efficacy", digits = 0)`). The relationship was curvilinear, almost exponential: Starting from the lowest level of self-efficacy, an increase of one SD was associated with only `r effects_wrds_selfeff_12 %>% round(0) %>% as.integer() %>% english()` more words, whereas ending at the highest level, the same increase was associated with `r effects_wrds_selfeff_67 %>% round(0) %>% as.integer()` more words.
+
+```{r}
+#| label: fig-slopes
+#| echo: false
+#| warning: false
+#| out-width: "90%"
+#| fig-align: center
+#| fig-pos: "!h"
+#| fig-cap: "Bayesian hurdle models for communication (number of words). Plotted are the predicted values across the range of each predictor (privacy calculus variables standardized). The difference between the control and the like & dislike group is significant."
+
+knitr::include_graphics("figures/results/effects.png")
+```
+
+Participants who placed more trust in the website, the provider, and the other users also communicated more: With each one-SD increase in trust, they wrote on average `r est("words", "Trust", digits = 0)` more words (`r hdi("words", "Trust", digits = 0)`). The first research question asked how privacy deliberation would be related to communication. The results revealed a negative relation: The more people deliberated about their privacy, the less they communicated. With each one-SD increase in privacy deliberation, participants wrote on average `r est("words", "Privacy deliberation", digits = 0) %>% abs()` fewer words (`r hdi("words", "Privacy deliberation", digits = 0)`).
 
 ### Popularity Cues
 
-We then reanalyzed the effects of the popularity cues on communication.
-Compared to the control condition without popularity cues, implementing like buttons did not significantly affect communication (`r report("words", "Like vs. control", digits = 0)`), although the interval only narrowly included zero.
-However, implementing both like and dislike buttons affected communication.
-Contrary to what we expected, implementing both popularity cues _decreased_ communication.
-If both popularity cues were present, participants wrote on average `r est("words", "Like & dislike vs. control", digits = 0) %>% abs()` fewer words (`r hdi("words", "Like & dislike vs. control", digits = 0)`).
-The introduction of both cues hence led to a `r effect_lkdlk_prcnt %>% as.integer()`% decline in the number of words that were written.
+We then reanalyzed the effects of the popularity cues on communication. Compared to the control condition without popularity cues, implementing like buttons did not significantly affect communication (`r report("words", "Like vs. control", digits = 0)`), although the interval only narrowly included zero. However, implementing both like and dislike buttons affected communication. Contrary to what we expected, implementing both popularity cues *decreased* communication. If both popularity cues were present, participants wrote on average `r est("words", "Like & dislike vs. control", digits = 0) %>% abs()` fewer words (`r hdi("words", "Like & dislike vs. control", digits = 0)`). The introduction of both cues hence led to a `r effect_lkdlk_prcnt %>% as.integer()`% decline in the number of words that were written.
 
-Finally, we tested if the effect of the popularity cues on communication was potentially mediated by the privacy calculus variables. 
-Results showed that this was not the case. 
-The popularity cues only affected behavior but not the predictors of the privacy calculus model (see [online companion website](https://xc6pswfyxh.github.io/like_dislike/05a_analyses.html)).
-The results suggest that the effect was either direct or mediated by other variables not included here [@coenenIndirectEffectOmitted2022].
+Finally, we tested if the effect of the popularity cues on communication was potentially mediated by the privacy calculus variables. Results showed that this was not the case. The popularity cues only affected behavior but not the predictors of the privacy calculus model (see [online companion website](05a_analyses.qmd)). The results suggest that the effect was either direct or mediated by other variables not included here [@coenenIndirectEffectOmitted2022].
 
-## Self-Disclosure
+## Bayesian Hurdle Model: Self-Disclosure
 
-In an exploratory step, we analyzed how the results change if we look not only at how much participants communicated, but at how much they disclosed about themselves.
-Self-disclosure combines the quantity (number of words), breadth (number of topics), and depth (personal experiences, emotional expression, and political opinions) of participants' comments [@omarzuDisclosureDecisionModel2000].
-Participants who did not comment have a value of zero; all other values are expressed in standard deviations.
+In an exploratory step, we analyzed how the results change if we look not only at how much participants communicated, but at how much they disclosed about themselves. Self-disclosure combines the quantity (number of words), breadth (number of topics), and depth (personal experiences, emotional expression, and political opinions) of participants' comments [@omarzuDisclosureDecisionModel2000]. Participants who did not comment have a value of zero; all other values are expressed in standard deviations.
 
-```{r slopes-sd, fig.cap="Bayesian hurdle models for self-disclosure. Plotted are the predicted values across the range of each predictor (privacy calculus variables standardized).", fig.height=8, fig.width=8, out.width=".9\\textwidth", fig.align='center', fig.pos = "!h", warning=F}
+```{r}
+#| label: fig-slopes-sd
+#| echo: false
+#| warning: false
+#| out-width: "90%"
+#| fig-align: center
+#| fig-pos: "!h"
+#| fig-cap: "Bayesian hurdle models for self-disclosure. Plotted are the predicted values across the range of each predictor (privacy calculus variables standardized)."
+
 knitr::include_graphics("figures/results/self_disc/effects.png")
 ```
 
 ### Privacy Calculus
 
-The results for self-disclosure largely mirrored those for communication.
-Participants who were more concerned about their privacy disclosed less (`r report("self_disc", "Privacy concerns")`).
-In contrast to communication, expected gratifications were not significantly related to self-disclosure (`r report("self_disc", "Expected gratifications")`).
-Participants who felt more self-efficacious disclosed more (`r report("self_disc", "Self-efficacy")`).
-Again, this relation was curvilinear: 
-Starting from the lowest level of self-efficacy, an increase of one SD was associated with `r effects_self_disc_selfeff_12` SD more self-disclosure, whereas ending at the highest level, the same increase was associated with `r effects_self_disc_selfeff_67` SD more self-disclosure.
-Participants who placed more trust in the website, the provider, and the other users disclosed more (`r report("self_disc", "Trust")`), and participants who deliberated more about their privacy disclosed less (`r report("self_disc", "Privacy deliberation")`).
+The results for self-disclosure largely mirrored those for communication. Participants who were more concerned about their privacy disclosed less (`r report("self_disc", "Privacy concerns")`). In contrast to communication, expected gratifications were not significantly related to self-disclosure (`r report("self_disc", "Expected gratifications")`). Participants who felt more self-efficacious disclosed more (`r report("self_disc", "Self-efficacy")`). Again, this relation was curvilinear: Starting from the lowest level of self-efficacy, an increase of one SD was associated with `r effects_self_disc_selfeff_12` SD more self-disclosure, whereas ending at the highest level, the same increase was associated with `r effects_self_disc_selfeff_67` SD more self-disclosure. Participants who placed more trust in the website, the provider, and the other users disclosed more (`r report("self_disc", "Trust")`), and participants who deliberated more about their privacy disclosed less (`r report("self_disc", "Privacy deliberation")`).
 
 ### Popularity Cues
 
-Compared to the control condition, implementing like buttons was not related to self-disclosure (`r report("self_disc", "Like vs. control")`).
-In contrast to communication, implementing both like and dislike buttons did not significantly reduce self-disclosure either (`r report("self_disc", "Like & dislike vs. control")`), although self-disclosure was descriptively `r effect_lkdlk_prcnt_sd %>% as.integer()`% lower than in the control condition.
+Compared to the control condition, implementing like buttons was not related to self-disclosure (`r report("self_disc", "Like vs. control")`). In contrast to communication, implementing both like and dislike buttons did not significantly reduce self-disclosure either (`r report("self_disc", "Like & dislike vs. control")`), although self-disclosure was descriptively `r effect_lkdlk_prcnt_sd %>% as.integer()`% lower than in the control condition.
 
-Taken together, the privacy calculus variables were related to self-disclosure in much the same way as to communication, with the exception of expected gratifications.
-The like and dislike buttons, however, primarily reduced how much participants wrote, and less so the breadth and depth of what they disclosed about themselves (see Table \@ref(tab:results-all)).
+Taken together, the privacy calculus variables were related to self-disclosure in much the same way as to communication, with the exception of expected gratifications. The like and dislike buttons, however, primarily reduced how much participants wrote, and less so the breadth and depth of what they disclosed about themselves (see [Table 3](#tab-results)).
 
-```{r results-all, include=T}
-apa_table(
-  tab_slopes_wide
-  , col.names = c("Predictor", "Estimate", "LL", "UL", "Estimate", "LL", "UL")
-  , col_spanners = list("Communication (words)" = c(2, 4), "Self-disclosure (SD)" = c(5, 7))
-  , stub_indents = list("Experimental conditions" = 1:3, "Privacy calculus" = 4:8)
-  , font_size = "footnotesize"
-  , caption = "Average marginal effects of the privacy calculus variables (standardized) and the popularity cues on communication and self-disclosure."
-  , note = "HDI = highest density interval; LL = lower limit of the 95\\% HDI; UL = upper limit. Intervals excluding zero are considered significant."
-  , digits = 2
+`<a id="tab-results"></a>`{=html}`\hypertarget{tab-results}{}`{=latex}
+```{r}
+#| label: results-all
+#| echo: false
+#| results: asis
+
+cap  <- "Average marginal effects of the privacy calculus variables (standardized) and the popularity cues on communication and self-disclosure."
+note <- "HDI = highest density interval; LL = lower limit of the 95\\% HDI; UL = upper limit. Intervals excluding zero are considered significant."
+cn   <- c("Predictor", "Estimate", "LL", "UL", "Estimate", "LL", "UL")
+
+if (knitr::is_latex_output()) {
+  apa_table(
+    tab_slopes_wide,
+    col.names = cn,
+    col_spanners = list("Communication (words)" = c(2, 4), "Self-disclosure (SD)" = c(5, 7)),
+    stub_indents = list("Experimental conditions" = 1:3, "Privacy calculus" = 4:8),
+    font_size = "footnotesize",
+    caption = cap,
+    note = note,
+    digits = 2
   )
+} else {
+  print(
+    knitr::kable(tab_slopes_wide, col.names = cn, digits = 2,
+                 caption = paste("Table 3:", cap),
+                 align = c("l", rep("r", 6))) |>
+      kableExtra::add_header_above(c(" " = 1, "Communication (words)" = 3,
+                                     "Self-disclosure (SD)" = 3)) |>
+      kableExtra::pack_rows("Experimental conditions", 1, 3) |>
+      kableExtra::pack_rows("Privacy calculus", 4, 8)
+  )
+  cat("\n\n*Note.* ", note, "\n", sep = "")
+}
 ```
 
 # Discussion
 
-This study analyzed three questions: Can the privacy calculus can be replicated with behavioral data in an authentic setting? Should the privacy calculus model be extended theoretically? Do like and dislike buttons affect online communication and the privacy calculus?
-To this end, a preregistered field experiment was conducted, which lasted one week.
-The privacy calculus model was extended: 
-The privacy deliberation processes was tested explicitly, and trust and self-efficacy were included as predictors.
+This study analyzed three questions: Can the privacy calculus can be replicated with behavioral data in an authentic setting? Should the privacy calculus model be extended theoretically? Do like and dislike buttons affect online communication and the privacy calculus? To this end, a preregistered field experiment was conducted, which lasted one week. The privacy calculus model was extended: The privacy deliberation processes was tested explicitly, and trust and self-efficacy were included as predictors.
 
-The preregistered analyses showed that the popularity cues did not affect communication. 
-Only self-efficacy emerged as a significant predictor of online communication.
-All other variables remained insignificant.
-However, the preregistered analyses have to be treated with caution.
-The predictors were collinear, which makes their integration in one single model problematic [@vanhoveCollinearityIsnDisease2021].
-In addition, the main variable and outcome of the study, number of communicated words, was zero-inflated and gamma distributed, which requires a different type of analysis.
-The preregistered analyses using structural equation modeling with multiple predictors were hence problematic.
+The preregistered analyses showed that the popularity cues did not affect communication. Only self-efficacy emerged as a significant predictor of online communication. All other variables remained insignificant. However, the preregistered analyses have to be treated with caution. The predictors were collinear, which makes their integration in one single model problematic [@vanhoveCollinearityIsnDisease2021]. In addition, the main variable and outcome of the study, number of communicated words, was zero-inflated and gamma distributed, which requires a different type of analysis. The preregistered analyses using structural equation modeling with multiple predictors were hence problematic.
 
-To address these issues, we conducted Bayesian hurdle-gamma models (see section Data analysis).
-This updated approach changed the results.
-People who were more concerned about their privacy wrote fewer words. 
-To illustrate, people who reported being very much concerned posted only `r wrds_pricon_7` words on average, whereas people who reported being not concerned posted `r wrds_pricon_1` words. 
-People who experienced privacy concerns hence differed strongly in their communication behavior from people who were unconcerned. 
-Participants who received more gratifications wrote substantially more words.
-The effect was even larger, almost twice as large.
-For each point-increase in gratifications, participants wrote 27 words more. 
-Attaining benefits online is hence a strong predictor of online communication.
-Together, the results provide further support for the privacy calculus and against the privacy paradox [@baruhOnlinePrivacyConcerns2017].
-Communication online does not seem to be overly illogical. 
-To large extents, it is aligned with respondents' concerns and benefits.
+To address these issues, we conducted Bayesian hurdle-gamma models (see section Data analysis). This updated approach changed the results. People who were more concerned about their privacy wrote fewer words. To illustrate, people who reported being very much concerned posted only `r wrds_pricon_7` words on average, whereas people who reported being not concerned posted `r wrds_pricon_1` words. People who experienced privacy concerns hence differed strongly in their communication behavior from people who were unconcerned. Participants who received more gratifications wrote substantially more words. The effect was even larger, almost twice as large. For each point-increase in gratifications, participants wrote 27 words more. Attaining benefits online is hence a strong predictor of online communication. Together, the results provide further support for the privacy calculus and against the privacy paradox [@baruhOnlinePrivacyConcerns2017]. Communication online does not seem to be overly illogical. To large extents, it is aligned with respondents' concerns and benefits.
 
-Results showed that trust and self-efficacy were important drivers of online communication.
-Participants who placed more trust into the website, the providers, and the other community members communicated more actively.
-Interestingly, self-efficacy was the strongest of all predictors.
-Participants who felt more self-efficacious disclosed much more than others.
-To illustrate, if people reported no self-efficacy, they wrote only `r wrds_selfeff_1` word on average.
-However, when they reported high levels of self-efficacy, they wrote `r wrds_selfeff_7` words.
-This finding further supports the underlying premise of bounded rationality [@simonBoundedRationality1990].
-Although more rational aspects such as costs and benefits influence behavior, behavior is also determined by more socio-psychological variables such as trust and self-efficacy.
-The findings are therefore closely aligned with existing theory. 
-For example, the technology acceptance model states that online behavior is most strongly determined by usefulness and ease of use [@venkateshUserAcceptanceInformation2003]---two variables closely related to gratifications and self-efficacy.
+Results showed that trust and self-efficacy were important drivers of online communication. Participants who placed more trust into the website, the providers, and the other community members communicated more actively. Interestingly, self-efficacy was the strongest of all predictors. Participants who felt more self-efficacious disclosed much more than others. To illustrate, if people reported no self-efficacy, they wrote only `r wrds_selfeff_1` word on average. However, when they reported high levels of self-efficacy, they wrote `r wrds_selfeff_7` words. This finding further supports the underlying premise of bounded rationality [@simonBoundedRationality1990]. Although more rational aspects such as costs and benefits influence behavior, behavior is also determined by more socio-psychological variables such as trust and self-efficacy. The findings are therefore closely aligned with existing theory. For example, the technology acceptance model states that online behavior is most strongly determined by usefulness and ease of use [@venkateshUserAcceptanceInformation2003]---two variables closely related to gratifications and self-efficacy.
 
-The privacy calculus was criticized for not explicitly analyzing the process of weighing pros and cons before disclosing [@knijnenburgDeathPrivacyCalculus2017].
-In this study, we thus elaborated on the privacy deliberation process.
-The results showed that only one third of all participants agreed to have actively weighed the benefits and risks before communicating on the platform.
-This figure seems comparatively low.
-Even in new online contexts, the majority of users does not actively deliberate about their online communication, suggesting that online use is to large extents implicit [@acquistiSecretsLikesDrive2020]. 
+The privacy calculus was criticized for not explicitly analyzing the process of weighing pros and cons before disclosing [@knijnenburgDeathPrivacyCalculus2017]. In this study, we thus elaborated on the privacy deliberation process. The results showed that only one third of all participants agreed to have actively weighed the benefits and risks before communicating on the platform. This figure seems comparatively low. Even in new online contexts, the majority of users does not actively deliberate about their online communication, suggesting that online use is to large extents implicit [@acquistiSecretsLikesDrive2020].
 
-Interestingly, and perhaps also somewhat surprisingly, privacy deliberation and privacy concerns were strongly correlated (_r_ = .61). 
-If we are concerned we also think and deliberate more actively about our privacy. 
-And if we are not concerned we do not deliberate.
-This finding can be aligned with decision theory [@elsbachEffectsMoodIndividuals1999]:
-When being concerned, we are in a negative state; and when in a negative state, we judge more critically.
-At this point, it is still unknown if thinking about privacy increases concerns or, conversely, if growing more concerned about privacy makes us deliberate more carefully. 
+Interestingly, and perhaps also somewhat surprisingly, privacy deliberation and privacy concerns were strongly correlated ($r$ = .61). If we are concerned we also think and deliberate more actively about our privacy. And if we are not concerned we do not deliberate. This finding can be aligned with decision theory [@elsbachEffectsMoodIndividuals1999]: When being concerned, we are in a negative state; and when in a negative state, we judge more critically. At this point, it is still unknown if thinking about privacy increases concerns or, conversely, if growing more concerned about privacy makes us deliberate more carefully. 
 
-The updated results showed that implementing both like and dislike buttons decreased communication. 
-This was an unexpected and interesting finding.
-It suggests that negative feedback, or perhaps even only risks of negative feedback, can stifle communication. 
-The effect was strong: Implementing both like and dislikes cues led to a `r effect_lkdlk_prcnt %>% as.integer()`% decrease in number of written words.
-When compared to the privacy calculus variables, we see that the effect is of similar size: Growing a bit more concerned or receiving less gratifications have a comparable impact on behavior.
-This finding is aligned with studies reporting strong effects of popularity cues on behavior [@muchnikSocialInfluenceBias2013]. 
+The updated results showed that implementing both like and dislike buttons decreased communication. This was an unexpected and interesting finding. It suggests that negative feedback, or perhaps even only risks of negative feedback, can stifle communication. The effect was strong: Implementing both like and dislikes cues led to a `r effect_lkdlk_prcnt %>% as.integer()`% decrease in number of written words. When compared to the privacy calculus variables, we see that the effect is of similar size: Growing a bit more concerned or receiving less gratifications have a comparable impact on behavior. This finding is aligned with studies reporting strong effects of popularity cues on behavior [@muchnikSocialInfluenceBias2013].
 
-The negative effects of dislike buttons might help explain why almost all existing successful social network sites have chosen to omit negative popularity cues. 
-At the time of writing, only a handful of websites have (partially) implemented dislike buttons (e.g., youtube, stackexchange, or reddit).
-Despite the positivity bias of social media [@schreursExposurePositivityBias2022], chances of receiving negative feedback and communication are real, as can be seen by moral outrages or "shit-storms".
-Explicit negative popularity cues are low threshold paralinguistic affordances [@carrPredictingThresholdPerceived2018].
-They likely prime or trigger negative experiences or expectations, thereby stifling communication. 
-Interestingly, however, they did not affect the privacy calculus variables, and no indirect effect was found.
-Hence, the effect is either transmitted via variables not included here [@coenenIndirectEffectOmitted2022], or perhaps subconscious and direct.
+The negative effects of dislike buttons might help explain why almost all existing successful social network sites have chosen to omit negative popularity cues. At the time of writing, only a handful of websites have (partially) implemented dislike buttons (e.g., youtube, stackexchange, or reddit). Despite the positivity bias of social media [@schreursExposurePositivityBias2022], chances of receiving negative feedback and communication are real, as can be seen by moral outrages or "shit-storms". Explicit negative popularity cues are low threshold paralinguistic affordances [@carrPredictingThresholdPerceived2018]. They likely prime or trigger negative experiences or expectations, thereby stifling communication. Interestingly, however, they did not affect the privacy calculus variables, and no indirect effect was found. Hence, the effect is either transmitted via variables not included here [@coenenIndirectEffectOmitted2022], or perhaps subconscious and direct.
 
-Websites only including like buttons had no effect on the number of communicated words. 
-If anything, there was an unexpected (non-significant) trend toward reduced communication.
-Although one might expect that like buttons, being positive feedback cues, increase communication, it is also plausible that they can decrease communication.
-Not receiving any likes can be perceived as ostracizing [@schneiderSocialMediaOstracism2017].
-In the context of this study, participants discussed a political topic.
-Here, not receiving likes might be even more threatening and intimidating than on regular social media, where it is more common to discuss every-day and low-threshold topics.
-Although like buttons are commonplace in social media, the findings suggest that in specific contexts they inhibit communication.
+Websites only including like buttons had no effect on the number of communicated words. If anything, there was an unexpected (non-significant) trend toward reduced communication. Although one might expect that like buttons, being positive feedback cues, increase communication, it is also plausible that they can decrease communication. Not receiving any likes can be perceived as ostracizing [@schneiderSocialMediaOstracism2017]. In the context of this study, participants discussed a political topic. Here, not receiving likes might be even more threatening and intimidating than on regular social media, where it is more common to discuss every-day and low-threshold topics. Although like buttons are commonplace in social media, the findings suggest that in specific contexts they inhibit communication.
 
 ## Limitations
 
-The main implications and results discussed above rest on exploratory analyses not registered a priori.
-Exploratory analyses are part of the research process, compatible with preregistration, and important for scientific progress.
-The updated analyses represent and document a learning process, which arguably led to an improved analysis.
-However, the results should still be considered somewhat preliminary, to be confirmed in subsequent studies.
+The main implications and results discussed above rest on exploratory analyses not registered a priori. Exploratory analyses are part of the research process, compatible with preregistration, and important for scientific progress. The updated analyses represent and document a learning process, which arguably led to an improved analysis. However, the results should still be considered somewhat preliminary, to be confirmed in subsequent studies.
 
-Whereas the effects of the popularity cues on all variables can be interpreted from a causal perspective (but see below), more caution is needed regarding the effects of the privacy calculus variables on communication.
-Although the effects were controlled for age, gender, and education, other variables not included here could potentially bias the causal estimates [@coenenIndirectEffectOmitted2022].
-In addition, in order not to reveal the study intention the self-reported measures were collected after the field phase. 
-Demand effects might have led participants to align their answers to their prior behavior.
-To illustrate, users who communicated more actively might have experienced more self-efficacy afterward.
-As a result, the coefficients might overestimate the actual effects. 
+Whereas the effects of the popularity cues on all variables can be interpreted from a causal perspective (but see below), more caution is needed regarding the effects of the privacy calculus variables on communication. Although the effects were controlled for age, gender, and education, other variables not included here could potentially bias the causal estimates [@coenenIndirectEffectOmitted2022]. In addition, in order not to reveal the study intention the self-reported measures were collected after the field phase. Demand effects might have led participants to align their answers to their prior behavior. To illustrate, users who communicated more actively might have experienced more self-efficacy afterward. As a result, the coefficients might overestimate the actual effects. 
 
-In experiments only the treatment variable should be manipulated, while all others should be held constant [assumption of stable unit treatment, @klinePrinciplesPracticeStructural2016]. 
-Being a field experiment, several variables could not be held constant, such as the content of communication by other users, the unfolding communication dynamics, and the characteristics of other users.
-Future research should repeat the design, preferably using several runs of the same experiment, to further assess generalizability and robustness.
+In experiments only the treatment variable should be manipulated, while all others should be held constant [assumption of stable unit treatment, @klinePrinciplesPracticeStructural2016]. Being a field experiment, several variables could not be held constant, such as the content of communication by other users, the unfolding communication dynamics, and the characteristics of other users. Future research should repeat the design, preferably using several runs of the same experiment, to further assess generalizability and robustness.
 
 ## Conclusion
 
-This study provides further support for the privacy calculus model and against the privacy paradox approach.
-Expected benefits, privacy concerns, deliberating about benefits and risks, trust, and self-efficacy all affected communication.
-Like and dislike buttons reduced communication significantly.
-Users can be considered proactive and reasonable.
-But, similar to everyday offline contexts, they are also affected by the affordances of their environment, and often act implicitly without pondering the consequences of their actions.
+This study provides further support for the privacy calculus model and against the privacy paradox approach. Expected benefits, privacy concerns, deliberating about benefits and risks, trust, and self-efficacy all affected communication. Like and dislike buttons reduced communication significantly. Users can be considered proactive and reasonable. But, similar to everyday offline contexts, they are also affected by the affordances of their environment, and often act implicitly without pondering the consequences of their actions.
 
 \newpage
 

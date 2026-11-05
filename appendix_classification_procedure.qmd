@@ -1,0 +1,66 @@
+---
+title: "Procedure"
+
+bibliography:
+  - bibliography/references.bib
+  - bibliography/r-references.bib
+csl: _extensions/wjschne/apaquarto/apa.csl
+
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-fold: true
+    code-summary: "Show code"
+
+execute:
+  message: false
+  warning: false
+---
+## Content Analysis: Self-Disclosure
+
+Following @omarzuDisclosureDecisionModel2000, we consider self-disclosure to consist of three dimensions: breadth, depth, and communication quantity. To operationalize communication quantity, we rely on the word count of a user comment. To identify the other two dimensions, a stratified random sample of 150 user comments, i.e., 50 per experimental condition (like and dislike, like, and control) were manually coded by two research assistants. Identifying depth, we classify each comment alongside three sub-dimensions: (1) Disclosure of a personal experience; (2) Use of emotionally expressive language; (3) Statement of a political opinion or position. To establish the number of topics discussed in a comment, i.e., the (4) breadth thereof, we annotate each comment for the presence of nine predefined topics. We further annotate (5) Valence and (6) Controversiality. A comprehensive codebook is provided on the [companion website](appendix_codebook.qmd).
+
+Our coding demonstrates high inter-coder reliability. [Table 2](#tab-icr) reports the agreement between the two coders' manual coding, as well as Cohen’s Kappa, and Krippendorff’s Alpha.
+
+`<a id="tab-icr"></a>`{=html}`\hypertarget{tab-icr}{}`{=latex}
+```{r}
+#| label: ICR
+#| echo: false
+#| results: asis
+
+icr <- readxl::read_excel("data/comments/icr4.xlsx") |>
+  dplyr::select(Variable, n_Categories, Agreement, Krippendorffs_Alpha, Cohens_Kappa) |>
+  dplyr::mutate(
+    n_Categories = as.integer(n_Categories),
+    dplyr::across(c(Agreement, Krippendorffs_Alpha, Cohens_Kappa), ~ round(.x, 2)),
+    Variable = dplyr::recode(Variable,
+      pers_exp = "Personal Experience",
+      emot_exp = "Emotional Expression",
+      pol_opin = "Political Opinion",
+      breadth  = "Breadth",
+      valence  = "Valence",
+      contr    = "Controversy")
+  ) |>
+  dplyr::rename(
+    Categories = n_Categories,
+    `K'dorff's $\\alpha$` = Krippendorffs_Alpha,
+    `Cohen's $\\kappa$` = Cohens_Kappa
+  )
+
+cap  <- "Intercoder Reliability"
+note <- "Categories = number of coding categories per variable. Agreement = proportion of identical codes. Cohen's kappa values of .40, .60, and .80 are commonly interpreted as moderate, substantial, and almost perfect agreement, respectively [@landisMeasurementObserverAgreement1977]."
+
+if (knitr::is_latex_output()) {
+  apa_table(icr, caption = cap, note = note,
+            align = c("l", rep("r", 4)), escape = FALSE, linesep = "")
+} else {
+  print(knitr::kable(icr, caption = paste("Table 2:", cap),
+                     digits = 2, align = c("l", rep("r", 4)), escape = FALSE))
+  cat("\n\n*Note.* ", note, "\n", sep = "")
+}
+```
+
+The remaining comments were labeled using Qwen3.8-27B (quantized as `q4_K_M`), an open-source LLM from Alibaba with 27 billion parameters, run locally via Ollama. Prior to classification, we compared model performance for a pretrained zero-shot NLI classifier, `MoritzLaurer/xlm-v-base-mnli-xnli` [@laurerLessAnnotatingMore2024], Qwen3-8B, Llama3.1:8b, Apertus-8B, and Qwen3.8-27B against the human-coded sample of 150 comments. The pretrained NLI classifier was imported using the Hugging Face pipeline from the `transformers` library. LLMs were prompted using a few-shot system prompt containing coding instructions as well as labeled examples. We provide the final system prompt in Appendix C. Temperature was set to 0 to maximize output consistency across comments. Across variables, we report the highest agreement (accuracy = .77–.95), Cohen’s Kappa (.66–.81), and Krippendorff’s Alpha (.66–.90) between Qwen3.8-27B and our manual coding (see Appendix D for the full model comparison). We thus select it for classifying the remaining corpus. Manually coded comments retain their human-assigned labels in all analyses; Qwen3.8-27B's classifications are used only for the remaining, non-manually-coded comments. Thus, this paper further contributes by evaluating the few-shotting capabilities of transformer-based fine-tuned multi-lingual encoder models (e.g., `MoritzLaurer/xlm-v-base-mnli-xnli`) [@laurerLessAnnotatingMore2024] as well as large language models (e.g., Qwen3.8-27B, and Llama3.1:8b) on an original dataset of forum-style German user comments.
+
+Classification of user comments was performed using Python (Version 3.10+). All Python packages and their exact versions are listed in the file `requirements.txt` in the [Github repository](https://github.com/XMtRa/like_dislike).

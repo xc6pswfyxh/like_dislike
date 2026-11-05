@@ -12,3 +12,43 @@ execute:
   message: false
   warning: false
 ---
+```{r}
+#| label: tbl-model-comparison
+#| echo: false
+#| warning: false
+#| tbl-cap: "Model Comparison Against the Manually Coded Sample: Cohen's $\\kappa$ per Variable"
+
+files <- list.files("data/comments",
+                    pattern = "^eval_report_coding_v\\d+\\.xlsx$",
+                    full.names = TRUE)
+
+reports <- purrr::map_dfr(files, \(f) {
+  readxl::read_excel(f) |>
+    dplyr::mutate(Run = as.integer(stringr::str_extract(basename(f), "(?<=_v)\\d+")))
+})
+
+var_labels <- c(pers_exp = "Personal Exp.", emot_exp = "Emotional Expr.",
+                pol_opin = "Political Op.", breadth = "Breadth",
+                valence = "Valence", contr = "Controversy")
+
+per_run <- reports |>
+  dplyr::distinct(Run, model, variable, n, cohens_kappa, krippendorff_alpha) |>
+  dplyr::group_by(Run, model) |>
+  dplyr::mutate(`Valid n` = min(n),
+                `Mean $\\alpha$` = mean(krippendorff_alpha)) |>
+  dplyr::ungroup()
+
+comp <- per_run |>
+  dplyr::mutate(variable = factor(variable, levels = names(var_labels),
+                                  labels = var_labels)) |>
+  dplyr::select(Run, Model = model, `Valid n`, `Mean $\\alpha$`, variable, cohens_kappa) |>
+  tidyr::pivot_wider(names_from = variable, values_from = cohens_kappa) |>
+  dplyr::mutate(`Mean $\\kappa$` = rowMeans(dplyr::pick(dplyr::all_of(unname(var_labels))))) |>
+  dplyr::relocate(`Mean $\\alpha$`, .after = dplyr::last_col()) |>
+  dplyr::arrange(Run)
+
+knitr::kable(comp, digits = 2, escape = FALSE,
+             align = c("r", "l", "r", rep("r", 8)))
+```
+
+*Note.* Run = evaluation report number, in chronological order. Valid n = number of the 150 manually coded comments for which the model returned a usable label (minimum across variables). Run 11 is the final model used in the analyses.
