@@ -5,7 +5,8 @@ project:
     - "*.qmd"
     - "*.rmd"
     - "*.ipynb"
-    #- "!05a_analyses.qmd"
+    - "!01a_manuscript_original.rmd"
+    - "!05c_analyses_revision.qmd"
   resources:
     - codebook/*.pdf
 
@@ -20,90 +21,41 @@ website:
   back-to-top-navigation: true
   page-footer: 
     center: "© 2026, The Authors" 
-    #right: "<img src='images/logo_inst.png' height='30px'>"
-    #left: "<img src='images/logo_dept.png' height='50px'>"
 
-  navbar:
-    collapse: true
-    left:
+  sidebar:
+    style: "floating"
+    search: true
+    collapse-level: 1
+    tools:
+      - icon: github
+        href: https://github.com/xc6pswfyxh/like_dislike
+    contents:
       - href: index.qmd
         text: "Home"
       - href: 01b_manuscript_rev.qmd
-        text: "Manuscript Revised"
-      - href: 01a_manuscript_original.rmd
-        text: "First Submission"
-      - href: 08_preregistration_changes.rmd
-        text: "Preregistration"
-
-    tools:
-      #- icon: bluesky
-      #  href: https://bsky.app/
-      - icon: github
-        menu:
-          - text: Source Code
-            href: https://github.com/xc6pswfyxh/like_dislike
-
-  sidebar:
-    - title: "Home"
-      style: "floating"
-      search: true
-      contents:
-        - href: index.qmd
-          text: "Overview"
-  
-
-    - title: "Manuscript Revised"
-      style: "floating"
-      collapse-level: 1
-      search: true
-      contents:
-        - href: 01b_manuscript_rev.qmd
-          text: "Likes or Dislikes, Gratifications or Concerns?"
-        - text: "---"
-        - section: "Analysis"
-          contents:
-            - 05a_analyses.qmd
-        - section: "Content Analysis"
-          contents:
-            - appendix_classification_procedure.qmd
-            - appendix_codebook.qmd
-            - 03_coding_manual_icr.qmd
-            - 04a_pretrained_classification.ipynb
-            - 04b_llm_classification.ipynb
-            - appendix_model_comparison.qmd
-            - appendix_system_prompt.qmd
-            - 04c_final_classification.ipynb
-        - section: "Additional Analysis"
-          contents:
-            - 05b_analyses_additional.qmd
-            - 05c_analyses_revision.qmd
-        - section: "Open Science"
-          contents:
-            - appendix_prereg_note.qmd
-        - section: Website Interface
-          contents: 
-            - appendix_website.rmd
-
-    - title: "First Submission"
-      style: "floating"
-      search: true
-      contents:
-        - href: 01a_manuscript_original.rmd
-          text: "Main Text"
-        - text: "---"
-        - section: "Supplementary Material"
-          contents:
-            - 02_items.rmd
-            - 05a_analyses.qmd
-            - 05b_analyses_additional.qmd
-
-    - title: "Preregistration"
-      style: "floating"
-      search: true
-      contents:
-        - href: 08_preregistration_changes.rmd
-          text: "Changes from Preregistration"
-
+        text: "Manuscript"
+      - href: 05a_analyses.qmd
+        text: "Analyses"
+      - section: "Content Analysis"
+        contents:
+          - appendix_classification_procedure.qmd
+          - appendix_codebook.qmd
+          - 03_coding_manual_icr.qmd
+          - 04a_pretrained_classification.ipynb
+          - 04b_llm_classification.ipynb
+          - appendix_model_comparison.qmd
+          - appendix_system_prompt.qmd
+          - 04c_final_classification.ipynb
+      - href: 05b_analyses_additional.qmd
+        text: "Additional Analyses"
+      - section: "Materials"
+        contents:
+          - href: appendix_website.rmd
+            text: "Website Interface"
+          - href: 02_items.rmd
+            text: "Items"
+      - href: appendix_prereg_note.qmd
+        text: "Open Science and Preregistration"
 
 format:
   html:
@@ -113,7 +65,6 @@ format:
       dark: cyborg
     css: styles.css
     toc: true
-
     grid:
       margin-width: 300px
       body-width: 800px

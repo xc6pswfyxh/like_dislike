@@ -1,7 +1,6 @@
 ---
 title: "Privacy Calculus Experiment"
 subtitle: "Companion Website"
-title-block-banner: true
 format:
   html:
     lightbox: true
