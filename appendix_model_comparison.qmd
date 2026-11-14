@@ -12,6 +12,11 @@ execute:
   message: false
   warning: false
 ---
+
+This page compares the automatic classifiers we tested against the 150 manually coded comments (see [Manual Coding & ICR](03_coding_manual_icr.qmd)). All classifiers coded the same six variables as the human coders: personal experience, emotional expression, political opinion, breadth, valence, and controversiality.
+
+We tested several open-source large language models, run locally via Ollama with a few-shot system prompt: qwen3:8b, llama3.1:8b, apertus:8b, and qwen3.8:27b. Each row of the table is one evaluation run. Between runs, we changed the model, the system prompt (e.g., clearer coding rules and more calibration examples), or both. For each run and variable, the table shows Cohen's $\kappa$ between the model and the manual coding, as well as the mean $\kappa$ and the mean Krippendorff's $\alpha$ across variables. The pretrained zero-shot NLI classifier is documented separately (see [Pretrained Classification](04a_pretrained_classification.ipynb)).
+
 ```{r}
 #| label: tbl-model-comparison
 #| echo: false
@@ -52,3 +57,5 @@ knitr::kable(comp, digits = 2, escape = FALSE,
 ```
 
 *Note.* Run = evaluation report number, in chronological order. Valid n = number of the 150 manually coded comments for which the model returned a usable label (minimum across variables). Run 11 is the final model used in the analyses.
+
+The larger model (qwen3.8:27b) agreed clearly more with the human coders than the smaller 8b models. Across runs, agreement also increased as the system prompt was refined. We therefore used qwen3.8:27b with the final prompt (Run 11) to classify all comments (see [Final Classification](04c_final_classification.ipynb)). For the final prompt, see [System Prompt](appendix_system_prompt.qmd).

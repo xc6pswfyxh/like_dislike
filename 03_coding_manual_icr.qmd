@@ -13,9 +13,16 @@ execute:
   warning: false
 ---
 
-```{r}
-#### 1. MANUAL CODING
+This page documents how the user comments were prepared for coding, how the intercoder reliability (ICR) was tested, and how the final manually coded sample was prepared. For the coding scheme, see [Codebook](appendix_codebook.qmd).
 
+# Manual Coding
+
+## Helper Function
+
+Comments on the website could reply to other comments. To understand a reply, coders need to see the comment it responds to. The function below follows the chain of replies back to the first comment and pastes all comments of the chain together (separated by `>>>`).
+
+```{r}
+#| label: reply-chain-function
 library(tidyverse)
 
 ## def reply chain function
@@ -34,8 +41,16 @@ get_reply_chain <- function(df, topic_name, post_num) {
   
   paste(rev(chain), collapse = " >>> ")
 }
+```
 
+## Load and Prepare the Comments
 
+The comments were stored separately for each of the three websites (vm1–vm3, one per experimental condition). For each website, we load the comments, remove the threads about the netiquette and the study itself, add the reply chain, and keep only comments written after August 1, 2017.
+
+Website 1:
+
+```{r}
+#| label: load-comments-vm1
 ## data pp 
 comments1 <- read_csv("data/comments/data_posts_VM1.csv") |> 
   filter(!str_detect(topic, 
@@ -50,8 +65,12 @@ comments1 <- comments1 |>
   )) |>
   ungroup() |> 
   filter(created_at > as.Date("2017-08-01")) 
+```
 
+Website 2:
 
+```{r}
+#| label: load-comments-vm2
 comments2 <- read_csv("data/comments/data_posts_VM2.csv") |> 
   mutate(created_at = as_datetime(created_at)) |> 
   filter(!str_detect(topic, 
@@ -66,8 +85,12 @@ comments2 <- comments2 |>
   )) |>
   ungroup() |> 
   filter(created_at > as.Date("2017-08-01")) 
+```
 
+Website 3:
 
+```{r}
+#| label: load-comments-vm3
 comments3 <- read_csv("data/comments/data_posts_VM3.csv") |> 
   mutate(created_at = as_datetime(created_at)) |> 
   filter(!str_detect(topic, 
@@ -82,8 +105,14 @@ comments3 <- comments3 |>
   )) |>
   ungroup() |> 
   filter(created_at > as.Date("2017-08-01")) 
+```
 
+## Prepare the Coding File
 
+We combine the comments of all three websites and add empty columns for the coder and the six coded variables (personal experience, emotional expression, political opinion, breadth, valence, and controversiality).
+
+```{r}
+#| label: prepare-coding-file
 ## joining all comments
 comments <- comments1 |> mutate(vm = "vm1") |> 
   bind_rows(comments2 |> mutate(vm = "vm2")) |>
@@ -101,8 +130,14 @@ comments <- comments |>
     contr = NA) |> 
   relocate(c(pers_exp:contr), .after = raw) |> 
   relocate(coder, .before = post_number)
+```
 
+## Draw the Sample for the Reliability Test
 
+We draw a stratified random sample of 150 comments: 50 per website, hence 50 per experimental condition. Both coders coded this sample independently. All comments and the sample are saved as CSV files.
+
+```{r}
+#| label: draw-icr-sample
 # weighted sample
 set.seed(666)
 comments_reli <- comments |> 
@@ -118,8 +153,14 @@ write_csv(comments, "data/comments/comments.csv", na = "")
 write_csv(comments_reli, "data/comments/comments_reli.csv", na = "") # write csv for icr test
 ```
 
+# Intercoder Reliability
+
+## Load the Coded Samples
+
+We load the codings of both coders (J and Y) and combine them into one dataset.
+
 ```{r}
-## 2. ICR
+#| label: load-codings
 coding_j <- readxl::read_excel("data/comments/comments_relij_coded.xlsx")
 coding_y <- readxl::read_excel("data/comments/comments_reliy_coded.xlsx")
 
@@ -131,7 +172,14 @@ coding_y <- readxl::read_excel("data/comments/comments_reliy_coded.xlsx")
 
 coding_comb <- coding_j |> 
   rbind(coding_y)
+```
 
+## Compute Reliability
+
+We compute Krippendorff's alpha, Cohen's kappa, and further agreement measures for each variable. The results are saved for the ICR table in the manuscript.
+
+```{r}
+#| label: compute-icr
 icr <- coding_comb |> 
   tidycomm::test_icr(unit_var = unique_id, 
                      coder_var = coder, 
@@ -144,8 +192,14 @@ icr <- coding_comb |>
 
 icr
 writexl::write_xlsx(icr, "data/comments/icr4.xlsx") # write excel for icr table
+```
 
+## Disagreements
 
+To discuss and resolve disagreements, we list all comments where the two coders did not agree on at least one variable.
+
+```{r}
+#| label: disagreements
 coding_j_red <- coding_j |> 
   select(2, raw, 7:12) |> 
   rename_with(~ paste0(.x, "_j"), .cols = -c(unique_id, raw))
@@ -171,15 +225,23 @@ writexl::write_xlsx(disagreement, "data/comments/icr4_disagreement.xlsx")
 rm(list = ls())
 ```
 
+# Final Manual Coding
+
+We load the final manual coding. Missing codes are set to zero (i.e., the feature is absent).
 
 ```{r}
-## 3. FINAL CODING
+#| label: load-final-coding
 comments_eval <- readxl::read_excel("data/comments/comments_manual_coding.xlsx")
 
 # remove NAs
 comments_eval <- comments_eval |> 
   mutate(across(pers_exp:contr, ~if_else(is.na(.x), 0, .x)))
+```
 
+We check whether all comments are coded, by tabulating each variable. The final manual coding is then saved. It is used to evaluate the automatic classifiers (see [Model Comparison](appendix_model_comparison.qmd)).
+
+```{r}
+#| label: check-final-coding
 # check if everything is coded
 vars <- c("pers_exp", "emot_exp", "pol_opin", "breadth", "valence", "contr")
 

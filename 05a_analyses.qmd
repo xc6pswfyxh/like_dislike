@@ -431,13 +431,14 @@ d <-
       words, 
       0
       ),
-    self_dis = words + (reactions * 2),
+    # words + reactions (likes/dislikes count twice): outcome of the original preregistration
+    words_react = words + (reactions * 2),
     time_read_MIN = time_read / 60,
     time_sum_min_t2 = TIME_SUM_t2 / 60,
     
     # take logarithm
     words_log = log1p(words),
-    self_dis_log = log1p(self_dis)
+    words_react_log = log1p(words_react)
   )
 
 # variable labels

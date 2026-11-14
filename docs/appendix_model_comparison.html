@@ -5078,6 +5078,8 @@ hyphens: auto;
 </header>
 
 
+<p>This page compares the automatic classifiers we tested against the 150 manually coded comments (see <a href="./03_coding_manual_icr.html">Manual Coding &amp; ICR</a>). All classifiers coded the same six variables as the human coders: personal experience, emotional expression, political opinion, breadth, valence, and controversiality.</p>
+<p>We tested several open-source large language models, run locally via Ollama with a few-shot system prompt: qwen3:8b, llama3.1:8b, apertus:8b, and qwen3.8:27b. Each row of the table is one evaluation run. Between runs, we changed the model, the system prompt (e.g., clearer coding rules and more calibration examples), or both. For each run and variable, the table shows Cohen’s <span class="math inline">\(\kappa\)</span> between the model and the manual coding, as well as the mean <span class="math inline">\(\kappa\)</span> and the mean Krippendorff’s <span class="math inline">\(\alpha\)</span> across variables. The pretrained zero-shot NLI classifier is documented separately (see <a href="./04a_pretrained_classification.html">Pretrained Classification</a>).</p>
 <div class="cell">
 <div id="tbl-model-comparison" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
@@ -5293,6 +5295,7 @@ Table 1: Model Comparison Against the Manually Coded Sample: Cohen’s <span cl
 </div>
 </div>
 <p><em>Note.</em> Run = evaluation report number, in chronological order. Valid n = number of the 150 manually coded comments for which the model returned a usable label (minimum across variables). Run 11 is the final model used in the analyses.</p>
+<p>The larger model (qwen3.8:27b) agreed clearly more with the human coders than the smaller 8b models. Across runs, agreement also increased as the system prompt was refined. We therefore used qwen3.8:27b with the final prompt (Run 11) to classify all comments (see <a href="./04c_final_classification.html">Final Classification</a>). For the final prompt, see <a href="./appendix_system_prompt.html">System Prompt</a>.</p>
 
 
 
