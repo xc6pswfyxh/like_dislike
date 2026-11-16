@@ -13,7 +13,7 @@ Preregistered one-week field experiment ($N$ = 590) with like and dislike button
 :::
 
 ```{=html}
-<div style="display:flex; flex-wrap:nowrap; justify-content:center; gap:6px; margin-bottom:1.5rem;">
+<div style="display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin-bottom:1.5rem;">
   <a class="btn btn-primary btn-sm rounded-pill shadow-sm" style="font-size:0.78rem; padding:0.3rem 0.65rem; white-space:nowrap;" href="01b_manuscript_rev.html"><i class="bi bi-file-earmark-text"></i> Read online</a>
   <a class="btn btn-danger btn-sm rounded-pill shadow-sm" style="font-size:0.78rem; padding:0.3rem 0.65rem; white-space:nowrap;" href="01b_manuscript_rev.pdf"><i class="bi bi-file-earmark-pdf"></i> Download PDF</a>
   <a class="btn btn-secondary btn-sm rounded-pill shadow-sm" style="font-size:0.78rem; padding:0.3rem 0.65rem; white-space:nowrap;" href="05a_analyses.html"><i class="bi bi-bar-chart-line"></i> Analyses</a>

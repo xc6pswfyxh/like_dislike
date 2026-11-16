@@ -70,4 +70,8 @@ caption {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
+  #quarto-document-content a,
+  .csl-entry {
+    overflow-wrap: anywhere;
+  }
 }
