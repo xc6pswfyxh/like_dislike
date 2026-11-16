@@ -1,0 +1,15 @@
+{
+  "hash": "56c901626b40495be739ab08cb3114ff",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"The Participation Platform\"\n---\n\n## Main page\n\n![Screenshot of the website's landing page (translated into English).](figures/website/website_translated.png)\n\n## Example comments\n\n![Screenshot of example user comments on the website (translated into English).](figures/website/comments_translated.png)",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
