@@ -57,4 +57,5 @@ assets/figures/
 /site_libs/
 /*.html
 /*.pdf
-.quarto/data/*RDataTmp*
+.quarto/
+data/*RDataTmp*

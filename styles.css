@@ -51,3 +51,23 @@ caption {
   hyphens: auto;
   -webkit-hyphens: auto;
 }
+/* Title block: no justification (fixes subtitle spacing) */
+#title-block-header p,
+#title-block-header .subtitle {
+  text-align: left;
+  hyphens: manual;
+  -webkit-hyphens: manual;
+}
+
+/* Mobile: left-aligned text and scrollable tables */
+@media (max-width: 767.98px) {
+  #quarto-document-content p,
+  #quarto-document-content li {
+    text-align: left;
+  }
+  #quarto-document-content table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
