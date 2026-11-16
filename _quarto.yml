@@ -12,6 +12,9 @@ project:
 
 lang: en
 
+execute:
+  freeze: auto
+
 website:
   title: "Like Dislike"
   bread-crumbs: false

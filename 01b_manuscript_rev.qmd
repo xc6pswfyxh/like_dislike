@@ -134,7 +134,11 @@ Online behavior is determined by the person and their external circumstances [@b
 
 **Update** In conclusion, in this paper we contribute to communication theory by means of (a) replication, (b) falsification, (c) extending the range of existing theory, (d) elucidating mechanisms, and (e) theory comparison [@deandreaIncreasingClarityWhere2017].
 
-# Replicating the Privacy Calculus
+# Literature Review
+
+In this section, we review the literature on the privacy calculus and derive our hypotheses. We first summarize prior evidence on the core calculus of concerns and gratifications, then extend it with privacy deliberation, trust, and self-efficacy, and finally discuss how popularity cues may affect the process.
+
+## Replicating the Privacy Calculus
 
 The privacy calculus analyzes why people communicate online. When are we willing to engage in a conversation? It builds on the calculus of behavior [@lauferPrivacyConceptSocial1977] and states that people are weighing risks and benefits before actively communicating. Communication is closely related to privacy, which is defined as a "voluntary and temporary withdrawal of a person from the general society" [@westinPrivacyFreedom1967, p. 7]. People regulate their privacy by deciding what and what not to communicate [@dienlinPrivacyProcessModel2014]. Communication is therefore also closely related to self-disclosure. Just as it is impossible to not communicate, communication inherently promotes self-disclosure. In a recent study, communication quantity and the frequency of expressing one's political opinion was almost indistinguishable ($r$ = .91; **AUTHORS**). Next to breadth and depth, communication quantity is hence often considered a central dimension of self-disclosure [@omarzuDisclosureDecisionModel2000].
 
@@ -146,7 +150,7 @@ H1: People who are more concerned about their privacy are less likely to communi
 
 H2: People who obtain more gratifications from using a website are more likely to communicate actively on a website.
 
-# Extending the Privacy Calculus
+## Extending the Privacy Calculus
 
 Although privacy calculus implies that people explicitly compare benefits and risks before communicating online, prior research has neglected this aspect [@knijnenburgDeathPrivacyCalculus2017]. Only observing that privacy concerns or expected gratifications and communication online are related does not prove that an explicit weighing process took place [@knijnenburgDeathPrivacyCalculus2017]. Instead, we need to analyze if, and if so by how much, people actively deliberate about their privacy by comparing benefits and risks, and whether doing so influences their willingness to communicate. Self-disclosure theory [@omarzuDisclosureDecisionModel2000; @altmanPrivacyConceptualAnalysis1976] suggests that if the benefits of communication are attractive, deciding whether or not to communicate is a "conscious and deliberative process" [@omarzuDisclosureDecisionModel2000, p. 183]. **We hence extend the privacy calculus by introducing a measure of privacy deliberation.** Privacy deliberation captures the extent to which individuals explicitly compare risks and benefits before communicating with others (**AUTHORS**).
 
@@ -159,6 +163,8 @@ RQ1: Do people who deliberate more actively about their privacy communicate more
 <!-- The aforementioned weighing process is not flawless or perfect. -->
 It is useful to understand the privacy calculus from the perspective of *bounded rationality* [@simonBoundedRationality1990]. Bounded rationality states that "(1) humans are cognitively constrained; (2) these constraints impact decision making; and (3) difficult problems reveal the constraints and highlight their significance" [@bendorBoundedRationality2015, p. 1303]. It is important to emphasize that although human behavior is considered *partly* irrational, bounded rationality does not state that it is *completely* irrational [@gigerenzerBoundedRationalityAdaptive2002]. Instead, rationality needs to be understood as a continuum. And in the context of online privacy, rationality is impeded by information asymmetries, presence bias, intangibility, illusory control, or herding [@acquistiSecretsLikesDrive2020]. It follows that to provide a more complete picture, additional factors less focused on rationality but more on socio-psychological aspects should also explain communication.
 
+**We include two further factors, trust and self-efficacy, because both are directly connected to the logic of the privacy calculus. The calculus assumes that people can assess and weigh risks and benefits. In many online situations, however, this assessment is incomplete, because users cannot fully see how their information will be used [@acquistiSecretsLikesDrive2020]. Trust reduces this uncertainty and acts as a shortcut when risks cannot be evaluated [@gefenTrustTAMOnline2003; @metzgerPrivacyTrustDisclosure2004]. Self-efficacy determines whether people feel able to act on the outcome of the weighing, such as writing a comment while managing their privacy [@dienlinExtendedPrivacyCalculus2016]. Trust and self-efficacy therefore do not replace the calculus but shape how it is applied.**
+
 Two central factors that help us understand online communication are self-efficacy and trust [@hossainICTEnabledVirtual2004; @metzgerPrivacyTrustDisclosure2004]. Privacy violations create psychological distress [@ledbetterParentchildPrivacyBoundary2019]. Experiencing online contexts as a safe space that users can sufficiently control is important for engaging in online communication. If users are more familiar, experienced, and knowledgeable in a given online context, they are more likely to navigate that online context successfully and to communicate actively [@baruhOnlinePrivacyConcerns2017; @kramerMasteringChallengeBalancing2020; @parkDigitalLiteracyPrivacy2013a]. People with more privacy self-efficacy engage more successfully in self-withdrawal [@dienlinExtendedPrivacyCalculus2016] and protective online behavior [@boermanExploringMotivationsOnline2021a; @vanooijenPrivacyCynicismIts2022]. Hence, if users possess more self-efficacy to participate, they should also communicate more.
 
 H3: People are more likely to communicate on a website when their self-efficacy to actively use the website is higher.
@@ -167,7 +173,7 @@ In all situations where people lack experience, control, or competence, a centra
 
 H4: People are more likely to communicate on a website when they have greater trust in the provider, the website, and the other users.
 
-# Analyzing the Impact of Popularity Cues
+## Analyzing the Impact of Popularity Cues
 
 How are the privacy calculus and communication affected by the context, the digital infrastructure? How easily can the calculus be manipulated externally? One of the central tools to afford and govern online behavior are popularity cues such as like and dislike buttons [@stsiampkouskayaNotExperimentalStudy2023]. Popularity cues have been shown to affect behavior [@kramerMasteringChallengeBalancing2020; @masurBehavioralContagionSocial2021; @treptePrivacyCalculusContextualized2020]. For example, online comments that already have several dislikes are more likely to receive further dislikes [@muchnikSocialInfluenceBias2013]. When users disagree with a post, they are more likely to click on a button labeled *respect* compared to a button labeled *like* [@stroudRecommendRespectAltering2017].
 
@@ -273,7 +279,7 @@ For example, "I felt technically competent enough to write a comment."
 Two inverted items were deleted due to poor psychometric properties.
 People felt self-efficacious to use the website ($m$ = `r facval_tab["Self-efficacy", "m"]`).
 
-Two types of trust were measured. *General trust* was operationalized based on @sollnerWhyDifferentTrust2016, addressing three targets (i.e., provider, website, and other users), measured with one item each. One example item was "The operators of the participation platform seemed trustworthy." *Specific trust* was operationalized for the same three targets with three sub-dimensions each (i.e., ability, benevolence/integrity, and reliability), measured with one item each. Example items were "The operators of the participation platform have done a good job" (ability), "The other users had good intentions" (benevolence/integrity), "The website worked well" (reliability). Participants placed a lot of trust in the website, the providers and the other users (trust general: _m_ = `r facval_tab["Trust general", "m"]`; trust specific: _m_ = `r facval_tab["Trust specific", "m"]`).
+Two types of trust were measured. *General trust* was operationalized based on @sollnerWhyDifferentTrust2016, addressing three targets (i.e., provider, website, and other users), measured with one item each. One example item was "The operators of the participation platform seemed trustworthy." *Specific trust* was operationalized for the same three targets with three sub-dimensions each (i.e., ability, benevolence/integrity, and reliability), measured with one item each. Example items were "The operators of the participation platform have done a good job" (ability), "The other users had good intentions" (benevolence/integrity), "The website worked well" (reliability). Participants placed a lot of trust in the website, the providers and the other users (trust general: $m$ = `r facval_tab["Trust general", "m"]`; trust specific: $m$ = `r facval_tab["Trust specific", "m"]`). **General and specific trust were very highly correlated ($r$ = .94), which indicates that participants hardly distinguished between the two. Because both scales address the same three targets (provider, website, and other users) and capture the same underlying evaluation, we combined them into one trust index for all analyses. [Table 1](#tab-cfa) reports both scales separately.**
 
 *Communication* was calculated by counting the number of words each participant wrote in a comment. Communication was zero-inflated and heavily skewed: While `r round(no_words_perc * 100, 0)` percent did not communicate at all, the maximum number of words communicated by a single user was `r d %$% words %>% max()` words. On average, participants wrote `r words_m %>% round(0)` words. 
 
@@ -371,6 +377,12 @@ report <- function(outcome, pred, digits = 2) {
 r_fs <- function(x, y) {
   cor(d_fs[[x]], d_fs[[y]], use = "pairwise.complete.obs") %>% round(2)
 }
+
+# manipulation check: share of participants who clicked at least one popularity cue
+mc <- d %>%
+  group_by(version) %>%
+  summarise(pct = round(mean(reactions > 0, na.rm = TRUE) * 100), .groups = "drop")
+mc_pct <- function(g) mc$pct[mc$version == g]
 ```
 
 ## Descriptive Analyses
@@ -423,6 +435,8 @@ knitr::include_graphics("figures/results/effects.png")
 **Participants who placed more trust in the website, the provider, and the other users also communicated more: With each one-SD increase in trust, they wrote on average `r est("words", "Trust", digits = 0)` more words (`r hdi("words", "Trust", digits = 0)`).** The first research question asked how privacy deliberation would be related to communication. The results revealed a negative relation: The more people deliberated about their privacy, the less they communicated. **With each one-SD increase in privacy deliberation, participants wrote on average `r est("words", "Privacy deliberation", digits = 0) %>% abs()` fewer words (`r hdi("words", "Privacy deliberation", digits = 0)`).**
 
 ### Popularity Cues
+
+**Before testing the effects of the popularity cues, we checked whether participants noticed and used them. We analyzed the reactions logged by the platform: In the like condition, `r mc_pct("Like")`% of participants clicked at least one reaction, and in the like and dislike condition, `r mc_pct("Like & dislike")`% did. Participants in the control condition could not react.**
 
 We then reanalyzed the effects of the popularity cues on communication. **Compared to the control condition without popularity cues, implementing like buttons did not significantly affect communication (`r report("words", "Like vs. control", digits = 0)`), although the interval only narrowly included zero.** However, implementing both like and dislike buttons affected communication. Contrary to what we expected, implementing both popularity cues *decreased* communication. **If both popularity cues were present, participants wrote on average `r est("words", "Like & dislike vs. control", digits = 0) %>% abs()` fewer words (`r hdi("words", "Like & dislike vs. control", digits = 0)`).** The introduction of both cues hence led to a `r effect_lkdlk_prcnt %>% as.integer()`% decline in the number of words that were written.
 
