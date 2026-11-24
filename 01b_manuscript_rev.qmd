@@ -40,6 +40,9 @@ format:
       - popularity cues
       - field experiment
       - "preregistration\\newline Word count: 8,432"
+
+nocite: |
+  @landisMeasurementObserverAgreement1977
 ---
 
 ```{r include=F}
@@ -317,8 +320,11 @@ icr <- readxl::read_excel("data/comments/icr4.xlsx") |>
 cap  <- "Intercoder Reliability"
 note <- "Categories = number of coding categories per variable. Agreement = proportion of identical codes. Cohen's kappa values of .40, .60, and .80 are commonly interpreted as moderate, substantial, and almost perfect agreement, respectively [@landisMeasurementObserverAgreement1977]."
 
+note_pdf <- sub("\\[@landisMeasurementObserverAgreement1977\\]",
+                "(Landis & Koch, 1977)", note)
+
 if (knitr::is_latex_output()) {
-  apa_table(icr, caption = cap, note = note,
+  apa_table(icr, caption = cap, note = note_pdf,
             align = c("l", rep("r", 4)), escape = FALSE, linesep = "")
 } else {
   print(knitr::kable(icr, caption = paste("Table 2:", cap),
