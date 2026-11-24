@@ -320,8 +320,7 @@ icr <- readxl::read_excel("data/comments/icr4.xlsx") |>
 cap  <- "Intercoder Reliability"
 note <- "Categories = number of coding categories per variable. Agreement = proportion of identical codes. Cohen's kappa values of .40, .60, and .80 are commonly interpreted as moderate, substantial, and almost perfect agreement, respectively [@landisMeasurementObserverAgreement1977]."
 
-note_pdf <- sub("\\[@landisMeasurementObserverAgreement1977\\]",
-                "(Landis & Koch, 1977)", note)
+note_pdf <- sub("\\[@landisMeasurementObserverAgreement1977\\]", "(Landis \\\\& Koch, 1977)", note)
 
 if (knitr::is_latex_output()) {
   apa_table(icr, caption = cap, note = note_pdf,
