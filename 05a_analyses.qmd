@@ -1984,7 +1984,7 @@ summary(
 
 No significant effects of popularity cues on privacy calculus.
 
-# Exploratory Analyses
+# Main Analyses (Bayesian Hurdle Models)
 
 ## Rationale
 

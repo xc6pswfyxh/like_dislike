@@ -416,7 +416,8 @@ data <- data |>
     grats_gen = mean(c_across(GR02_01:GR02_05), na.rm = TRUE),
     pri_delib = mean(c_across(PD01_01:PD01_05), na.rm = TRUE),
     # general trust in the provider, the website, and the other users (as in the main analyses)
-    trust_gen = mean(c_across(TR02_01:TR02_03), na.rm = TRUE)
+    # note: the items are listed individually, because the TR02 items are not next to each other in the data
+    trust_gen = mean(c(TR02_01, TR02_02, TR02_03), na.rm = TRUE)
   ) |> 
   ungroup()
 ```
@@ -517,7 +518,9 @@ htmlreg(
 
 All privacy calculus variables predicted whether participants communicated at all, in the expected direction: Participants with more self-efficacy, gratifications, and trust were more likely to communicate, and participants with more privacy concerns and privacy deliberation were less likely to communicate. The popularity cues did not affect whether participants communicated.
 
-## How Much Participants Communicated (OLS and Negative Binomial Regressions)
+## Moderation: Do Popularity Cues Change the Effects on How Much Participants Communicated?
+
+In this section, we test whether the effects of the privacy calculus variables on how much participants communicated depend on the popularity cues. The main result is a moderation of self-efficacy: Self-efficacy increased communication in all models, but with like buttons this effect was significantly weaker than in the control condition. The effects of privacy concerns, gratifications, privacy deliberation, and trust did not depend on the popularity cues.
 
 For each privacy calculus variable, we estimate six models: three OLS regressions with the log-transformed number of words (first three models in each table) and three negative binomial regressions with the raw number of words (last three models). We then repeat these models with words + reactions as outcome.
 
@@ -620,7 +623,7 @@ htmlreg(
 )
 ```
 
-Self-efficacy was positively related to communication in all models. In addition, the effect of self-efficacy depended on the popularity cues: With like buttons, the effect of self-efficacy was weaker than in the control condition (negative interaction). We illustrate this moderation below, after the models for words + reactions.
+Self-efficacy was significantly and positively related to communication in all six models. The interaction between self-efficacy and like buttons was significant and negative in all four models that include it (Models 2, 3, 5, and 6): With like buttons, the effect of self-efficacy was weaker than in the control condition. The interaction between self-efficacy and like & dislike buttons was not significant in any model. Note that in models with an interaction, the coefficient of the like button shows its effect for participants with a self-efficacy of 0, which lies outside the scale (1–7). It should therefore not be interpreted on its own. We illustrate the moderation below, after the models for words + reactions.
 
 We repeat the models with words + reactions as outcome. First, the OLS regressions with the log-transformed outcome.
 
@@ -719,7 +722,7 @@ htmlreg(
 )
 ```
 
-The results for words + reactions are very similar.
+The results for words + reactions are the same: Self-efficacy was significantly and positively related to communication in all six models, and the interaction with like buttons was significant and negative in all four models that include it (Models 8, 9, 11, and 12). The interaction with like & dislike buttons was significant only in Model 9, but not in Models 8, 11, and 12.
 
 @fig-meplot shows the marginal effect of self-efficacy in each condition, for both outcomes (Models 3 and 9).
 
@@ -804,7 +807,7 @@ ggarrange(
 )
 ```
 
-The effect of self-efficacy is positive in all conditions, but smaller on the website with like buttons. @fig-predplot shows the same pattern as predicted values: With increasing self-efficacy, the number of words increases more strongly in the control condition than with like buttons.
+In both models, the effect of self-efficacy is significant and positive in all three conditions (none of the confidence intervals includes zero). With like buttons, however, the effect is only about half as large as in the control condition. @fig-predplot shows the same pattern as predicted values: With increasing self-efficacy, the number of words increases more strongly in the control condition than with like buttons.
 
 ```{r}
 #| label: fig-predplot
@@ -936,7 +939,7 @@ htmlreg(
 )
 ```
 
-Privacy concerns were negatively related to communication in most models. The effect did not depend on the popularity cues (no significant interactions).
+Privacy concerns were significantly and negatively related to communication in all six models. None of the interactions with the popularity cues was significant.
 
 We repeat the models with words + reactions as outcome. First, the OLS regressions with the log-transformed outcome.
 
@@ -1035,7 +1038,7 @@ htmlreg(
 )
 ```
 
-The results for words + reactions are very similar.
+The results for words + reactions are the same: Privacy concerns were significantly and negatively related to communication in all six models (Models 19 to 24), and none of the interactions with the popularity cues was significant.
 
 
 ### Gratifications
@@ -1137,7 +1140,7 @@ htmlreg(
 )
 ```
 
-Gratifications were positively related to communication in most models. The effect did not depend on the popularity cues (no significant interactions).
+Gratifications were significantly and positively related to communication in Models 25 to 28, but not in the two negative binomial models with interaction (Models 29 and 30). None of the interactions with the popularity cues was significant.
 
 We repeat the models with words + reactions as outcome. First, the OLS regressions with the log-transformed outcome.
 
@@ -1236,7 +1239,7 @@ htmlreg(
 )
 ```
 
-The results for words + reactions are very similar.
+The results for words + reactions are the same: Gratifications were significantly and positively related to communication in Models 31 to 34, but not in the two negative binomial models with interaction (Models 35 and 36). None of the interactions with the popularity cues was significant.
 
 
 ### Privacy Deliberation
@@ -1338,7 +1341,7 @@ htmlreg(
 )
 ```
 
-Privacy deliberation was negatively related to communication in all models. The effect did not depend on the popularity cues (no significant interactions).
+Privacy deliberation was significantly and negatively related to communication in all six models. None of the interactions with the popularity cues was significant.
 
 We repeat the models with words + reactions as outcome. First, the OLS regressions with the log-transformed outcome.
 
@@ -1437,7 +1440,7 @@ htmlreg(
 )
 ```
 
-The results for words + reactions are very similar.
+The results for words + reactions are the same: Privacy deliberation was significantly and negatively related to communication in all six models (Models 43 to 48), and none of the interactions with the popularity cues was significant.
 
 
 ### Trust
@@ -1539,7 +1542,7 @@ htmlreg(
 )
 ```
 
-General trust was positively related to communication in the OLS models. In the negative binomial models, the effect pointed in the same direction but was less clear. The effect did not depend on the popularity cues (no significant interactions).
+General trust was significantly and positively related to communication in Models 49 to 51 and 53 to 54, but not in Model 52 (negative binomial model without interaction). None of the interactions with the popularity cues was significant.
 
 We repeat the models with words + reactions as outcome. First, the OLS regressions with the log-transformed outcome.
 
@@ -1638,7 +1641,7 @@ htmlreg(
 )
 ```
 
-The results for words + reactions are very similar.
+For words + reactions, general trust was significantly and positively related to communication in all six models (Models 55 to 60). None of the interactions with the popularity cues was significant.
 
 
 ### All Predictors Combined
@@ -1730,7 +1733,7 @@ htmlreg(
 )
 ```
 
-When all variables are analyzed together, mainly self-efficacy and privacy deliberation remain significant. This is in line with the problems of multicollinearity described above. The interaction between self-efficacy and the like condition remains negative.
+When all variables are analyzed together, two variables remain significant in all three models (Models 61 to 63): self-efficacy (positive) and privacy deliberation (negative). Privacy concerns, gratifications, and trust are no longer significant, which is in line with the problems of multicollinearity described above. The interaction between self-efficacy and like buttons remains significant and negative (Models 62 and 63); the interaction with like & dislike buttons is not significant.
 
 The same models with words + reactions as outcome:
 
@@ -1817,4 +1820,4 @@ htmlreg(
 )
 ```
 
-The results for words + reactions are very similar.
+The results for words + reactions are the same: In all three models (Models 64 to 66), self-efficacy was significantly positive and privacy deliberation significantly negative. Privacy concerns, gratifications, and trust were not significant. The interaction between self-efficacy and like buttons was significant and negative (Models 65 and 66); the interaction with like & dislike buttons was not.
